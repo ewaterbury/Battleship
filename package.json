@@ -1,0 +1,26 @@
+{
+  "name": "battleship",
+  "version": "1.0.0",
+  "description": "My implementation of the classic boardgame Battleship.",
+  "homepage": "https://github.com/ewaterbury/Battleship#readme",
+  "bugs": {
+    "url": "https://github.com/ewaterbury/Battleship/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ewaterbury/Battleship.git"
+  },
+  "license": "ISC",
+  "author": "",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.28.5",
+    "@babel/preset-env": "^7.28.5",
+    "babel-jest": "^30.2.0",
+    "jest": "^30.2.0"
+  }
+}
