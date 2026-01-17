@@ -1,10 +1,15 @@
 const Ship = require('/modules/ship.js');
 
-let ship = new Ship(5);
+const position = [0, 1, 2, 3, 4];
+const ship = new Ship(position);
 
-test('Ship Tests', () => {
-    for (let i = 0; i<5; i++){
+test('getPosition() Test', () => {
+    expect(ship.getPosition()).toBe(position);
+});
+
+test('isSunk/hit() Test', () => {
+    for (let i = 0; i < 5; i++){
         ship.hit();
-        i < 4 ? expect(ship.isSunk()).toBeFalsy : expect(ship.isSunk()).toBeTruthy;
+        i < 4 ? expect(ship.isSunk()).toBe(false) : expect(ship.isSunk()).toBe(true);
     }
 });
