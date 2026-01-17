@@ -1,10 +1,14 @@
 class Ship {
-    #length
+    #position
     #hits
 
-    constructor(length){
-        this.#length = length;
+    constructor(coordinates){
+        this.#position = coordinates;
         this.#hits = 0;
+    }
+
+    getPosition(){
+        return this.#position;
     }
 
     hit(){
@@ -12,7 +16,7 @@ class Ship {
     }
 
     isSunk(){
-        return this.#hits == this.#length ? true : false;
+        return this.#hits == this.#position.length ? true : false;
     }
 
 }
