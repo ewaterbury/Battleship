@@ -6,7 +6,7 @@ class Gameboard {
 
     constructor(){
         this.#fleet = []; //Holds Player Fleet
-        this.#strikes = Array(100).fill(0); //Holds Opponent Attacks
+        this.#strikes = Array(100).fill(null); //Holds Opponent Attacks
     }
 
     newShip(ship){
@@ -31,9 +31,8 @@ class Gameboard {
 
         struckShip ? this.#strikes[strike] = true : this.#strikes[strike] = false; //Marks tile on opponent attack board.
         if(struckShip)
-            return struckShip; //Returns struck ship
+            struckShip.hit(); //Returns struck ship
     }
-
 
     fleetSunk(){
         for(let i = 0; i < this.#fleet.length; i++)
@@ -42,6 +41,10 @@ class Gameboard {
         return true;
     }
 
+    queryStrike(row, column){
+        
+        return this.#strikes[row * 10 + column];
+    }
 }
 
 module.exports = Gameboard;
