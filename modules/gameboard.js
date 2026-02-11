@@ -1,49 +1,43 @@
-const Ship = require('/modules/ship.js');
-
 class Gameboard {
     #fleet
     #strikes
 
     constructor(){
-        this.#fleet = []; //Holds Player Fleet
-        this.#strikes = Array(100).fill(null); //Holds Opponent Attacks
+        this.#fleet = []; // Holds player's fleet.
+        this.#strikes = Array(100).fill(null); // Holds opponent's attacks.
     }
 
     newShip(ship){
-        this.#fleet.push(ship);
+        this.#fleet.push(ship); // Adds ship to #fleet.
     }
 
-    recieveAttack(row, column){
-        const strike = row * 10 + column; //Get strike tile
-        let struckShip = undefined; //Pointer to struck ship
+    receiveAttack(cell){
+        let struckShip = undefined; // Pointer to struck ship.
 
-        //Check for hit and save struck ship
+        //Check for hit and save struck ship.
         for(let i = 0; i < this.#fleet.length; i++){
-            
-            
             for(let j = 0; j < this.#fleet[i].getPosition().length; j++)
-                if(this.#fleet[i].getPosition()[j] == strike){
+                if(this.#fleet[i].getPosition()[j] == cell){
                     struckShip = this.#fleet[i];
                     i = this.#fleet.length;
                     break;
                 }
         }
 
-        struckShip ? this.#strikes[strike] = true : this.#strikes[strike] = false; //Marks tile on opponent attack board.
+        struckShip ? this.#strikes[cell] = true : this.#strikes[cell] = false; //Marks tile on opponent attack board.
         if(struckShip)
-            struckShip.hit(); //Returns struck ship
+            struckShip.hit(); //Calls hit on struck ship.
     }
 
     fleetSunk(){
-        for(let i = 0; i < this.#fleet.length; i++)
+        for(let i = 0; i < this.#fleet.length; i++) //Queries if fleet is sunk and returns result.
             if (!this.#fleet[i].isSunk())
                 return false;
         return true;
     }
 
-    queryStrike(row, column){
-        
-        return this.#strikes[row * 10 + column];
+    queryStrike(cell){
+        return this.#strikes[cell]; //Queries hit status on a specific tile.
     }
 }
 
