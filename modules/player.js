@@ -1,5 +1,3 @@
-const Gameboard = require('/modules/gameboard.js');
-
 class Player{
     #gameboard
 
@@ -8,19 +6,19 @@ class Player{
     }
 
     setFleet(fleet){
-        fleet.forEach((ship) => {this.#gameboard.newShip(ship)});
+        fleet.forEach(ship => this.#gameboard.newShip(ship));
     }
 
-    recieveAttack(row, column){
-        this.#gameboard.recieveAttack(row, column);
+    receiveAttack(cell){
+        this.#gameboard.receiveAttack(cell);
     }
 
     gameOver(){
         return this.#gameboard.fleetSunk();
     }
 
-    queryTile(row, column){
-        return this.#gameboard.queryStrike(row, column);
+    queryTile(cell){
+        return this.#gameboard.queryStrike(cell);
     }
 }
 
