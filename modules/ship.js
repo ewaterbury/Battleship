@@ -2,8 +2,8 @@ class Ship {
     #position
     #hits
 
-    constructor(coordinates){
-        this.#position = coordinates;
+    constructor(cells){
+        this.#position = cells;
         this.#hits = 0;
     }
 
@@ -16,7 +16,7 @@ class Ship {
     }
 
     isSunk(){
-        return this.#hits == this.#position.length ? true : false;
+        return this.#hits == this.#position.length;
     }
 
 }
