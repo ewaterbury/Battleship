@@ -1,20 +1,20 @@
 const Player = require('/modules/player.js');
 const Gameboard = require('/modules/gameboard.js');
+let mockGameboard;
 
 beforeEach(() => {
     jest.clearAllMocks();
+    mockGameboard = new Gameboard();
 });
 
 jest.mock('/modules/gameboard.js', () => {
     return jest.fn().mockImplementation(() => ({
         newShip: jest.fn(),
-        recieveAttack: jest.fn(),
+        receiveAttack: jest.fn(),
         fleetSunk: jest.fn(),
         queryStrike: jest.fn(),
     }));
 });
-
-const mockGameboard = new Gameboard();
 
 test('setFleet', () => {
     const player = new Player(mockGameboard);
@@ -23,10 +23,10 @@ test('setFleet', () => {
     expect(mockGameboard.newShip).toHaveBeenCalledTimes(fleet.length);
 });
 
-test('recieveAttack Test', () => {
+test('receiveAttack Test', () => {
     const player = new Player(mockGameboard);
-    player.recieveAttack(0, 0);
-    expect(mockGameboard.recieveAttack).toHaveBeenCalledTimes(1);
+    player.receiveAttack(0);
+    expect(mockGameboard.receiveAttack).toHaveBeenCalledTimes(1);
 });
 
 test('gameOver Test', () => {
@@ -42,7 +42,7 @@ test('queryTile test', () => {
     mockReturnValueOnce(null).
     mockReturnValueOnce(true).
     mockReturnValueOnce(false)
-    expect(player.queryTile(0, 0)).toBe(null);
-    expect(player.queryTile(0, 0)).toBe(true);
-    expect(player.queryTile(0, 0)).toBe(false);
+    expect(player.queryTile(0)).toBe(null);
+    expect(player.queryTile(0)).toBe(true);
+    expect(player.queryTile(0)).toBe(false);
 });
