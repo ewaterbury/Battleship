@@ -1,43 +1,62 @@
 class Gameboard {
-    #fleet
-    #strikes
+    #HIT;
+    #MISS;
+    #SUNK;
+    #fleet;
+    #view;
 
-    constructor(){
-        this.#fleet = []; // Holds player's fleet.
-        this.#strikes = Array(100).fill(null); // Holds opponent's attacks.
+    constructor(boardSize = 10) {
+        this.#HIT = "hit";
+        this.#MISS = "miss";
+        this.#SUNK = "sunk";
+        this.#fleet = []; // Player's fleet.
+        this.#view = Array(boardSize ** 2).fill(null); // Opponent's view of board.
     }
 
-    newShip(ship){
-        this.#fleet.push(ship); // Adds ship to #fleet.
+    // Adds new ship to #fleet.
+    newShip(ship) {
+        this.#fleet.push(ship);
     }
 
-    receiveAttack(cell){
-        let struckShip = undefined; // Pointer to struck ship.
+    // Calls opponent's attack on player's board.
+    receiveAttack(attack) {
+        let struckShip; // Points to struck ship.
 
-        //Check for hit and save struck ship.
-        for(let i = 0; i < this.#fleet.length; i++){
-            for(let j = 0; j < this.#fleet[i].getPosition().length; j++)
-                if(this.#fleet[i].getPosition()[j] == cell){
-                    struckShip = this.#fleet[i];
-                    i = this.#fleet.length;
-                    break;
+        // Checks for hit + Saves struck ship.
+        fleetLoop: for (const ship of this.#fleet) {
+            for (const cell of ship.getPosition())
+                if (cell === attack) {
+                    struckShip = ship; // Saves reference to struck ship.
+                    break fleetLoop; // Breaks outer loop.
                 }
         }
 
-        struckShip ? this.#strikes[cell] = true : this.#strikes[cell] = false; //Marks tile on opponent attack board.
-        if(struckShip)
-            struckShip.hit(); //Calls hit on struck ship.
+        struckShip
+            ? (this.#view[attack] = this.#HIT)
+            : (this.#view[attack] = this.#MISS); // Records attack on opponent's attack board.
+
+        // If hit, calls hit on struck ship and checks ships status/Records sunk ship on opponent's attack board.
+        if (struckShip) {
+            struckShip.hit();
+            if (struckShip.isSunk())
+                struckShip.getPosition().forEach((cell) => {
+                    this.#view[cell] = this.#SUNK;
+                });
+        }
     }
 
-    fleetSunk(){
-        for(let i = 0; i < this.#fleet.length; i++) //Queries if fleet is sunk and returns result.
-            if (!this.#fleet[i].isSunk())
-                return false;
-        return true;
+    // Returns sunk status of fleet.
+    fleetSunk() {
+        return this.#fleet.every((ship) => ship.isSunk()); // Queries if fleet is sunk and returns result.
     }
 
-    queryStrike(cell){
-        return this.#strikes[cell]; //Queries hit status on a specific tile.
+    // Returns status of cell.
+    queryAttack(cell) {
+        return this.#view[cell];
+    }
+
+    queryAttacks() {
+        return this.#view;
     }
 }
 
