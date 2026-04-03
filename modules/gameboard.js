@@ -1,14 +1,10 @@
+const CELL = require("./constants.js");
+
 class Gameboard {
-    #HIT;
-    #MISS;
-    #SUNK;
     #fleet;
     #view;
 
     constructor(boardSize = 10) {
-        this.#HIT = "hit";
-        this.#MISS = "miss";
-        this.#SUNK = "sunk";
         this.#fleet = []; // Player's fleet.
         this.#view = Array(boardSize ** 2).fill(null); // Opponent's view of board.
     }
@@ -32,15 +28,15 @@ class Gameboard {
         }
 
         struckShip
-            ? (this.#view[attack] = this.#HIT)
-            : (this.#view[attack] = this.#MISS); // Records attack on opponent's attack board.
+            ? (this.#view[attack] = CELL.HIT)
+            : (this.#view[attack] = CELL.MISS); // Records attack on opponent's attack board.
 
         // If hit, calls hit on struck ship and checks ships status/Records sunk ship on opponent's attack board.
         if (struckShip) {
             struckShip.hit();
             if (struckShip.isSunk())
                 struckShip.getPosition().forEach((cell) => {
-                    this.#view[cell] = this.#SUNK;
+                    this.#view[cell] = CELL.SUNK;
                 });
         }
     }
@@ -55,6 +51,7 @@ class Gameboard {
         return this.#view[cell];
     }
 
+    // Returns status of gameboard.
     queryAttacks() {
         return this.#view;
     }
