@@ -18,7 +18,7 @@ class SweepLogic {
         };
 
         // Get possible ships from gameboard.
-        const ships = this.#getShips(enemyFleet);
+        const ships = this.#getPlacements(enemyFleet);
 
         // Exit if no enemy fleet.
         if (ships === null) return null;
@@ -54,7 +54,7 @@ class SweepLogic {
     }
 
     // Scan view board for all possible ships
-    #getShips(enemyFleet) {
+    #getPlacements(enemyFleet) {
         const totalCells = this.#boardSize ** 2;
         const possibleShips = [];
         const hasHits = this.#gameboard.includes(CELL.HIT);
