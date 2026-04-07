@@ -6,6 +6,7 @@ class HuntLogic {
     #gameboard;
     #boardSize;
     #minShip;
+    #initialOffset;
     #attackQueue;
     #front;
 
@@ -13,16 +14,16 @@ class HuntLogic {
         this.#gameboard = gameboard;
         this.#boardSize = Math.sqrt(gameboard.length);
         this.#minShip = Math.min(...fleet);
-        this.#attackQueue = this.#initAttackQueue();
+        this.#initialOffset = Utilities.randomInt(0, this.#minShip - 1);
+        this.#attackQueue = this.#makeAttackQueue();
         this.#front = 0;
     }
 
-    // Generate inital attack pattern.
-    #initAttackQueue() {
+    #makeAttackQueue() {
         const gap = this.#minShip - 1;
 
         // Randomize starting offset for first row.
-        let offset = Utilities.randomInt(0, gap);
+        let offset = this.#initialOffset;
 
         // Holds cells grouped by column mod 4.
         const passA = [];
@@ -72,6 +73,12 @@ class HuntLogic {
         passes = passes.flat();
 
         return passes;
+    }
+
+    updateAttackQueue(fleet) {
+        this.#minShip = Math.min(...fleet);
+        this.#attackQueue = this.#makeAttackQueue();
+        this.#front = 0;
     }
 
     getAttack() {
