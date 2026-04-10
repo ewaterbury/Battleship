@@ -7,17 +7,16 @@ class AttackLogic {
     #gameboard;
     #hits;
     #enemyFleet;
+    #minShip;
     #latestAttack;
     #sweep;
     #hunt;
 
-    constructor(
-        gameboard = new Array(100).fill(null),
-        fleet = [2, 3, 3, 4, 5],
-    ) {
+    constructor(gameboard, fleet = [2, 3, 3, 4, 5]) {
         this.#gameboard = gameboard;
         this.#hits = new Set();
         this.#enemyFleet = [...fleet.sort((a, b) => a - b)];
+        this.#minShip = [Math.min(...fleet)];
         this.#latestAttack = null;
         this.#sweep = new SweepLogic(gameboard);
         this.#hunt = new HuntLogic(gameboard, [...this.#enemyFleet]);
@@ -30,13 +29,16 @@ class AttackLogic {
         const attacks = [];
 
         // Use sweep logic if appropriate.
-        if (this.#hits.size)
+        if (this.#hits.size || Math.min(...this.#enemyFleet) > this.#minShip)
             attacks.push(...[...this.#sweep.getAttacks(this.#enemyFleet)]);
 
         // If no attack(s) use hunt logic.
         const attack = attacks.length
             ? attacks[Utilities.randomInt(0, attacks.length - 1)]
             : this.#hunt.getAttack(this.#enemyFleet);
+
+        // Save outgoing attack.
+        this.#latestAttack = attack;
 
         return attack;
     }
