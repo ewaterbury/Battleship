@@ -20,8 +20,8 @@ class SweepLogic {
         // Get possible ships from gameboard.
         const ships = this.#getPlacements(enemyFleet);
 
-        // Exit if no enemy fleet.
-        if (ships === null) return null;
+        // Exit if no possible ships.
+        if (ships === null) return [null];
 
         const attacks = new Map();
 
