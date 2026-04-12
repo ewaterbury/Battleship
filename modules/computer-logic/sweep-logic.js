@@ -47,9 +47,10 @@ class SweepLogic {
                 }
             }
         }
-
+        // console.log(attacks);
         this.#filterAttacks(attacks);
-
+        // console.log(attacks);
+        if (!attacks.size) return [null];
         return [...attacks.keys()];
     }
 
@@ -155,7 +156,7 @@ class SweepLogic {
 
         //Filter by size.
         const longestShip = Math.max(
-            ...[...attacks.values()].map((attack) => attack.length),
+            ...[...attacks.values()].map((score) => score.length),
         );
 
         for (const [attack, score] of [...attacks])
