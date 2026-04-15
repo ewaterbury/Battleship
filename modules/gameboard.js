@@ -10,7 +10,7 @@ class Gameboard {
     }
 
     // Adds new ship to #fleet.
-    newShip(ship) {
+    addShip(ship) {
         this.#fleet.push(ship);
     }
 
@@ -47,12 +47,12 @@ class Gameboard {
     }
 
     // Returns status of cell.
-    queryAttack(cell) {
+    queryCell(cell) {
         return this.#view[cell];
     }
 
     // Returns status of gameboard.
-    queryAttacks() {
+    queryBoard() {
         return this.#view;
     }
 }

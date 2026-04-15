@@ -25,18 +25,18 @@ describe("Attack Logic", () => {
 
         // Add enemy ships to gameboard.
         const fleet = FleetGenerator.generateFleet(fleetContents, boardSize);
-        fleet.forEach((ship) => gameboard.newShip(new Ship(ship)));
+        fleet.forEach((ship) => gameboard.addShip(new Ship(ship)));
 
         // Holds computer player logic.
         const computerPlayer = new AttackLogic(
-            gameboard.queryAttacks(),
+            gameboard.queryBoard(),
             fleetContents,
         );
 
         let turns = 0;
 
         while (!gameboard.fleetSunk() && turns <= 100) {
-            gameboard.receiveAttack(computerPlayer.sendAttack());
+            gameboard.receiveAttack(computerPlayer.getAttack());
             turns++;
         }
 

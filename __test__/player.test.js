@@ -9,10 +9,10 @@ beforeEach(() => {
 
 jest.mock("/modules/gameboard.js", () => {
     return jest.fn().mockImplementation(() => ({
-        newShip: jest.fn(),
+        addShip: jest.fn(),
         receiveAttack: jest.fn(),
         fleetSunk: jest.fn(),
-        queryStrike: jest.fn(),
+        queryCell: jest.fn(),
     }));
 });
 
@@ -20,7 +20,7 @@ test("setFleet Test", () => {
     const player = new Player(mockGameboard);
     const fleet = [[1], [2], [3], [4], [5]];
     player.setFleet(fleet);
-    expect(mockGameboard.newShip).toHaveBeenCalledTimes(fleet.length);
+    expect(mockGameboard.addShip).toHaveBeenCalledTimes(fleet.length);
 });
 
 test("receiveAttack Test", () => {
@@ -38,15 +38,13 @@ test("gameOver Test", () => {
     expect(player.gameOver()).toBe(false);
 });
 
-test("queryTile test", () => {
+test("queryCell test", () => {
     const player = new Player(mockGameboard);
-    mockGameboard.queryStrike
+    mockGameboard.queryCell
         .mockReturnValueOnce(null)
         .mockReturnValueOnce(true)
         .mockReturnValueOnce(false);
-    expect(player.queryTile(0)).toBe(null);
-    expect(player.queryTile(0)).toBe(true);
-    expect(player.queryTile(0)).toBe(false);
+    expect(player.queryCell(0)).toBe(null);
+    expect(player.queryCell(0)).toBe(true);
+    expect(player.queryCell(0)).toBe(false);
 });
-
-// Resolve method conflict before pushing.

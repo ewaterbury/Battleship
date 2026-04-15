@@ -22,7 +22,7 @@ jest.mock("/modules/ship.js", () => {
 
 test("receiveAttack [no hit] Test", () => {
     const gameboard = new Gameboard();
-    gameboard.newShip(mockShip);
+    gameboard.addShip(mockShip);
     mockShip.getPosition.mockReturnValue([0, 1, 2, 3, 4]);
     gameboard.receiveAttack(11);
     expect(mockShip.hit).toHaveBeenCalledTimes(0);
@@ -30,7 +30,7 @@ test("receiveAttack [no hit] Test", () => {
 
 test("receiveAttack [no hit - hit] Test", () => {
     const gameboard = new Gameboard();
-    gameboard.newShip(mockShip);
+    gameboard.addShip(mockShip);
     mockShip.getPosition.mockReturnValue([0, 1, 2, 3, 4]);
     gameboard.receiveAttack(11);
     expect(mockShip.hit).toHaveBeenCalledTimes(0);
@@ -40,7 +40,7 @@ test("receiveAttack [no hit - hit] Test", () => {
 
 test("fleetSunk Test [one ship]", () => {
     const gameboard = new Gameboard();
-    gameboard.newShip(mockShip);
+    gameboard.addShip(mockShip);
     mockShip.isSunk.mockReturnValueOnce(true).mockReturnValueOnce(false);
     expect(gameboard.fleetSunk()).toBe(true);
     expect(gameboard.fleetSunk()).toBe(false);
@@ -48,7 +48,7 @@ test("fleetSunk Test [one ship]", () => {
 
 test("fleetSunk Test [multiple ships]", () => {
     const gameboard = new Gameboard();
-    gameboard.newShip(mockShip, mockShip);
+    gameboard.addShip(mockShip, mockShip);
     mockShip.isSunk.mockReturnValueOnce(false).mockReturnValueOnce(true);
     expect(gameboard.fleetSunk()).toBe(false);
     mockShip.isSunk.mockReturnValueOnce(true).mockReturnValueOnce(true);
@@ -57,36 +57,36 @@ test("fleetSunk Test [multiple ships]", () => {
 
 test("queryAttack Test [empty]", () => {
     const gameboard = new Gameboard();
-    gameboard.newShip(mockShip);
+    gameboard.addShip(mockShip);
     mockShip.getPosition.mockReturnValue([0, 1]);
     gameboard.receiveAttack(1);
-    expect(gameboard.queryAttack(11)).toBe(E);
+    expect(gameboard.queryCell(11)).toBe(E);
 });
 
-test("queryAttack Test [no hit]", () => {
+test("queryCell Test [no hit]", () => {
     const gameboard = new Gameboard();
-    gameboard.newShip(mockShip);
+    gameboard.addShip(mockShip);
     mockShip.getPosition.mockReturnValue([0, 1]);
     gameboard.receiveAttack(11);
-    expect(gameboard.queryAttack(11)).toBe(M);
+    expect(gameboard.queryCell(11)).toBe(M);
 });
 
-test("queryAttack Test [hit]", () => {
+test("queryCell Test [hit]", () => {
     const gameboard = new Gameboard();
-    gameboard.newShip(mockShip);
+    gameboard.addShip(mockShip);
     mockShip.getPosition.mockReturnValue([0, 1]);
     gameboard.receiveAttack(1);
-    expect(gameboard.queryAttack(1)).toBe(H);
+    expect(gameboard.queryCell(1)).toBe(H);
 });
 
-test("queryAttack Test [hit - sunk]", () => {
+test("queryCell Test [hit - sunk]", () => {
     const gameboard = new Gameboard();
-    gameboard.newShip(mockShip);
+    gameboard.addShip(mockShip);
     mockShip.getPosition.mockReturnValue([0, 1]);
     mockShip.isSunk.mockReturnValueOnce(false).mockReturnValueOnce(true);
     gameboard.receiveAttack(0);
-    expect(gameboard.queryAttack(0)).toBe(H);
+    expect(gameboard.queryCell(0)).toBe(H);
     gameboard.receiveAttack(1);
-    expect(gameboard.queryAttack(0)).toBe(S);
-    expect(gameboard.queryAttack(1)).toBe(S);
+    expect(gameboard.queryCell(0)).toBe(S);
+    expect(gameboard.queryCell(1)).toBe(S);
 });

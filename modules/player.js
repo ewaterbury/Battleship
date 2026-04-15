@@ -5,9 +5,9 @@ class Player {
         this.#gameboard = gameboard; // Player's gameboard.
     }
 
-    // Adds fleet to #gameboard.
+    // Adds player's fleet to gameboard.
     setFleet(fleet) {
-        fleet.forEach((ship) => this.#gameboard.newShip(ship));
+        fleet.forEach((ship) => this.#gameboard.addShip(ship));
     }
 
     // Calls opponent's attack on player's board.
@@ -20,12 +20,12 @@ class Player {
         return this.#gameboard.fleetSunk();
     }
 
-    // Returns status of cell.
-    queryTile(cell) {
-        return this.#gameboard.queryStrike(cell);
+    // Returns status of cell on opponent board.
+    queryCell(cell) {
+        return this.#gameboard.queryCell(cell);
     }
 
-    // Returns Player's View
+    // Returns player's view of opponent board.
     queryBoard() {
         return this.#gameboard.queryBoard();
     }

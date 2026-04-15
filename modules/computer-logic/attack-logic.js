@@ -23,7 +23,7 @@ class AttackLogic {
     }
 
     // Decide next attack.
-    sendAttack() {
+    getAttack() {
         this.#updateAfterAttack();
 
         const attacks = [];
