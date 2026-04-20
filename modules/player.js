@@ -1,13 +1,9 @@
 class Player {
     #gameboard;
 
-    constructor(gameboard) {
+    constructor(gameboard, fleet) {
         this.#gameboard = gameboard; // Player's gameboard.
-    }
-
-    // Adds player's fleet to gameboard.
-    setFleet(fleet) {
-        fleet.forEach((ship) => this.#gameboard.addShip(ship));
+        fleet.forEach((ship) => this.#gameboard.addShip(ship)); // Adds player's fleet to gameboard.
     }
 
     // Calls opponent's attack on player's board.
