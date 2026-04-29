@@ -70,7 +70,7 @@ class Battleship {
     }
 
     getState() {
-        const winner = this.getWinner();
+        const winner = this.#getWinner();
         return {
             attacker: this.#attacker.id,
             defender: this.#defender.id,
@@ -79,7 +79,7 @@ class Battleship {
         };
     }
 
-    getWinner() {
+    #getWinner() {
         if (
             this.#player.controller.gameOver() &&
             this.#computer.controller.gameOver()
