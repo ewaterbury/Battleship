@@ -1,4 +1,4 @@
-jest.mock("/modules/gameboard.js", () => {
+jest.mock("../modules/gameboard.js", () => {
     return jest.fn().mockImplementation(() => ({
         addShip: jest.fn(),
         receiveAttack: jest.fn(),
@@ -8,8 +8,8 @@ jest.mock("/modules/gameboard.js", () => {
     }));
 });
 
-const Player = require("/modules/player.js");
-const Gameboard = require("/modules/gameboard.js");
+import Player from "../modules/player.js";
+import Gameboard from "../modules/gameboard.js";
 
 const BOARD_SIZE = 10;
 const FLEET = [[1], [2], [3], [4], [5]];

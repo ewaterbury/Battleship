@@ -1,5 +1,4 @@
-const CELL = require("./constants.js");
-
+import CELL from "./constants.js";
 class Gameboard {
     #fleet;
     #view;
@@ -57,4 +56,4 @@ class Gameboard {
     }
 }
 
-module.exports = Gameboard;
+export default Gameboard;

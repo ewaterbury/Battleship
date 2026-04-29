@@ -1,4 +1,4 @@
-const FleetGenerator = require("/modules/computer-logic/fleet-generator.js");
+import FleetGenerator from "/modules/computer-logic/fleet-generator.js";
 
 describe("FleetGenerator", () => {
     const FLEET_TEMPLATE = [2, 3, 3, 4, 5];
@@ -23,9 +23,9 @@ describe("FleetGenerator", () => {
                                 cellFrequency.get(cell) + 1,
                             );
 
-                cellFrequency
-                    .values()
-                    .forEach((count) => expect(count).toBe(1));
+                Array.from(cellFrequency.values()).forEach((count) =>
+                    expect(count).toBe(1),
+                );
             });
 
             test("All cells are in-bounds.", () => {

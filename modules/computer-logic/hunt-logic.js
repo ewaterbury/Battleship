@@ -1,6 +1,5 @@
-const CELL = require("../constants.js");
-
-const Utilities = require("../utilities.js");
+import CELL from "../constants.js";
+import Utilities from "../utilities.js";
 
 class HuntLogic {
     #gameboard;
@@ -96,4 +95,4 @@ class HuntLogic {
     }
 }
 
-module.exports = HuntLogic;
+export default HuntLogic;

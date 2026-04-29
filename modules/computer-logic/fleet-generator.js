@@ -1,4 +1,4 @@
-const Utilities = require("../utilities.js");
+import Utilities from "../utilities.js";
 
 class FleetGenerator {
     // Generate valid fleet.
@@ -71,4 +71,4 @@ class FleetGenerator {
     }
 }
 
-module.exports = FleetGenerator;
+export default FleetGenerator;

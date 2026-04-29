@@ -1,7 +1,7 @@
-const CELL = require("../constants.js");
-const Utilities = require("../utilities.js");
-const SweepLogic = require("./sweep-logic.js");
-const HuntLogic = require("./hunt-logic.js");
+import CELL from "../constants.js";
+import Utilities from "../utilities.js";
+import SweepLogic from "./sweep-logic.js";
+import HuntLogic from "./hunt-logic.js";
 
 class AttackLogic {
     #gameboard;
@@ -70,4 +70,4 @@ class AttackLogic {
     }
 }
 
-module.exports = AttackLogic;
+export default AttackLogic;

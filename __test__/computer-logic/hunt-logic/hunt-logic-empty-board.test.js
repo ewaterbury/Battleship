@@ -4,8 +4,8 @@ jest.mock("../../../modules/utilities", () => ({
     shuffleInPlace: jest.fn(),
 }));
 
-const Utilities = require("../../../modules/utilities");
-const HuntLogic = require("../../../modules/computer-logic/hunt-logic.js");
+import Utilities from "../../../modules/utilities.js";
+import HuntLogic from "../../../modules/computer-logic/hunt-logic.js";
 
 // Bypass shuffling in inital Hunt logic.
 beforeAll(() => Utilities.shuffleInPlace.mockImplementation((arr) => arr));

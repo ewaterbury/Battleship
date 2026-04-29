@@ -1,4 +1,4 @@
-const CELL = require("../constants.js");
+import CELL from "../constants.js";
 
 class SweepLogic {
     #gameboard;
@@ -166,4 +166,4 @@ class SweepLogic {
     }
 }
 
-module.exports = SweepLogic;
+export default SweepLogic;

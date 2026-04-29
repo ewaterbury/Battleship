@@ -1,4 +1,5 @@
-const SweepLogic = require("/modules/computer-logic/sweep-logic.js");
+import SweepLogic from "/modules/computer-logic/sweep-logic";
+
 const H = "hit";
 const M = "miss";
 const S = "sunk";

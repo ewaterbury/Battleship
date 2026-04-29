@@ -1,4 +1,4 @@
-const SweepLogic = require("/modules/computer-logic/sweep-logic");
+import SweepLogic from "/modules/computer-logic/sweep-logic";
 
 const BOARD_SIZES = [9, 10];
 const FLEET = [2, 3, 3, 4, 5];

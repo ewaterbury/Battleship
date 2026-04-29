@@ -1,5 +1,5 @@
 // RandomInt is incoming query - assert the result
-const Utilities = require("/modules/utilities.js");
+import Utilities from "../modules/utilities.js";
 
 describe("RandomInt", () => {
     test("Values are inbounds", () => {

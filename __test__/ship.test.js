@@ -1,4 +1,4 @@
-const Ship = require("/modules/ship.js");
+import Ship from "../modules/ship.js";
 
 test("hit/isSunk Test", () => {
     const position = [0, 1, 2, 3, 4];

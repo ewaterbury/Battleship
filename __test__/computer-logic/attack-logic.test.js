@@ -1,7 +1,7 @@
-const FleetGenerator = require("/modules/computer-logic/fleet-generator.js");
-const AttackLogic = require("/modules/computer-logic/attack-logic.js");
-const Gameboard = require("/modules/gameboard.js");
-const Ship = require("/modules/ship.js");
+import FleetGenerator from "/modules/computer-logic/fleet-generator.js";
+import AttackLogic from "/modules/computer-logic/attack-logic.js";
+import Gameboard from "/modules/gameboard.js";
+import Ship from "/modules/ship.js";
 
 describe("Attack Logic", () => {
     const boardSize = 10;

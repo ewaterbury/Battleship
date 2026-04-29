@@ -28,9 +28,9 @@ jest.mock("/modules/computer-logic/attack-logic.js", () => {
 });
 
 // Import modules (Must be done after mock)
-const Battleship = require("/modules/battleship.js");
-const Player = require("/modules/player.js");
-const AttackLogic = require("/modules/computer-logic/attack-logic.js");
+import Battleship from "/modules/battleship.js";
+import Player from "/modules/player.js";
+import AttackLogic from "/modules/computer-logic/attack-logic.js";
 
 // Constants
 const BOARD_SIZE = 10;
