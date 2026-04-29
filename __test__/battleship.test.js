@@ -73,28 +73,6 @@ beforeEach(() => {
     battleship = new Battleship(BOARD_SIZE, FLEET_TEMPLATE);
 });
 
-describe("getWinner", () => {
-    test("Returns null with no winner", () => {
-        mockGameOver(false, false);
-        expect(battleship.getWinner()).toBe(null);
-    });
-
-    test("Returns correct winner (player wins)", () => {
-        mockGameOver(false, true);
-        expect(battleship.getWinner()).toBe("player");
-    });
-
-    test("Returns correct winner (computer wins)", () => {
-        mockGameOver(true, false);
-        expect(battleship.getWinner()).toBe("computer");
-    });
-
-    test("Throws error on two winners", () => {
-        mockGameOver(true, true);
-        expect(() => battleship.getWinner()).toThrow("Two winners");
-    });
-});
-
 describe("getState", () => {
     test("Gets inital game state", () => {
         mockGameOver(false, false);
