@@ -1,5 +1,5 @@
-const Gameboard = require("/modules/gameboard.js");
-const Ship = require("/modules/ship.js");
+import Gameboard from "../modules/gameboard.js";
+
 const H = "hit";
 const E = null;
 const M = "miss";
@@ -7,17 +7,15 @@ const S = "sunk";
 
 let mockShip;
 
-beforeEach(() => {
-    jest.clearAllMocks();
-    mockShip = new Ship();
+const createMockShip = () => ({
+    getPosition: jest.fn(),
+    hit: jest.fn(),
+    isSunk: jest.fn(),
 });
 
-jest.mock("/modules/ship.js", () => {
-    return jest.fn().mockImplementation(() => ({
-        getPosition: jest.fn(),
-        hit: jest.fn(),
-        isSunk: jest.fn(),
-    }));
+beforeEach(() => {
+    jest.clearAllMocks();
+    mockShip = createMockShip();
 });
 
 test("receiveAttack [no hit] Test", () => {
@@ -48,14 +46,14 @@ test("fleetSunk Test [one ship]", () => {
 
 test("fleetSunk Test [multiple ships]", () => {
     const gameboard = new Gameboard();
-    gameboard.addShip(mockShip, mockShip);
+    gameboard.addShip(mockShip);
     mockShip.isSunk.mockReturnValueOnce(false).mockReturnValueOnce(true);
     expect(gameboard.fleetSunk()).toBe(false);
     mockShip.isSunk.mockReturnValueOnce(true).mockReturnValueOnce(true);
     expect(gameboard.fleetSunk()).toBe(true);
 });
 
-test("queryAttack Test [empty]", () => {
+test("queryCell Test [empty]", () => {
     const gameboard = new Gameboard();
     gameboard.addShip(mockShip);
     mockShip.getPosition.mockReturnValue([0, 1]);
