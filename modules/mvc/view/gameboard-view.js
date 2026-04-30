@@ -1,4 +1,5 @@
 import { EL } from "../../constants.js";
+import { default as Utils } from "./view-utilities.js";
 
 class GameboardView {
     #id;
@@ -22,7 +23,7 @@ class GameboardView {
 
         // Board caption.
         const label = document.createElement(EL.H3);
-        label.textContent = this.#capitalize(player);
+        label.textContent = Utils.capitalize(player);
 
         // Layout spacer (Formatting only).
         const corner = document.createElement(EL.DIV);
@@ -56,7 +57,7 @@ class GameboardView {
         for (let cellNum = 1; cellNum <= totalCells; cellNum++) {
             const cell = document.createElement(EL.DIV);
 
-            cell.textContent = this.#getCellName(cellNum, boardsize);
+            cell.textContent = Utils.getCellName(cellNum, boardsize);
 
             cell.dataset.cell = cellNum;
             cell.dataset.player = player;
@@ -74,17 +75,6 @@ class GameboardView {
 
     delete() {
         document.getElementById(this.#id).remove();
-    }
-
-    #getCellName(cell, boardsize) {
-        const A_CHAR = 65;
-        const row = Math.floor(cell / boardsize);
-        const col = cell % boardsize ? cell % boardsize : boardsize;
-        return String.fromCharCode(A_CHAR + row) + col;
-    }
-
-    #capitalize(string) {
-        return string.charAt(0).toUpperCase() + string.slice(1);
     }
 }
 
