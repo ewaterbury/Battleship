@@ -1,4 +1,4 @@
-import CELL from "./constants.js";
+import { CELL } from "./constants.js";
 class Gameboard {
     #fleet;
     #view;

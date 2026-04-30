@@ -1,4 +1,4 @@
-import CELL from "../constants.js";
+import { CELL } from "../constants.js";
 import Utilities from "../utilities.js";
 import SweepLogic from "./sweep-logic.js";
 import HuntLogic from "./hunt-logic.js";
