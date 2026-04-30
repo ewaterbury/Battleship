@@ -6,10 +6,10 @@ class GameboardView {
 
     constructor(boardsize, player) {
         this.#id = player.toLowerCase() + "_board";
-        this.addGameboard(boardsize, player);
+        this.#addGameboard(boardsize, player);
     }
 
-    addGameboard(boardsize, player) {
+    #addGameboard(boardsize, player) {
         const totalCells = boardsize ** 2;
 
         //Set boardsize.
@@ -22,7 +22,7 @@ class GameboardView {
 
         // Board caption.
         const label = document.createElement(EL.H3);
-        label.textContent = player;
+        label.textContent = this.#capitalize(player);
 
         // Layout spacer (Formatting only).
         const corner = document.createElement(EL.DIV);
@@ -42,9 +42,10 @@ class GameboardView {
         const rowLabels = document.createElement(EL.DIV);
         rowLabels.classList.add("row-labels");
 
-        for (let row = 1; row <= boardsize; row++) {
+        for (let row = 0; row < boardsize; row++) {
             const cell = document.createElement(EL.SPAN);
-            cell.textContent = String.fromCharCode(64 + row);
+            const A_CHAR = 65;
+            cell.textContent = String.fromCharCode(A_CHAR + row);
             rowLabels.append(cell);
         }
 
@@ -71,6 +72,10 @@ class GameboardView {
         return this;
     }
 
+    delete() {
+        document.getElementById(this.#id).remove();
+    }
+
     #getCellName(cell, boardsize) {
         const A_CHAR = 65;
         const row = Math.floor(cell / boardsize);
@@ -78,8 +83,8 @@ class GameboardView {
         return String.fromCharCode(A_CHAR + row) + col;
     }
 
-    delete() {
-        document.getElementById(this.#id).remove();
+    #capitalize(string) {
+        return string.charAt(0).toUpperCase() + string.slice(1);
     }
 }
 
