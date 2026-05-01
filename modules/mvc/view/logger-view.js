@@ -20,7 +20,7 @@ export default class LoggerView {
         const header = document.createElement(EL.H3);
         header.textContent = "Log:";
 
-        // Ordered list (Cached for repeated access).
+        // Ordered list (Cached for repeat access).
         this.#logList = document.createElement(EL.OL);
         this.#root.append(header, this.#logList);
 
@@ -60,6 +60,10 @@ export default class LoggerView {
 
         entry.append(message);
         this.#logList.append(entry);
+    }
+
+    clearLog() {
+        this.#logList.replaceChildren();
     }
 
     remove() {
