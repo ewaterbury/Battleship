@@ -1,25 +1,23 @@
 import { EL } from "../../constants.js";
-import { default as Utils } from "./view-utilities.js";
+import Utils from "./view-utilities.js";
 
-class GameboardView {
-    #id;
-    #boardsize;
+export default class GameboardView {
+    #root;
 
-    constructor(boardsize, player) {
-        this.#id = player.toLowerCase() + "_board";
-        this.#addGameboard(boardsize, player);
+    constructor(boardsize, player, parentSelector) {
+        this.#addGameboard(boardsize, player, parentSelector);
     }
 
-    #addGameboard(boardsize, player) {
+    #addGameboard(boardsize, player, parentSelector) {
         const totalCells = boardsize ** 2;
 
         //Set boardsize.
         document.documentElement.style.setProperty("--board-size", boardsize);
 
-        // Board container.
-        const board = document.createElement(EL.SECTION);
-        board.id = this.#id;
-        board.classList.add("gameboard");
+        // Board container (Cached for repeat access).
+        this.#root = document.createElement(EL.SECTION);
+        this.#root.id = player.toLowerCase() + "_board";
+        this.#root.classList.add("gameboard");
 
         // Board caption.
         const label = document.createElement(EL.H3);
@@ -66,16 +64,18 @@ class GameboardView {
             boardGrid.append(cell);
         }
 
-        board.append(label, corner, colLabels, rowLabels, boardGrid);
+        this.#root.append(label, corner, colLabels, rowLabels, boardGrid);
 
-        document.getElementById("game-area").append(board);
+        const parent = document.querySelector(parentSelector);
 
-        return this;
+        if (!parent) {
+            throw new Error(`Parent selector "${parentSelector}" not found`);
+        }
+
+        parent.append(this.#root);
     }
 
-    delete() {
-        document.getElementById(this.#id).remove();
+    remove() {
+        this.#root.remove();
     }
 }
-
-export default GameboardView;
