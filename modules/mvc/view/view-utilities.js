@@ -1,3 +1,5 @@
+import { EL } from "../../constants.js";
+
 export default class ViewUtilities {
     // Capitalize the first letter of a string.
     static capitalize(string) {
@@ -10,5 +12,12 @@ export default class ViewUtilities {
         const row = Math.floor(cell / boardsize);
         const col = cell % boardsize ? cell % boardsize : boardsize;
         return String.fromCharCode(A_CHAR + row) + col;
+    }
+
+    static makeButton(textContent, id) {
+        const button = document.createElement(EL.BUTTON);
+        button.textContent = this.capitalize(textContent);
+        button.id = id ? id : textContent.toLowerCase();
+        return button;
     }
 }
