@@ -2,61 +2,67 @@ import { EL } from "../../constants.js";
 import Utils from "./view-utilities.js";
 
 export default class LoggerView {
-    #parentSelector;
     #id;
+    #root;
+    #logList;
 
     constructor(parentSelector) {
-        this.#parentSelector = parentSelector;
         this.#id = "log-area";
-        this.#log = null;
-        this.#addGameLog();
+        this.#addGameLog(parentSelector);
     }
 
-    #addGameLog() {
+    #addGameLog(parentSelector) {
         // Log container.
-        const container = document.createElement(EL.SECTION);
-        container.id = this.#id;
+        this.#root = document.createElement(EL.SECTION);
+        this.#root.id = this.#id;
 
         // Header.
         const header = document.createElement(EL.H3);
         header.textContent = "Log:";
 
-        // Ordered list.
-        const log = document.createElement(EL.OL);
-        container.append(header, log);
-        document.querySelector(this.#parentSelector).after(container);
+        // Ordered list (Cached for repeated access).
+        this.#logList = document.createElement(EL.OL);
+        this.#root.append(header, this.#logList);
+
+        const parent = document.querySelector(parentSelector);
+
+        if (!parent) {
+            throw new Error(`Parent selector "${parentSelector}" not found`);
+        }
+
+        parent.after(this.#root);
     }
 
     logTurn(summary) {
         // Log Entry
-        const entry = document.createElement("li");
+        const entry = document.createElement(EL.LI);
 
         // Message
-        const message = document.createElement("p");
-        const msgStart = document.createElement("span");
-        msgStart.textContent = `Turn ${summary.turn}: ${Utils.capitalize(summary.player)} attacked  ${Utils.getCellName(summary.cell, summary.boardsize)} [ `;
-        const hitStatus = document.createElement("span");
+        const message = document.createElement(EL.P);
+        const msgStart = document.createElement(EL.SPAN);
+        msgStart.textContent = `Turn ${summary.turn}: ${Utils.capitalize(summary.player)} attacked ${Utils.getCellName(summary.cell, summary.boardsize)} [ `;
+        const hitStatus = document.createElement(EL.SPAN);
         const hitType =
             summary.status === "hit" || summary.status === "sunk"
                 ? "hit"
                 : "miss";
         hitStatus.textContent = hitType;
         hitStatus.classList.add(hitType);
-        const msgEnd = document.createElement("span");
+        const msgEnd = document.createElement(EL.SPAN);
         msgEnd.textContent = " ]";
         message.append(msgStart, hitStatus, msgEnd);
 
         if (summary.shipSunk) {
-            const shipSunk = document.createElement("span");
+            const shipSunk = document.createElement(EL.SPAN);
             shipSunk.textContent = ` [ Size ${summary.shipSunk} ship sunk ]`;
             message.append(shipSunk);
         }
 
         entry.append(message);
-        document.querySelector("#log-area ol").append(entry);
+        this.#logList.append(entry);
     }
 
-    delete() {
-        document.getElementById(this.#id).remove();
+    remove() {
+        this.#root.remove();
     }
 }
