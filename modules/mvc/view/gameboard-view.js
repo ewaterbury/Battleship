@@ -3,32 +3,32 @@ import Utils from "./view-utilities.js";
 import ViewComponent from "./view-component.js";
 
 export default class GameboardView extends ViewComponent {
-    constructor(boardsize, player, parentSelector) {
-        // Initialize '#root' using super constructor.
+    constructor(boardsize, player) {
+        // Initialize 'root' using super constructor.
         super(EL.SECTION, `${player.toLowerCase()}_board`);
 
-        // Build and append gameboard.
-        this.#addGameboard(boardsize, player, parentSelector);
+        // Build gameboard.
+        this.#buildBoard(boardsize, player);
     }
 
-    #addGameboard(boardsize, player, parentSelector) {
+    #buildBoard(boardsize, player, parentSelector) {
         const totalCells = boardsize ** 2;
 
-        //Set boardsize.
+        // Set boardsize on stylesheet.
         document.documentElement.style.setProperty("--board-size", boardsize);
 
-        // Board container (Cached for repeat access).
+        // Build board container (Cached for repeat access).
         this.addClass("gameboard");
 
-        // Board caption.
+        // Build board caption.
         const label = document.createElement(EL.H3);
         label.textContent = Utils.capitalize(player);
 
-        // Layout spacer (Formatting only).
+        // Build layout spacer (Formatting only).
         const corner = document.createElement(EL.DIV);
         corner.classList.add("corner");
 
-        // Column Labels (Top Row).
+        // Build column Labels (Top row of board).
         const colLabels = document.createElement(EL.DIV);
         colLabels.classList.add("col-labels");
 
@@ -38,7 +38,7 @@ export default class GameboardView extends ViewComponent {
             colLabels.append(cell);
         }
 
-        // Row Labels (Left Column)
+        // Build row labels (Left column of board).
         const rowLabels = document.createElement(EL.DIV);
         rowLabels.classList.add("row-labels");
 
@@ -49,7 +49,7 @@ export default class GameboardView extends ViewComponent {
             rowLabels.append(cell);
         }
 
-        // Board Grid
+        // Build board grid.
         const boardGrid = document.createElement(EL.DIV);
         boardGrid.classList.add("board-grid");
 
@@ -65,8 +65,7 @@ export default class GameboardView extends ViewComponent {
             boardGrid.append(cell);
         }
 
+        // Append components in order.
         this.appendAll(label, corner, colLabels, rowLabels, boardGrid);
-
-        this.mount(parentSelector);
     }
 }
