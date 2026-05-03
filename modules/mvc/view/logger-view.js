@@ -27,6 +27,16 @@ export default class LoggerView extends ViewComponent {
         // Build log entry.
         const entry = document.createElement(EL.LI);
 
+        // Append message to log item.
+        entry.append(this.#buildMessage(turn));
+
+        // Append entry to log list.
+        this.#logList.append(entry);
+
+        return this;
+    }
+
+    #buildMessage(turn) {
         // Build log message.
         const message = document.createElement(EL.P);
 
@@ -55,13 +65,7 @@ export default class LoggerView extends ViewComponent {
             message.append(shipSunk);
         }
 
-        // Append message to log item.
-        entry.append(message);
-
-        // Append entry to log list.
-        this.#logList.append(entry);
-
-        return this;
+        return message;
     }
 
     clearLog() {
