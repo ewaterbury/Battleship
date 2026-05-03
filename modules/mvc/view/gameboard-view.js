@@ -1,10 +1,13 @@
 import { EL } from "../../constants.js";
 import Utils from "./view-utilities.js";
+import ViewComponent from "./view-component.js";
 
-export default class GameboardView {
-    #root;
-
+export default class GameboardView extends ViewComponent {
     constructor(boardsize, player, parentSelector) {
+        // Initialize '#root' using super constructor.
+        super(EL.SECTION, `${player.toLowerCase()}_board`);
+
+        // Build and append gameboard.
         this.#addGameboard(boardsize, player, parentSelector);
     }
 
@@ -15,9 +18,7 @@ export default class GameboardView {
         document.documentElement.style.setProperty("--board-size", boardsize);
 
         // Board container (Cached for repeat access).
-        this.#root = document.createElement(EL.SECTION);
-        this.#root.id = player.toLowerCase() + "_board";
-        this.#root.classList.add("gameboard");
+        this.addClass("gameboard");
 
         // Board caption.
         const label = document.createElement(EL.H3);
@@ -64,18 +65,8 @@ export default class GameboardView {
             boardGrid.append(cell);
         }
 
-        this.#root.append(label, corner, colLabels, rowLabels, boardGrid);
+        this.appendAll(label, corner, colLabels, rowLabels, boardGrid);
 
-        const parent = document.querySelector(parentSelector);
-
-        if (!parent) {
-            throw new Error(`Parent selector "${parentSelector}" not found`);
-        }
-
-        parent.append(this.#root);
-    }
-
-    remove() {
-        this.#root.remove();
+        this.mount(parentSelector);
     }
 }
