@@ -1,36 +1,28 @@
 import { EL } from "../../constants.js";
 import Utils from "./view-utilities.js";
+import ViewComponent from "./view-component.js";
 
-export default class LoggerView {
-    #id;
-    #root;
+export default class LoggerView extends ViewComponent {
     #logList;
 
     constructor(parentSelector) {
-        this.#id = "log-area";
+        // Initialize 'root' using super constructor.
+        super(EL.SECTION, "log-area");
+
+        // Build and append log.
         this.#addGameLog(parentSelector);
     }
 
     #addGameLog(parentSelector) {
-        // Log container.
-        this.#root = document.createElement(EL.SECTION);
-        this.#root.id = this.#id;
-
         // Header.
         const header = document.createElement(EL.H3);
         header.textContent = "Log:";
 
         // Ordered list (Cached for repeat access).
         this.#logList = document.createElement(EL.OL);
-        this.#root.append(header, this.#logList);
+        this.appendAll(header, this.#logList);
 
-        const parent = document.querySelector(parentSelector);
-
-        if (!parent) {
-            throw new Error(`Parent selector "${parentSelector}" not found`);
-        }
-
-        parent.after(this.#root);
+        this.mount(parentSelector);
     }
 
     logTurn(summary) {
@@ -39,8 +31,10 @@ export default class LoggerView {
 
         // Message
         const message = document.createElement(EL.P);
+
         const msgStart = document.createElement(EL.SPAN);
         msgStart.textContent = `Turn ${summary.turn}: ${Utils.capitalize(summary.player)} attacked ${Utils.getCellName(summary.cell, summary.boardsize)} [ `;
+
         const hitStatus = document.createElement(EL.SPAN);
         const hitType =
             summary.status === "hit" || summary.status === "sunk"
@@ -48,6 +42,7 @@ export default class LoggerView {
                 : "miss";
         hitStatus.textContent = hitType;
         hitStatus.classList.add(hitType);
+
         const msgEnd = document.createElement(EL.SPAN);
         msgEnd.textContent = " ]";
         message.append(msgStart, hitStatus, msgEnd);
@@ -64,9 +59,5 @@ export default class LoggerView {
 
     clearLog() {
         this.#logList.replaceChildren();
-    }
-
-    remove() {
-        this.#root.remove();
     }
 }
