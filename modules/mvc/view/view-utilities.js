@@ -14,6 +14,14 @@ export default class ViewUtilities {
         return String.fromCharCode(A_CHAR + row) + col;
     }
 
+    // Sample el object:
+    // el = {
+    //  type: element type,
+    //  id: element id,
+    //  text: element text,
+    //  classList: list of element classes (string or array)
+    // }
+
     static makeElement(el) {
         // Validate input is object.
         if (!el || typeof el !== "object")
@@ -35,8 +43,8 @@ export default class ViewUtilities {
 
         // If text, validate and add to element.
         if (el.text !== undefined) {
-            if (typeof el.text !== "string")
-                throw new TypeError("Text must be a string");
+            if (!(typeof el.text === "string" || typeof el.text === "number"))
+                throw new TypeError("Text must be a string or number");
             element.textContent = el.text;
         }
 
