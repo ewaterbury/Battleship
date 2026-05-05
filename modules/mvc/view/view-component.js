@@ -3,7 +3,7 @@ export default class ViewComponent {
 
     constructor(rootElement, rootId) {
         // Validate then create root element.
-        if (typeof el.type !== "string" || el.type.trim() === "")
+        if (typeof rootElement !== "string" || rootElement.trim() === "")
             throw new TypeError("Element type must be non-empty string");
 
         // Validate then assign id.
