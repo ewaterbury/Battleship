@@ -20,49 +20,6 @@ export default class ViewComponent {
         return this.#root;
     }
 
-    makeElement(el) {
-        // Validate input is object.
-        if (!el || typeof el !== "object")
-            throw new TypeError("Argument must be object");
-
-        // Validate type is a string.
-        if (typeof el.type !== "string" || el.type.trim() === "")
-            throw new TypeError("Element type must be non-empty string");
-
-        // Create and element.
-        const element = document.createElement(el.type.toLowerCase());
-
-        // If id, validate and add to element.
-        if (el.id !== undefined) {
-            if (typeof el.id !== "string")
-                throw new TypeError("ID must be a string");
-            element.id = el.id;
-        }
-
-        // If text, validate and add to element.
-        if (el.text !== undefined) {
-            if (typeof el.text !== "string")
-                throw new TypeError("Text must be a string");
-            element.textContent = el.text;
-        }
-
-        // If classList, validate and add to element.
-        if (el.classList !== undefined) {
-            if (typeof el.classList === "string")
-                element.classList.add(
-                    ...el.classList.split(" ").filter(Boolean),
-                );
-            else if (Array.isArray(el.classList)) {
-                for (const cls of el.classList)
-                    if (typeof cls !== "string")
-                        throw new TypeError("Classes must be strings");
-                element.classList.add(...el.classList);
-            } else throw new TypeError("ClassList must be string or array");
-        }
-
-        return element;
-    }
-
     addClass(className) {
         // Add css class to root element.
         this.#root.classList.add(className);
