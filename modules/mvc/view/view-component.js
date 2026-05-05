@@ -2,9 +2,17 @@ export default class ViewComponent {
     #root; // Private root DOM element for component.
 
     constructor(rootElement, rootId) {
-        // Create root element and assign id.
+        // Validate then create root element.
+        if (typeof el.type !== "string" || el.type.trim() === "")
+            throw new TypeError("Element type must be non-empty string");
+
+        // Validate then assign id.
         this.#root = document.createElement(rootElement);
-        if (rootId) this.#root.id = rootId;
+        if (rootId) {
+            if (typeof rootId !== "string" || rootId.trim() === "")
+                throw new TypeError("Element type must be non-empty string");
+            this.#root.id = rootId;
+        }
     }
 
     get element() {
@@ -17,7 +25,7 @@ export default class ViewComponent {
         if (!el || typeof el !== "object")
             throw new TypeError("Argument must be object");
 
-        // Validate type is a string
+        // Validate type is a string.
         if (typeof el.type !== "string" || el.type.trim() === "")
             throw new TypeError("Element type must be non-empty string");
 
@@ -45,7 +53,7 @@ export default class ViewComponent {
                     ...el.classList.split(" ").filter(Boolean),
                 );
             else if (Array.isArray(el.classList)) {
-                for (cls of el.classList)
+                for (const cls of el.classList)
                     if (typeof cls !== "string")
                         throw new TypeError("Classes must be strings");
                 element.classList.add(...el.classList);
