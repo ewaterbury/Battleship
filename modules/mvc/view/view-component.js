@@ -10,7 +10,7 @@ export default class ViewComponent {
         this.#root = document.createElement(rootElement);
         if (rootId) {
             if (typeof rootId !== "string" || rootId.trim() === "")
-                throw new TypeError("Element type must be non-empty string");
+                throw new TypeError("Element id must be non-empty string");
             this.#root.id = rootId;
         }
     }
@@ -26,7 +26,22 @@ export default class ViewComponent {
         return this;
     }
 
-    append(child) {
+    addDataset(key, value) {
+        // Validates key input.
+        const regex = /^[a-z][A-Za-z0-9]*$/;
+        if (!regex.test(key)) throw new TypeError("Dataset key must camelCase");
+
+        // Validates value input.
+        if (!["string", "number", "boolean"].includes(typeof value))
+            throw new TypeError("Invalid value type");
+
+        // add data set to component.
+        this.#root.dataset[key] = String(value);
+
+        return this;
+    }
+
+    append(child, validationCallback) {
         // Append child to root element (Accepts ViewComponent or HTMLElement).
 
         const node =
@@ -43,22 +58,18 @@ export default class ViewComponent {
             );
         }
 
+        // Call validation fn if sent.
+        if (typeof validationCallback === "function") validationCallback(node);
+
         // Append node.
         this.#root.appendChild(node);
 
         return this;
     }
 
-    appendAll(...children) {
-        // Append multiple children in order.
-        children.forEach((child) => this.append(child));
-
-        return this;
-    }
-
     mount(target) {
         // Attach component to a target in the DOM.
-        // Accepts ViewComponenet, HTMLElement, or selector string.
+        // Accepts ViewComponent, HTMLElement, or selector string.
 
         // Get target as DOM element.
         const parent =
@@ -75,7 +86,7 @@ export default class ViewComponent {
             throw new TypeError(`Invalid mount target`);
         }
 
-        // Append componenet to parent.
+        // Append component to parent.
         parent.appendChild(this.#root);
 
         return this;
@@ -85,6 +96,14 @@ export default class ViewComponent {
         // Remove this component's root element from DOM.
         this.#root.remove();
 
+        return this;
+    }
+
+    setText(text) {
+        if (typeof text !== "string" && typeof text !== "number")
+            throw new TypeError("Text must be a string or number");
+
+        this.#root.textContent = text;
         return this;
     }
 }
