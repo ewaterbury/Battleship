@@ -1,6 +1,6 @@
-import { EL } from "../../constants.js";
-import Utils from "./view-utilities.js";
-import ViewComponent from "./view-component.js";
+import { EL } from "../../../constants.js";
+import Utils from "../view-utilities.js";
+import ViewComponent from "../view-component.js";
 
 export default class LoggerView extends ViewComponent {
     #logList;
@@ -15,23 +15,20 @@ export default class LoggerView extends ViewComponent {
 
     #buildLog() {
         // Build header.
-        const header = document.createElement(EL.H3);
-        header.textContent = "Log:";
+        const header = new ViewComponent(EL.H3).setText("Log");
 
         // Build ordered list (Cached for repeat access).
-        this.#logList = document.createElement(EL.OL);
-        this.appendAll(header, this.#logList);
+        this.#logList = new ViewComponent(EL.OL);
+
+        // Append header and log list.
+        [header, this.#logList].forEach((component) => this.append(component));
     }
 
     logTurn(turn) {
-        // Build log entry.
-        const entry = document.createElement(EL.LI);
-
-        // Append message to log item.
-        entry.append(this.#buildMessage(turn));
-
-        // Append entry to log list.
-        this.#logList.append(entry);
+        // Build log entry and append message to log item, then append entry to log list.
+        this.#logList.append(
+            new ViewComponent(EL.LI).append(this.#buildMessage(turn)),
+        );
 
         return this;
     }
