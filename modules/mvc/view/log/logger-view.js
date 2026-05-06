@@ -1,8 +1,9 @@
 import { EL } from "../../../constants.js";
 import Utils from "../view-utilities.js";
-import ViewComponent from "../view-component.js";
+import Component from "../view-component.js";
+import Message from "./message-component.js";
 
-export default class LoggerView extends ViewComponent {
+export default class LoggerView extends Component {
     #logList;
 
     constructor() {
@@ -15,10 +16,10 @@ export default class LoggerView extends ViewComponent {
 
     #buildLog() {
         // Build header.
-        const header = new ViewComponent(EL.H3).setText("Log");
+        const header = new Component(EL.H3).setText("Log");
 
         // Build ordered list (Cached for repeat access).
-        this.#logList = new ViewComponent(EL.OL);
+        this.#logList = new Component(EL.OL);
 
         // Append header and log list.
         [header, this.#logList].forEach((component) => this.append(component));
@@ -26,46 +27,14 @@ export default class LoggerView extends ViewComponent {
 
     logTurn(turn) {
         // Build log entry and append message to log item, then append entry to log list.
-        this.#logList.append(
-            new ViewComponent(EL.LI).append(this.#buildMessage(turn)),
-        );
+        this.#logList.append(new Component(EL.LI).append(new Message(turn)));
 
         return this;
     }
 
-    #buildMessage(turn) {
-        // Build log message.
-        const message = document.createElement(EL.P);
-
-        // Build message start.
-        const msgStart = document.createElement(EL.SPAN);
-        msgStart.textContent = `Turn ${turn.num}: ${Utils.capitalize(turn.player)} attacked ${Utils.getCellName(turn.cell, turn.boardsize)} [ `;
-
-        // Build message middle (Separated for styling).
-        const hitStatus = document.createElement(EL.SPAN);
-        const hitType =
-            turn.status === "hit" || turn.status === "sunk" ? "hit" : "miss";
-        hitStatus.textContent = hitType;
-        hitStatus.classList.add(hitType);
-
-        // Build message end.
-        const msgEnd = document.createElement(EL.SPAN);
-        msgEnd.textContent = " ]";
-
-        // Append message components.
-        message.append(msgStart, hitStatus, msgEnd);
-
-        // If ship was sunk, add too message and append.
-        if (turn.shipSunk) {
-            const shipSunk = document.createElement(EL.SPAN);
-            shipSunk.textContent = ` [ Size ${turn.shipSunk} ship sunk ]`;
-            message.append(shipSunk);
-        }
-
-        return message;
-    }
-
     clearLog() {
-        this.#logList.replaceChildren();
+        this.#logList.element.replaceChildren();
+
+        return this;
     }
 }
