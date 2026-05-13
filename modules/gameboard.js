@@ -32,7 +32,10 @@ class Gameboard {
 
         // If hit, calls hit on struck ship and checks ships status/Records sunk ship on opponent's attack board.
         if (struckShip) {
+            // Call hit on struck ship.
             struckShip.hit();
+
+            // Mark ship as sunk on gameboard.
             if (struckShip.isSunk())
                 struckShip.getPosition().forEach((cell) => {
                     this.#view[cell] = CELL.SUNK;
@@ -53,6 +56,19 @@ class Gameboard {
     // Returns status of gameboard.
     queryBoard() {
         return this.#view;
+    }
+
+    sunkShipAt(cell) {
+        // Only get position of sunk ships.
+        if (this.#view[cell] === CELL.SUNK) {
+            // Check for hit and return position of ship.
+            fleetLoop: for (const ship of this.#fleet) {
+                for (const shipCell of ship.getPosition())
+                    if (shipCell === cell) return ship.getPosition();
+            }
+            throw new Error("Ship not found.");
+        }
+        return null;
     }
 }
 
