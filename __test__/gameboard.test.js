@@ -105,3 +105,42 @@ describe("queryCell", () => {
         expect(gameboard.queryCell(1)).toBe(E);
     });
 });
+
+describe("queryBoard", () => {
+    const BOARD_SIZES = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+    describe.each(BOARD_SIZES)("Gameboard: %d^2", (boardsize) => {
+        test("Returns correct board", () => {
+            const gameboard = new Gameboard(boardsize);
+            expect(gameboard.queryBoard()).toEqual(
+                Array(boardsize ** 2).fill(E),
+            );
+        });
+    });
+});
+
+describe("sunkShipAt", () => {
+    let mockShip;
+
+    beforeEach(() => {
+        mockShip = createMockShip();
+    });
+
+    test("Returns null on no sunk ship", () => {
+        const gameboard = new Gameboard(STD_BOARD);
+        gameboard.addShip(mockShip);
+        mockShip.getPosition.mockReturnValue([0, 1]);
+        mockShip.isSunk.mockReturnValue(false);
+        gameboard.receiveAttack(1);
+        expect(gameboard.sunkShipAt(0)).toBe(null);
+    });
+
+    test("Returns full position for sunk ship", () => {
+        const gameboard = new Gameboard(STD_BOARD);
+        gameboard.addShip(mockShip);
+        mockShip.getPosition.mockReturnValue([0, 1]);
+        mockShip.isSunk.mockReturnValue(true);
+        gameboard.receiveAttack(1);
+        expect(gameboard.sunkShipAt(0)).toEqual([0, 1]);
+        expect(gameboard.sunkShipAt(1)).toEqual([0, 1]);
+    });
+});
