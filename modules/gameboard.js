@@ -3,7 +3,7 @@ class Gameboard {
     #fleet;
     #view;
 
-    constructor(boardSize = 10) {
+    constructor(boardSize) {
         this.#fleet = []; // Player's fleet.
         this.#view = Array(boardSize ** 2).fill(null); // Opponent's view of board.
     }
