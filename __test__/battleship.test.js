@@ -1,33 +1,30 @@
-// Mocked modules
-let mockPlayerController = {
+// Mocked methods used by the Player class.
+const createMockController = () => ({
     receiveAttack: jest.fn(),
     gameOver: jest.fn(),
     queryCell: jest.fn(),
     queryBoard: jest.fn(),
-};
+});
 
-let mockComputerController = {
-    receiveAttack: jest.fn(),
-    gameOver: jest.fn(),
-    queryCell: jest.fn(),
-    queryBoard: jest.fn(),
-};
+// Mocked methods used by the player's and computer's mocked Player classes.
+const mockPlayerController = createMockController();
+const mockComputerController = createMockController();
 
-let mockAttackLogic = {
-    getAttack: jest.fn(),
-};
+// Mocked methods used by the computer's mocked AttackLogic class.
+const mockAttackLogic = { getAttack: jest.fn() };
 
-// Returns mock of Player module when module is initalized
+// Replaces the Player class with a Jest mock constructor.
+// Mock implementations are assigned in before each through Player.mockImplementation.
 jest.mock("/modules/player.js", () => {
     return jest.fn();
 });
 
-// Returns mock of AttackLogic module when module is initalized
+// Replaces AttackLogic with mock implementation each time the class is initialized.
 jest.mock("/modules/computer-logic/attack-logic.js", () => {
     return jest.fn().mockImplementation(() => mockAttackLogic);
 });
 
-// Import modules (Must be done after mock)
+// Import modules (Must be done after mocks).
 import Battleship from "/modules/battleship.js";
 import Player from "/modules/player.js";
 import AttackLogic from "/modules/computer-logic/attack-logic.js";
@@ -44,10 +41,10 @@ const FLEET_TEMPLATE = [
     [81, 82, 83, 84, 85],
 ];
 
-//Holds battleship class
+//Holds battleship class for each test.
 let battleship;
 
-// Helper, sets gameOver return values for Player mocks
+// Helper, sets gameOver return values for Player mocks.
 const mockGameOver = (player, computer) => {
     mockPlayerController.gameOver.mockReturnValue(player);
     mockComputerController.gameOver.mockReturnValue(computer);
@@ -60,16 +57,22 @@ beforeEach(() => {
     // Set mock value for Math.random to make turn order deterministic.
     jest.spyOn(Math, "random").mockReturnValue(PLAYER_FIRST);
 
-    // Returns correct mock when Player classes are initalized.
-    let callCount = 0;
+    // Callback assigns correct mock when Player classes are initialized.
+    // Player instance is initialized first, Computer is initialized second.
+    // Mock implementations are introduced in the same order.
+    let playersMocked = 0; // Tracks implementation order.
     Player.mockImplementation(() => {
-        callCount++;
-        return callCount === 1 ? mockPlayerController : mockComputerController;
+        playersMocked++;
+        return playersMocked === 1
+            ? mockPlayerController
+            : mockComputerController;
     });
 
     // Mock return value of queryBoard to prevent breaking attackLogic Module.
     mockPlayerController.queryBoard.mockReturnValue([]);
 
+    // Battleship is initialized.
+    // Mocks are initialized.
     battleship = new Battleship(BOARD_SIZE, FLEET_TEMPLATE);
 });
 
@@ -121,19 +124,10 @@ describe("queryBoard", () => {
     test("Returns player board on query", () => {
         const state = battleship.getState();
 
-        const initialCallsPlayer =
-            mockPlayerController.queryBoard.mock.calls.length;
-        const initialCallsComputer =
-            mockComputerController.queryBoard.mock.calls.length;
-
         battleship.queryBoard(state.attacker);
 
-        expect(mockPlayerController.queryBoard).toHaveBeenCalledTimes(
-            initialCallsPlayer + 1,
-        );
-        expect(mockComputerController.queryBoard).toHaveBeenCalledTimes(
-            initialCallsComputer,
-        );
+        expect(mockPlayerController.queryBoard).toHaveBeenCalledTimes(1);
+        expect(mockComputerController.queryBoard).not.toHaveBeenCalled();
     });
 
     test("Returns computer board on query", () => {
@@ -209,13 +203,14 @@ describe("sendAttack", () => {
             jest.clearAllMocks();
 
             // Set mock value for Math.random to make turn order deterministic.
+            // Swap order so that computer player attaks first.
             jest.spyOn(Math, "random").mockReturnValue(COMPUTER_FIRST);
 
             // Specify which mock is returned when Player class is initalized.
-            let callCount = 0;
+            let playersMocked = 0;
             Player.mockImplementation(() => {
-                callCount++;
-                return callCount === 1
+                playersMocked++;
+                return playersMocked === 1
                     ? mockPlayerController
                     : mockComputerController;
             });
@@ -223,6 +218,8 @@ describe("sendAttack", () => {
             // Mock return value of queryBoard to prevent breaking attackLogic Module.
             mockPlayerController.queryBoard.mockReturnValue([]);
 
+            // Battleship is re-initialized.
+            // Mocks are re-initialized.
             battleship = new Battleship(BOARD_SIZE, FLEET_TEMPLATE);
         });
 
