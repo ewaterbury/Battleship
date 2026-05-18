@@ -3,6 +3,7 @@ import Gameboard from "../modules/gameboard.js";
 import Ship from "../modules/ship.js";
 import FleetGenerator from "../modules/computer-logic/fleet-generator.js";
 import AttackLogic from "../modules/computer-logic/attack-logic.js";
+import { CELL } from "./constants.js";
 
 class Battleship {
     #boardsize;
@@ -10,6 +11,7 @@ class Battleship {
     #computer;
     #attacker;
     #defender;
+    #turn;
 
     constructor(boardsize, playerFleet) {
         this.#boardsize = boardsize;
@@ -17,6 +19,7 @@ class Battleship {
         // Initialize human player.
         this.#player = {
             id: "player",
+
             controller: new Player(
                 new Gameboard(boardsize),
                 playerFleet.map((ship) => new Ship(ship)),
@@ -26,6 +29,7 @@ class Battleship {
         // Initialize computer player.
         this.#computer = {
             id: "computer",
+
             controller: new Player(
                 new Gameboard(boardsize),
                 FleetGenerator.generateFleet(
@@ -33,6 +37,7 @@ class Battleship {
                     boardsize,
                 ).map((ship) => new Ship(ship)),
             ),
+
             logic: new AttackLogic(this.#player.controller.queryBoard()),
         };
 
@@ -42,13 +47,20 @@ class Battleship {
             this.#attacker === this.#computer ? this.#player : this.#computer;
     }
 
-    sendAttack(cell) {
-        // Use attack logic to select attack for computer player.
-        const attack =
-            this.#attacker === this.#computer
-                ? this.#computer.logic.getAttack()
-                : cell;
+    // Returns attack for computer player.
+    getCompAttack() {
+        return this.#computer.logic.getAttack();
+    }
 
+    // Update gamestate for new turn.
+    newTurn() {
+        // Swap attacker and defender.
+        [this.#defender, this.#attacker] = [this.#attacker, this.#defender];
+    }
+
+    // Sends attack to defender board.
+    sendAttack(attack) {
+        // Use attack logic to select attack for computer player.
         if (typeof attack !== "number")
             throw new Error("Attack is not a number");
         if (attack < 0 || attack >= this.#boardsize ** 2)
@@ -58,27 +70,7 @@ class Battleship {
         this.#defender.controller.receiveAttack(attack);
     }
 
-    queryBoard(id) {
-        if (id === this.#player.id) return this.#player.controller.queryBoard();
-        if (id === this.#computer.id)
-            return this.#computer.controller.queryBoard();
-        throw new Error("Invalid player id");
-    }
-
-    newTurn() {
-        [this.#defender, this.#attacker] = [this.#attacker, this.#defender];
-    }
-
-    getState() {
-        const winner = this.#getWinner();
-        return {
-            attacker: this.#attacker.id,
-            defender: this.#defender.id,
-            gameOver: winner !== null,
-            winner: winner,
-        };
-    }
-
+    // Returns winner of game or null on no winner.
     #getWinner() {
         if (
             this.#player.controller.gameOver() &&
@@ -88,6 +80,14 @@ class Battleship {
         if (this.#player.controller.gameOver()) return this.#computer.id;
         if (this.#computer.controller.gameOver()) return this.#player.id;
         return null;
+    }
+
+    // Query gameboard by player id.
+    #queryBoard(id) {
+        if (id === this.#player.id) return this.#player.controller.queryBoard();
+        if (id === this.#computer.id)
+            return this.#computer.controller.queryBoard();
+        throw new Error("Invalid player id");
     }
 }
 
