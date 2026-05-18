@@ -3,6 +3,7 @@ import Gameboard from "../modules/gameboard.js";
 import Ship from "../modules/ship.js";
 import FleetGenerator from "../modules/computer-logic/fleet-generator.js";
 import AttackLogic from "../modules/computer-logic/attack-logic.js";
+import Log from "./log.js";
 import { CELL } from "./constants.js";
 
 class Battleship {
@@ -12,6 +13,7 @@ class Battleship {
     #attacker;
     #defender;
     #turn;
+    #log;
 
     constructor(boardsize, playerFleet) {
         this.#boardsize = boardsize;
@@ -45,6 +47,21 @@ class Battleship {
         this.#attacker = Math.random() < 0.5 ? this.#computer : this.#player;
         this.#defender =
             this.#attacker === this.#computer ? this.#player : this.#computer;
+
+        // Initialize log saving first attacker/defender.
+        this.#log = new Log(this.#attacker, this.#defender);
+
+        // Initialize turn at one (Turn zero already saved in log).
+        this.#turn = 1;
+    }
+
+    // Getter for private log class.
+    get log() {
+        return this.#log.log;
+    }
+
+    get latestTurn() {
+        return this.#log.latest;
     }
 
     // Returns attack for computer player.
@@ -56,6 +73,9 @@ class Battleship {
     newTurn() {
         // Swap attacker and defender.
         [this.#defender, this.#attacker] = [this.#attacker, this.#defender];
+
+        // Increment turn counter.
+        this.#turn++;
     }
 
     // Sends attack to defender board.
@@ -68,6 +88,25 @@ class Battleship {
 
         // Call strike on defender.
         this.#defender.controller.receiveAttack(attack);
+    }
+
+    // Log turn.
+    logTurn(attack) {
+        const attackStatus = this.#defender.controller.queryCell(attack);
+        const winner = this.#getWinner();
+
+        this.#log.addEntry(
+            this.#turn,
+            this.#attacker.id,
+            this.#defender.id,
+            attack,
+            attackStatus,
+            attackStatus === CELL.SUNK
+                ? this.#defender.controller.getSunkShip(attack)
+                : 0,
+            winner === null ? false : true,
+            winner,
+        );
     }
 
     // Returns winner of game or null on no winner.
