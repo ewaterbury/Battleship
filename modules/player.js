@@ -25,6 +25,10 @@ class Player {
     queryBoard() {
         return this.#gameboard.queryBoard();
     }
+
+    getSunkShip(cell) {
+        return this.#gameboard.sunkShipAt(cell);
+    }
 }
 
 export default Player;
