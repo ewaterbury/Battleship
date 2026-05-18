@@ -1,7 +1,13 @@
 export default class Log {
     #log;
 
-    constructor() {
+    constructor(attacker, defender) {
+        const turnZero = {
+            turn: 0,
+            attacker: attacker,
+            defender: defender,
+        };
+
         this.#log = [];
     }
 
@@ -11,17 +17,28 @@ export default class Log {
     }
 
     get latest() {
-        if (this.#log.length > 0) return this.#log[this.#log.length - 1];
-        else return null;
+        return this.#log[this.#log.length - 1];
     }
 
-    addEntry(turn, attacker, cell, status, sunkShip) {
+    addEntry(
+        turn,
+        attacker,
+        defender,
+        cell,
+        status,
+        sunkShip,
+        gameOver,
+        winner,
+    ) {
         this.#log.push({
             turn: turn, // Int
             attacker: attacker, // String
+            defender: defender,
             cell: cell, // Int
-            status: status, // String
+            status: status, // Str  ing
             shipSunk: sunkShip, // Int
+            gameOver: gameOver, // Bool
+            winner: gameOver === true ? attacker : null, // String
         });
     }
 }
