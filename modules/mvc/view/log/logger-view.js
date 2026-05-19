@@ -29,6 +29,12 @@ export default class LoggerView extends Component {
         // Build log entry and append message to log item, then append entry to log list.
         this.#logList.append(new Component(EL.LI).append(new Message(turn)));
 
+        // Autoscroll to new entry.
+        this.#logList.element.scrollTo({
+            top: this.#logList.element.scrollHeight,
+            behavior: "smooth",
+        });
+
         return this;
     }
 
