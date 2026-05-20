@@ -1,7 +1,12 @@
+import { PROPS } from "./htmlProps.js";
+
 export default class ViewComponent {
+    #propWhitelist;
     #root; // Private root DOM element for component.
 
     constructor(rootElement, rootId) {
+        this.#propWhitelist = new Set(PROPS.whiteList);
+
         // Validate then create root element.
         if (typeof rootElement !== "string" || rootElement.trim() === "")
             throw new TypeError("Element type must be non-empty string");
@@ -38,27 +43,17 @@ export default class ViewComponent {
         return this;
     }
 
-    append(child, validationCallback) {
-        // Append child to root element (Accepts ViewComponent or HTMLElement).
-        const node =
-            child instanceof ViewComponent
-                ? child.exposeRoot()
-                : child instanceof HTMLElement
-                  ? child
-                  : null;
-
+    append(node, validationCallback) {
+        // Append child to root element (Accepts ViewComponent).
         // Reject invalid node types.
-        if (!node) {
-            throw new TypeError(
-                "append() only accepts ViewComponent or HTMLElement",
-            );
-        }
+        if (!(node instanceof ViewComponent))
+            throw new TypeError("append() only accepts ViewComponents");
 
         // Call validation fn if sent.
         if (typeof validationCallback === "function") validationCallback(node);
 
         // Append node.
-        this.#root.appendChild(node);
+        this.#root.appendChild(node.exposeRoot());
 
         return this;
     }
@@ -100,9 +95,11 @@ export default class ViewComponent {
     }
 
     scrollTo(options) {
+        // Confirm that input is object.
         if (typeof options !== "object")
             throw new TypeError("Options must be an object");
 
+        // call scrollTo method on root.
         this.#root.scrollTo(options);
 
         return this;
@@ -113,6 +110,7 @@ export default class ViewComponent {
             throw new TypeError("Text must be a string or number");
 
         this.#root.textContent = text;
+
         return this;
     }
 }
