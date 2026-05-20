@@ -8,16 +8,13 @@ export default class ViewComponent {
 
         // Validate then assign id.
         this.#root = document.createElement(rootElement);
+
+        // Assign id if valid.
         if (rootId) {
             if (typeof rootId !== "string" || rootId.trim() === "")
                 throw new TypeError("Element id must be non-empty string");
             this.#root.id = rootId;
         }
-    }
-
-    get element() {
-        // Expose root element.
-        return this.#root;
     }
 
     addClass(className) {
@@ -43,10 +40,9 @@ export default class ViewComponent {
 
     append(child, validationCallback) {
         // Append child to root element (Accepts ViewComponent or HTMLElement).
-
         const node =
             child instanceof ViewComponent
-                ? child.element
+                ? child.exposeRoot()
                 : child instanceof HTMLElement
                   ? child
                   : null;
@@ -67,6 +63,10 @@ export default class ViewComponent {
         return this;
     }
 
+    exposeRoot() {
+        return this.#root;
+    }
+
     mount(target) {
         // Attach component to a target in the DOM.
         // Accepts ViewComponent, HTMLElement, or selector string.
@@ -74,7 +74,7 @@ export default class ViewComponent {
         // Get target as DOM element.
         const parent =
             target instanceof ViewComponent
-                ? target.element
+                ? target.exposeRoot()
                 : target instanceof HTMLElement
                   ? target
                   : typeof target === "string"
