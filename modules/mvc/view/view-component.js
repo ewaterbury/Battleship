@@ -87,6 +87,15 @@ export default class ViewComponent {
         return this;
     }
 
+    readProp(prop) {
+        // Checks that prop is on whitelist.
+        if (!this.#propWhitelist.has(prop))
+            throw new Error(`Invalid property.`);
+
+        // Returns prop value.
+        return this.#root[prop];
+    }
+
     remove() {
         // Remove this component's root element from DOM.
         this.#root.remove();
