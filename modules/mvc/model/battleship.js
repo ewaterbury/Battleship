@@ -4,7 +4,7 @@ import Ship from "./ship.js";
 import FleetGenerator from "./computer-logic/fleet-generator.js";
 import AttackLogic from "./computer-logic/attack-logic.js";
 import Log from "./log.js";
-import { CELL } from "./constants.js";
+import { CELL } from "../../constants.js";
 
 export default class Battleship {
     #boardsize;
