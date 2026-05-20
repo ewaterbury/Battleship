@@ -99,6 +99,15 @@ export default class ViewComponent {
         return this;
     }
 
+    scrollTo(options) {
+        if (typeof options !== "object")
+            throw new TypeError("Options must be an object");
+
+        this.#root.scrollTo(options);
+
+        return this;
+    }
+
     setText(text) {
         if (typeof text !== "string" && typeof text !== "number")
             throw new TypeError("Text must be a string or number");
