@@ -1,30 +1,31 @@
 import { PROPS } from "./htmlProps.js";
 
 export default class ViewComponent {
+    // Points to component element.
     #el;
-    #attrWhiteList;
-    #propWhitelist;
 
-    constructor(element, id, ...attrWhiteList) {
-        this.#propWhitelist = new Set(PROPS.whiteList);
-        this.#attrWhiteList = new Set();
+    // White Lists
+    #readWhitelist;
+    #writeWhiteList;
+
+    constructor(element, id, ...writeWhiteList) {
+        this.#readWhitelist = new Set(PROPS.whiteList);
+        this.#writeWhiteList = new Set();
 
         // Validate then create root element.
         if (typeof element !== "string" || element.trim() === "")
             throw new TypeError("Element type must be non-empty string");
 
-        // Validate then assign id.
         this.#el = document.createElement(element);
 
         // Assign id if valid.
-        if (id) {
+        if (id)
             if (typeof id !== "string" || id.trim() === "")
                 throw new TypeError("Element id must be non-empty string");
-            this.#el.id = id;
-        }
+            else this.#el.id = id;
 
         // Add passed attributes to whitelist.
-        attrWhiteList.forEach((attr) => this.#attrWhiteList.add(attr));
+        writeWhiteList.forEach((item) => this.#writeWhiteList.add(item));
     }
 
     get element() {
@@ -96,7 +97,7 @@ export default class ViewComponent {
 
     readProp(prop) {
         // Checks that prop is on whitelist.
-        if (!this.#propWhitelist.has(prop))
+        if (!this.#readWhitelist.has(prop))
             throw new Error(`Invalid property.`);
 
         // Returns prop value.
@@ -122,10 +123,12 @@ export default class ViewComponent {
     }
 
     setAttr(attr, value) {
-        if (!this.#attrWhiteList.has(attr))
+        if (!this.#writeWhiteList.has(attr))
             throw new Error("Invalid attribute");
 
         this.#el.setAttribute(attr, value);
+
+        return this;
     }
 
     setText(text) {
