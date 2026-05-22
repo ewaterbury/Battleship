@@ -6,26 +6,27 @@ export default class ViewComponent {
 
     // White Lists
     #readWhitelist;
-    #writeWhiteList;
+    #writeWhitelist;
 
-    constructor(element, id, ...writeWhiteList) {
-        this.#readWhitelist = new Set(PROPS.whiteList);
-        this.#writeWhiteList = new Set();
+    constructor(element, id, ...writeWhitelist) {
+        this.#readWhitelist = new Set(PROPS.whitelist);
+        this.#writeWhitelist = new Set();
 
         // Validate then create root element.
-        if (typeof element !== "string" || element.trim() === "")
+        if (!this.#isString(element))
             throw new TypeError("Element type must be non-empty string");
 
         this.#el = document.createElement(element);
 
         // Assign id if valid.
-        if (id)
-            if (typeof id !== "string" || id.trim() === "")
+        if (id) {
+            if (!this.#isString(id))
                 throw new TypeError("Element id must be non-empty string");
-            else this.#el.id = id;
+            this.#el.id = id;
+        }
 
         // Add passed attributes to whitelist.
-        writeWhiteList.forEach((item) => this.#writeWhiteList.add(item));
+        writeWhitelist.forEach((item) => this.#writeWhitelist.add(item));
     }
 
     get element() {
@@ -43,7 +44,8 @@ export default class ViewComponent {
     addDataset(key, value) {
         // Validates key input.
         const regex = /^[a-z][A-Za-z0-9]*$/;
-        if (!regex.test(key)) throw new TypeError("Dataset key must camelCase");
+        if (!regex.test(key))
+            throw new TypeError("Dataset key must be camelCase");
 
         // Validates value input.
         if (!["string", "number", "boolean"].includes(typeof value))
@@ -96,6 +98,15 @@ export default class ViewComponent {
     }
 
     on(event, handler, options) {
+        if (!this.#isString(event))
+            throw new TypeError("Event name must be a non-empty string");
+
+        if (typeof handler !== "function")
+            throw new TypeError("Event handler must be a function");
+
+        if (options !== undefined && typeof options !== "object")
+            throw new TypeError("Event options must be an object");
+
         this.#el.addEventListener(event, handler, options);
 
         return this;
@@ -104,7 +115,7 @@ export default class ViewComponent {
     readProp(prop) {
         // Checks that prop is on whitelist.
         if (!this.#readWhitelist.has(prop))
-            throw new Error(`Invalid property.`);
+            throw new TypeError(`Invalid property.`);
 
         // Returns prop value.
         return this.#el[prop];
@@ -119,7 +130,7 @@ export default class ViewComponent {
 
     scrollTo(options) {
         // Confirm that input is object.
-        if (typeof options !== "object")
+        if (!options || typeof options !== "object")
             throw new TypeError("Options must be an object");
 
         // Call scrollTo method on root.
@@ -129,17 +140,29 @@ export default class ViewComponent {
     }
 
     setAttr(attr, value) {
-        if (!this.#writeWhiteList.has(attr))
-            throw new Error("Invalid attribute");
+        if (!this.#isString(attr))
+            throw new TypeError("Attribute must be a string");
 
-        this.#el.setAttribute(attr, value);
+        if (!this.#writeWhitelist.has(attr))
+            throw new TypeError(`Invalid attribute: ${attr}`);
+
+        if (value === undefined || value === null)
+            throw new TypeError("Attribute value cannot be null or undefined");
+
+        this.#el.setAttribute(attr, String(value));
 
         return this;
     }
 
     setProp(prop, value) {
-        if (!this.#writeWhiteList.has(prop))
-            throw new Error("Invalid property");
+        if (!this.#isString(prop))
+            throw new TypeError("Property name must be non-empty string");
+
+        if (!this.#writeWhitelist.has(prop))
+            throw new TypeError(`Invalid property: ${prop}`);
+
+        if (!(prop in this.#el))
+            throw new TypeError(`Property does not exist on element: ${prop}`);
 
         this.#el[prop] = value;
 
@@ -148,12 +171,16 @@ export default class ViewComponent {
 
     setText(text) {
         // Accepts strings and ints.
-        if (typeof text !== "string" && typeof text !== "number")
+        if (!this.#isString(text) && typeof text !== "number")
             throw new TypeError("Text must be a string or number");
 
         // Set root's text content.
-        this.#el.textContent = text;
+        this.#el.textContent = String(text);
 
         return this;
+    }
+
+    #isString(value) {
+        return typeof value === "string" && value.trim() !== "";
     }
 }
