@@ -1,35 +1,40 @@
 import { PROPS } from "./htmlProps.js";
 
 export default class ViewComponent {
+    #el;
     #attrWhiteList;
     #propWhitelist;
-    #root; // Private root DOM element for component.
 
-    constructor(rootElement, rootId, ...attrWhiteList) {
+    constructor(element, id, ...attrWhiteList) {
         this.#propWhitelist = new Set(PROPS.whiteList);
         this.#attrWhiteList = new Set();
 
         // Validate then create root element.
-        if (typeof rootElement !== "string" || rootElement.trim() === "")
+        if (typeof element !== "string" || element.trim() === "")
             throw new TypeError("Element type must be non-empty string");
 
         // Validate then assign id.
-        this.#root = document.createElement(rootElement);
+        this.#el = document.createElement(element);
 
         // Assign id if valid.
-        if (rootId) {
-            if (typeof rootId !== "string" || rootId.trim() === "")
+        if (id) {
+            if (typeof id !== "string" || id.trim() === "")
                 throw new TypeError("Element id must be non-empty string");
-            this.#root.id = rootId;
+            this.#el.id = id;
         }
 
         // Add passed attributes to whitelist.
         attrWhiteList.forEach((attr) => this.#attrWhiteList.add(attr));
     }
 
+    get element() {
+        // Gives access to private root element (get only).
+        return this.#el;
+    }
+
     addClass(className) {
         // Add css class to root element.
-        this.#root.classList.add(className);
+        this.#el.classList.add(className);
 
         return this;
     }
@@ -44,7 +49,7 @@ export default class ViewComponent {
             throw new TypeError("Invalid value type");
 
         // add data set to component.
-        this.#root.dataset[key] = String(value);
+        this.#el.dataset[key] = String(value);
 
         return this;
     }
@@ -59,13 +64,9 @@ export default class ViewComponent {
         if (typeof validationCallback === "function") validationCallback(node);
 
         // Append node.
-        this.#root.appendChild(node.exposeRoot());
+        this.#el.appendChild(node.element);
 
         return this;
-    }
-
-    exposeRoot() {
-        return this.#root;
     }
 
     mount(target) {
@@ -75,7 +76,7 @@ export default class ViewComponent {
         // Get target as DOM element.
         const parent =
             target instanceof ViewComponent
-                ? target.exposeRoot()
+                ? target.element
                 : target instanceof HTMLElement
                   ? target
                   : typeof target === "string"
@@ -88,7 +89,7 @@ export default class ViewComponent {
         }
 
         // Append component to parent.
-        parent.appendChild(this.#root);
+        parent.appendChild(this.element);
 
         return this;
     }
@@ -99,12 +100,12 @@ export default class ViewComponent {
             throw new Error(`Invalid property.`);
 
         // Returns prop value.
-        return this.#root[prop];
+        return this.#el[prop];
     }
 
     remove() {
         // Remove this component's root element from DOM.
-        this.#root.remove();
+        this.#el.remove();
 
         return this;
     }
@@ -115,7 +116,7 @@ export default class ViewComponent {
             throw new TypeError("Options must be an object");
 
         // Call scrollTo method on root.
-        this.#root.scrollTo(options);
+        this.#el.scrollTo(options);
 
         return this;
     }
@@ -124,7 +125,7 @@ export default class ViewComponent {
         if (!this.#attrWhiteList.has(attr))
             throw new Error("Invalid attribute");
 
-        this.#root.setAttribute(attr, value);
+        this.#el.setAttribute(attr, value);
     }
 
     setText(text) {
@@ -133,7 +134,7 @@ export default class ViewComponent {
             throw new TypeError("Text must be a string or number");
 
         // Set root's text content.
-        this.#root.textContent = text;
+        this.#el.textContent = text;
 
         return this;
     }
