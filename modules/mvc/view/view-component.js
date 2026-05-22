@@ -95,6 +95,12 @@ export default class ViewComponent {
         return this;
     }
 
+    on(event, handler, options) {
+        this.#el.addEventListener(event, handler, options);
+
+        return this;
+    }
+
     readProp(prop) {
         // Checks that prop is on whitelist.
         if (!this.#readWhitelist.has(prop))
@@ -127,6 +133,15 @@ export default class ViewComponent {
             throw new Error("Invalid attribute");
 
         this.#el.setAttribute(attr, value);
+
+        return this;
+    }
+
+    setProp(prop, value) {
+        if (!this.#writeWhiteList.has(prop))
+            throw new Error("Invalid property");
+
+        this.#el[prop] = value;
 
         return this;
     }
