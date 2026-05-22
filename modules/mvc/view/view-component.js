@@ -1,11 +1,13 @@
 import { PROPS } from "./htmlProps.js";
 
 export default class ViewComponent {
+    #attrWhiteList;
     #propWhitelist;
     #root; // Private root DOM element for component.
 
-    constructor(rootElement, rootId) {
+    constructor(rootElement, rootId, ...attrWhiteList) {
         this.#propWhitelist = new Set(PROPS.whiteList);
+        this.#attrWhiteList = new Set();
 
         // Validate then create root element.
         if (typeof rootElement !== "string" || rootElement.trim() === "")
@@ -20,11 +22,15 @@ export default class ViewComponent {
                 throw new TypeError("Element id must be non-empty string");
             this.#root.id = rootId;
         }
+
+        // Add passed attributes to whitelist.
+        attrWhiteList.forEach((attr) => this.#attrWhiteList.add(attr));
     }
 
     addClass(className) {
         // Add css class to root element.
         this.#root.classList.add(className);
+
         return this;
     }
 
@@ -108,16 +114,25 @@ export default class ViewComponent {
         if (typeof options !== "object")
             throw new TypeError("Options must be an object");
 
-        // call scrollTo method on root.
+        // Call scrollTo method on root.
         this.#root.scrollTo(options);
 
         return this;
     }
 
+    setAttr(attr, value) {
+        if (!this.#attrWhiteList.has(attr))
+            throw new Error("Invalid attribute");
+
+        this.#root.setAttribute(attr, value);
+    }
+
     setText(text) {
+        // Accepts strings and ints.
         if (typeof text !== "string" && typeof text !== "number")
             throw new TypeError("Text must be a string or number");
 
+        // Set root's text content.
         this.#root.textContent = text;
 
         return this;
