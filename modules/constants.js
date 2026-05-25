@@ -1,5 +1,6 @@
 export const CELL = { HIT: "hit", MISS: "miss", EMPTY: null, SUNK: "sunk" };
 export const EL = {
+    AUDIO: "audio",
     BUTTON: "button",
     DIV: "div",
     H3: "h3",
