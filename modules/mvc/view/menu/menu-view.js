@@ -27,4 +27,8 @@ export default class MenuView extends ViewComponent {
 
         return menu;
     }
+
+    addSetting(setting) {
+        this.settings.append(setting);
+    }
 }
