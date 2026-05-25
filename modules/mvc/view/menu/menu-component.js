@@ -7,36 +7,16 @@ export default class MenuComponent extends ViewComponent {
     constructor(menuType) {
         // Initialize 'root' using super constructor.
         super(EL.MENU, `${menuType}_menu`);
-
-        // Validation for adding buttons.
-        this.#validateButton = (element) => {
-            const isButton =
-                element.tagName === "BUTTON" ||
-                (element.tagName === "INPUT" &&
-                    ["button", "submit", "reset"].includes(
-                        element.getAttribute("type"),
-                    ));
-
-            if (!isButton)
-                throw new TypeError(
-                    "Only buttons can be appened to menu element",
-                );
-        };
     }
 
-    append(button) {
+    append(element) {
         // Create li element as ViewComponent.
         const li = new ViewComponent(EL.LI);
 
-        // Validate and append button into li.
-        li.append(button, this.#validateButton);
+        // Validate and append element into li.
+        li.append(element);
 
         // Append li to menu.
         return super.append(li);
-    }
-
-    appendAll(buttonList) {
-        buttonList.forEach((button) => this.append(button));
-        return this;
     }
 }
