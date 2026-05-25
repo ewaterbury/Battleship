@@ -4,6 +4,7 @@ export const EL = {
     BUTTON: "button",
     DIV: "div",
     H3: "h3",
+    INPUT: "input",
     LI: "li",
     MENU: "menu",
     OL: "ol",
