@@ -1,7 +1,7 @@
 import { EL } from "../../../constants.js";
 import Utils from "../view-utilities.js";
 import Component from "../view-component.js";
-import Message from "./message-component.js";
+import Log from "./log-component.js";
 
 export default class LoggerView extends Component {
     #logList;
@@ -19,27 +19,20 @@ export default class LoggerView extends Component {
         const header = new Component(EL.H3).setText("Log");
 
         // Build ordered list (Cached for repeat access).
-        this.#logList = new Component(EL.OL);
+        this.#logList = new Log();
 
         // Append header and log list.
         [header, this.#logList].forEach((component) => this.append(component));
     }
 
-    logTurn(turn) {
-        // Build log entry and append message to log item, then append entry to log list.
-        this.#logList.append(new Component(EL.LI).append(new Message(turn)));
-
-        // Autoscroll to new entry.
-        this.#logList.element.scrollTo({
-            top: this.#logList.element.scrollHeight,
-            behavior: "smooth",
-        });
+    logTurn(turn, boardsize) {
+        this.#logList.logTurn(turn);
 
         return this;
     }
 
     clearLog() {
-        this.#logList.element.replaceChildren();
+        this.#logList.exposeRoot().replaceChildren();
 
         return this;
     }
