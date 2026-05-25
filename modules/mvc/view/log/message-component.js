@@ -3,24 +3,23 @@ import Utils from "../view-utilities.js";
 import ViewComponent from "../view-component.js";
 
 export default class MessageComponent extends ViewComponent {
-    constructor(turn) {
+    constructor(turn, boardsize) {
         // Validate input.
         if (
             !(
                 typeof turn === "object" &&
-                Number.isInteger(turn.num) &&
-                typeof turn.player === "string" &&
+                Number.isInteger(turn.turn) &&
+                typeof turn.attacker === "string" &&
                 Number.isInteger(turn.cell) &&
                 [CELL.HIT, CELL.MISS, CELL.SUNK].includes(turn.status) &&
                 Number.isInteger(turn.shipSunk) &&
-                turn.shipSunk >= 0 &&
-                Number.isInteger(turn.boardsize)
+                turn.shipSunk >= 0
             )
         )
             throw new TypeError(`Invalid input. Input should be:
             turn {
-                num: turn number (int),
-                player: player name (string),
+                turn: turn number (int),
+                attacker: attacker name (string),
                 cell: cell attacked (int),
                 status: status of attack (string),
                 shipSunk: size of sunken ship (int, 0 if no ship sunk),
@@ -34,13 +33,13 @@ export default class MessageComponent extends ViewComponent {
         this.#buildMessage(turn);
     }
 
-    #buildMessage(turn) {
+    #buildMessage(turn, boardsize) {
         // Build message start.
-        const player = Utils.capitalize(turn.player);
-        const cell = Utils.getCellName(turn.cell, turn.boardsize);
+        const player = Utils.capitalize(turn.attacker);
+        const cell = Utils.getCellName(turn.cell, boardsize);
 
         const msgStart = new ViewComponent(EL.SPAN).setText(
-            `Turn ${turn.num}: ${player} attacked ${cell} [ `,
+            `Turn ${turn.turn}: ${player} attacked ${cell} [ `,
         );
 
         // Get attack status.
