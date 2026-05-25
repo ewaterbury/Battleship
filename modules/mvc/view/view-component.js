@@ -73,18 +73,11 @@ export default class ViewComponent {
     }
 
     mount(target) {
-        // Attach component to a target in the DOM.
+        // Attach component to a ViewComponent in the DOM.
         // Accepts ViewComponent, HTMLElement, or selector string.
 
         // Get target as DOM element.
-        const parent =
-            target instanceof ViewComponent
-                ? target.element
-                : target instanceof HTMLElement
-                  ? target
-                  : typeof target === "string"
-                    ? document.querySelector(target)
-                    : null;
+        const parent = target instanceof ViewComponent ? target.element : null;
 
         // Validate target resolved to DOM element.
         if (!(parent instanceof HTMLElement)) {
@@ -124,17 +117,6 @@ export default class ViewComponent {
     remove() {
         // Remove this component's root element from DOM.
         this.#el.remove();
-
-        return this;
-    }
-
-    scrollTo(options) {
-        // Confirm that input is object.
-        if (!options || typeof options !== "object")
-            throw new TypeError("Options must be an object");
-
-        // Call scrollTo method on root.
-        this.#el.scrollTo(options);
 
         return this;
     }
