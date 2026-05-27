@@ -20,10 +20,10 @@ export default class SettingsView extends Component {
 
         // Add settings to menu (Pass references to audio to correct componenets).
         settings.append(new ThemeSetting());
-        settings.append(new MuteAudioSetting("Game-Effects", ...gameAudio));
-        settings.append(
-            new MuteLoopSetting("Background-Audio", backgroundAudio),
-        );
+        settings.append(new MuteAudioSetting("Effects", ...gameAudio));
+        settings.append(new MuteLoopSetting("Sonar", backgroundAudio));
         settings.append(new VolumeSetting(backgroundAudio, gameAudio));
+
+        this.append(settings);
     }
 }
