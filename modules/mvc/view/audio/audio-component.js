@@ -8,21 +8,22 @@ export default class AudioComponent extends ViewComponent {
             EL.AUDIO,
             id,
 
-            // Whitelisted attributes
+            // Whitelisted attributes.
             "src",
             "controls",
 
-            // Whitelisted props
+            // Whitelisted props.
             "playbackRate",
             "currentTime",
             "muted",
             "volume",
         );
 
+        // Validate src input.
         if (!this.isString(src))
             throw new TypeError("src must be a non-empty string");
 
-        // Assign src.
+        // Assign audio source.
         this.setAttr("src", src);
 
         // Add controls to component if requested.
@@ -30,56 +31,67 @@ export default class AudioComponent extends ViewComponent {
     }
 
     play() {
+        // Reset playback position.
         this.setProp("currentTime", 0);
+
+        // Begin playback.
         this.element.play();
 
         return this;
     }
 
     stop() {
+        // Pause current playback.
         this.element.pause();
+
+        // Reset playback position.
         this.setProp("currentTime", 0);
 
         return this;
     }
 
     pause() {
+        // Pause current playback.
         this.element.pause();
 
         return this;
     }
 
     resume() {
+        // Resume playback.
         this.element.play();
 
         return this;
     }
 
     mute() {
+        // Mute audio output.
         this.setProp("muted", true);
 
         return this;
     }
 
     unmute() {
+        // Unmute audio output.
         this.setProp("muted", false);
 
         return this;
     }
 
     isMuted() {
+        // Return current mute state.
         return this.element.muted;
     }
 
     setPlaybackSpeed(speed) {
-        // Set Playback Speed on element.
+        // Set playback Speed on element.
         this.setProp("playbackRate", speed);
 
         return this;
     }
 
     setVolume(value) {
-        // Set volume on element.
+        // Set volume level on element.
         this.setProp("volume", value);
 
         return this;
