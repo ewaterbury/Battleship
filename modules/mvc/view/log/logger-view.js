@@ -16,7 +16,7 @@ export default class LoggerView extends Component {
 
     #buildLog() {
         // Build header.
-        const header = new Component(EL.H3).setText("Log");
+        const header = new Component(EL.H2).setText("Log");
 
         // Build ordered list (Cached for repeat access).
         this.#logList = new Log();
