@@ -13,14 +13,14 @@ export default class ViewComponent {
         this.#writeWhitelist = new Set();
 
         // Validate then create root element.
-        if (!this.#isString(element))
+        if (!this.isString(element))
             throw new TypeError("Element type must be non-empty string");
 
         this.#el = document.createElement(element);
 
         // Assign id if valid.
         if (id) {
-            if (!this.#isString(id))
+            if (!this.isString(id))
                 throw new TypeError("Element id must be non-empty string");
             this.#el.id = id;
         }
@@ -73,8 +73,7 @@ export default class ViewComponent {
     }
 
     mount(target) {
-        // Attach component to a ViewComponent in the DOM.
-        // Accepts ViewComponent, HTMLElement, or selector string.
+        // Attach component to a ViewComponent in the DOM (Accepts ViewComponent).
 
         // Get target as DOM element.
         const parent = target instanceof ViewComponent ? target.element : null;
@@ -91,7 +90,7 @@ export default class ViewComponent {
     }
 
     on(event, handler, options) {
-        if (!this.#isString(event))
+        if (!this.isString(event))
             throw new TypeError("Event name must be a non-empty string");
 
         if (typeof handler !== "function")
@@ -122,7 +121,7 @@ export default class ViewComponent {
     }
 
     setAttr(attr, value) {
-        if (!this.#isString(attr))
+        if (!this.isString(attr))
             throw new TypeError("Attribute must be a string");
 
         if (!this.#writeWhitelist.has(attr))
@@ -137,7 +136,7 @@ export default class ViewComponent {
     }
 
     setProp(prop, value) {
-        if (!this.#isString(prop))
+        if (!this.isString(prop))
             throw new TypeError("Property name must be non-empty string");
 
         if (!this.#writeWhitelist.has(prop))
@@ -153,7 +152,7 @@ export default class ViewComponent {
 
     setText(text) {
         // Accepts strings and ints.
-        if (!this.#isString(text) && typeof text !== "number")
+        if (!this.isString(text) && typeof text !== "number")
             throw new TypeError("Text must be a string or number");
 
         // Set root's text content.
@@ -162,7 +161,7 @@ export default class ViewComponent {
         return this;
     }
 
-    #isString(value) {
+    isString(value) {
         return typeof value === "string" && value.trim() !== "";
     }
 }
