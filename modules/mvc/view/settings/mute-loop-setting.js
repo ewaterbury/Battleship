@@ -17,8 +17,8 @@ export default class MuteLoopSetting extends Component {
             throw new TypeError("buttonName must be non-empty string");
 
         // Validate that audio inputs are instances of AudioComponent.
-        AudioComponents.forEach((component) => {
-            if (!(component instanceof AudioLoop))
+        AudioLoops.forEach((loop) => {
+            if (!(loop instanceof AudioLoop))
                 throw new TypeError(
                     "MuteAudioSetting only accepts instances of AudioLoop",
                 );
@@ -41,12 +41,13 @@ export default class MuteLoopSetting extends Component {
 
     // Callback that stops loop.
     #muteCallback = () => {
+        console.log("called");
         if (!this.#isMuted) {
-            this.#audioLoops.forEach((loop) => loop.startLoop());
-            this.#isMuted = true;
-        } else {
             this.#audioLoops.forEach((loop) => loop.stopLoop());
             this.#isMuted = true;
+        } else {
+            this.#audioLoops.forEach((loop) => loop.startLoop());
+            this.#isMuted = false;
         }
 
         // Synch text to mute state.
