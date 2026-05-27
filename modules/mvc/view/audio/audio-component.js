@@ -2,9 +2,6 @@ import ViewComponent from "../view-component.js";
 import { EL } from "../../../constants.js";
 
 export default class AudioComponent extends ViewComponent {
-    // Tracks mute state.
-    #muted = false;
-
     constructor(id, src, controls = false) {
         // Initialize class with super constructor.
         super(
@@ -25,7 +22,7 @@ export default class AudioComponent extends ViewComponent {
         // Assign src.
         this.setAttr("src", src);
 
-        // Add controls to componenet if requested.
+        // Add controls to component if requested.
         if (controls) this.setAttr("controls", "");
     }
 
@@ -38,36 +35,36 @@ export default class AudioComponent extends ViewComponent {
 
     pause() {
         this.element.pause();
-        this.setProp("currentTime", 0);
+
+        return this;
     }
 
     stop() {
-        this.element.stop();
+        this.element.pause();
+        this.setProp("currentTime", 0);
 
         return this;
     }
 
     mute() {
         this.setProp("muted", true);
-        this.#muted = true;
 
         return this;
     }
 
     unmute() {
         this.setProp("muted", false);
-        this.#muted = false;
 
         return this;
     }
 
     isMuted() {
-        return this.#muted;
+        return this.element.muted;
     }
 
     setPlaybackSpeed(speed) {
         // Set Playback Speed on element.
-        this.setProp("playbackRate", 0);
+        this.setProp("playbackRate", speed);
 
         return this;
     }
