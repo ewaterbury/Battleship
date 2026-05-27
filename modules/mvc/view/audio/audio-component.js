@@ -33,15 +33,21 @@ export default class AudioComponent extends ViewComponent {
         return this;
     }
 
+    stop() {
+        this.element.pause();
+        this.setProp("currentTime", 0);
+
+        return this;
+    }
+
     pause() {
         this.element.pause();
 
         return this;
     }
 
-    stop() {
-        this.element.pause();
-        this.setProp("currentTime", 0);
+    resume() {
+        this.element.play();
 
         return this;
     }
