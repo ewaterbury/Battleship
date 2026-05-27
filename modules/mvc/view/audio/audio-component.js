@@ -19,6 +19,9 @@ export default class AudioComponent extends ViewComponent {
             "volume",
         );
 
+        if (!this.isString(src))
+            throw new TypeError("src must be a non-empty string");
+
         // Assign src.
         this.setAttr("src", src);
 
