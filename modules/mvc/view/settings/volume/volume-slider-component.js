@@ -1,5 +1,5 @@
-import { EL } from "../../../constants.js";
-import Component from "../view-component.js";
+import Component from "../../view-component.js";
+import { EL } from "../../../../constants.js";
 
 export default class VolumeSlider extends Component {
     #audioSources = [];
