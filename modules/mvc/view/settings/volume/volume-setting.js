@@ -1,8 +1,8 @@
-import Component from "../view-component.js";
-import AudioLoop from "../audio/audio-loop-component.js";
-import Button from "../button.js";
-import VolumeSlider from "../audio/volume-slider-component.js";
-import { EL } from "../../../constants.js";
+import Component from "../../view-component.js";
+import AudioLoop from "../../audio/audio-loop-component.js";
+import Button from "../../button.js";
+import VolumeSlider from "./volume-slider-component.js";
+import { EL } from "../../../../constants.js";
 
 export default class VolumeSetting extends Component {
     #audioSources;
