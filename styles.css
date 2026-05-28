@@ -8,11 +8,23 @@
 }
 
 @layer base {
+    /* Default Theme Variables */
     :root {
         /* Board Size */
         --board-size: 0;
 
-        /* Color(Light) */
+        /* Font Vars */
+        --font-title: "Black Ops One";
+        --font-primary: "Roboto";
+
+        /* Border Vars */
+        --small-raduius: 2px;
+        --standard-radius: 4px;
+    }
+
+    /* Light Theme */
+    :root,
+    [data-theme="light"] {
         --bg: #e9edf5;
         --surface: #ffffff;
         --surface-2: #dfe6f3;
@@ -21,35 +33,26 @@
         --border: #2c2c2c;
         --accent: #3b5bdb;
 
-        /* Game Colors */
         --hit: #d64545;
         --miss: #4a90e2;
         --ship: #6b6b6b;
         --empty: #ffffff;
+    }
 
-        @media (prefers-color-scheme: dark) {
-            /* Color(Dark) */
-            --bg: #0f1220;
-            --surface: #1a1f33;
-            --surface-2: #232a45;
-            --text: #e8ecff;
-            --alt-text: #aab2d5;
-            --border: #5f6aa5;
-            --accent: #748ffc;
+    /* Dark Theme */
+    [data-theme="dark"] {
+        --bg: #0f1220;
+        --surface: #1a1f33;
+        --surface-2: #232a45;
+        --text: #e8ecff;
+        --alt-text: #aab2d5;
+        --border: #5f6aa5;
+        --accent: #748ffc;
 
-            --hit: #ff4d4d;
-            --miss: #4da3ff;
-            --ship: #9aa3b2;
-            --empty: #1a1f33;
-        }
-
-        /* Font Vars */
-        --font-title: "Black Ops One";
-        --font-primary: "Roboto";
-
-        /* Border Vars*/
-        --small-raduius: 2px;
-        --standard-radius: 4px;
+        --hit: #ff4d4d;
+        --miss: #4da3ff;
+        --ship: #9aa3b2;
+        --empty: #1a1f33;
     }
 
     body {
@@ -227,22 +230,25 @@
             }
         }
 
-        #game-sidebar {
+        #sidebar-area {
             /* Display (Self) */
             grid-row: 3/4;
             grid-column: 1/3;
+            padding: 10px;
 
             /* Display (Children) */
             display: flex;
             justify-content: space-evenly;
 
             #log-area,
-            #menu-area {
+            #settings-area {
                 /* Display (Self) */
                 max-height: 16vh;
+                max-width: 600px;
+
                 /* max-width: 50vw; */
                 flex-grow: 1;
-                padding: 8px;
+                padding: 4px;
                 margin: 8px;
 
                 /* Background */
@@ -252,7 +258,8 @@
                 border: solid 2px var(--border);
                 border-radius: var(--standard-radius);
 
-                h3 {
+                /* Sidebar Headings */
+                h2 {
                     /* Display (Self) */
                     margin: 0;
                 }
@@ -317,17 +324,46 @@
                 }
             }
 
-            #menu-area {
+            #settings-area {
                 /* Display (Children) */
                 display: grid;
                 grid-template-rows: auto auto;
+
                 menu {
                     /* Display (Self) */
                     margin: 0;
+                    padding: 0;
 
                     /* Display (Children) */
-                    display: flex;
-                    justify-content: space-between;
+                    display: grid;
+                    gap: 5px;
+
+                    li {
+                        /* Display (Children) */
+                        display: flex;
+                        justify-content: space-between;
+
+                        h3 {
+                            /* Display (Self) */
+                            margin: 0;
+                        }
+
+                        /* Settings Buttons */
+                        button {
+                            /* Display (Self) */
+                            max-width: 75px;
+                            flex-grow: 1;
+                            padding: 0;
+                            border: none;
+                        }
+
+                        /* Volume Slider */
+                        input {
+                            /* Display (Self) */
+                            max-width: 225px;
+                            flex-grow: 1;
+                        }
+                    }
                 }
             }
         }
