@@ -1,6 +1,6 @@
-import { EL } from "../../constants.js";
-import Utils from "./view-utilities.js";
-import Component from "./view-component.js";
+import { EL } from "../../../constants.js";
+import Utils from "../view-utilities.js";
+import Component from "../view-component.js";
 
 export default class GameboardView extends Component {
     constructor(player, boardsize) {
