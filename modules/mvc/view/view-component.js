@@ -5,12 +5,12 @@ export default class ViewComponent {
     #el;
 
     // White Lists
-    #readWhitelist;
-    #writeWhitelist;
+    #defaultWhitelist;
+    #customWhitelist;
 
-    constructor(element, id, ...writeWhitelist) {
-        this.#readWhitelist = new Set(PROPS.whitelist);
-        this.#writeWhitelist = new Set();
+    constructor(element, id, ...customWhitelist) {
+        this.#defaultWhitelist = new Set(PROPS.whitelist);
+        this.#customWhitelist = new Set();
 
         // Validate then create root element.
         if (!this.isString(element))
@@ -26,7 +26,7 @@ export default class ViewComponent {
         }
 
         // Add passed attributes to whitelist.
-        writeWhitelist.forEach((item) => this.#writeWhitelist.add(item));
+        customWhitelist.forEach((item) => this.#customWhitelist.add(item));
     }
 
     get element() {
@@ -106,7 +106,10 @@ export default class ViewComponent {
 
     readProp(prop) {
         // Checks that prop is on whitelist.
-        if (!this.#readWhitelist.has(prop))
+        if (
+            !this.#defaultWhitelist.has(prop) ||
+            !this.#customWhitelist.has(prop)
+        )
             throw new TypeError(`Invalid property.`);
 
         // Returns prop value.
@@ -124,7 +127,7 @@ export default class ViewComponent {
         if (!this.isString(attr))
             throw new TypeError("Attribute must be a string");
 
-        if (!this.#writeWhitelist.has(attr))
+        if (!this.#customWhitelist.has(attr))
             throw new TypeError(`Invalid attribute: ${attr}`);
 
         if (value === undefined || value === null)
@@ -139,7 +142,7 @@ export default class ViewComponent {
         if (!this.isString(prop))
             throw new TypeError("Property name must be non-empty string");
 
-        if (!this.#writeWhitelist.has(prop))
+        if (!this.#customWhitelist.has(prop))
             throw new TypeError(`Invalid property: ${prop}`);
 
         if (!(prop in this.#el))
