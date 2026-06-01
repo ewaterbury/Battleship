@@ -19,10 +19,11 @@ export default class SettingsView extends Component {
         const settings = new Component(EL.MENU, "settings-menu");
 
         // Add settings to menu (Pass references to audio to correct componenets).
-        settings.append(new ThemeSetting());
-        settings.append(new MuteAudioSetting("Effects", ...gameAudio));
-        settings.append(new MuteLoopSetting("Sonar", backgroundAudio));
-        settings.append(new VolumeSetting(backgroundAudio, gameAudio));
+        settings
+            .append(new ThemeSetting())
+            .append(new MuteAudioSetting("Effects", ...gameAudio))
+            .append(new MuteLoopSetting("Sonar", backgroundAudio))
+            .append(new VolumeSetting(backgroundAudio, gameAudio));
 
         this.append(settings);
     }
