@@ -33,7 +33,7 @@ export default class GameView {
 
         // |----- GameArea ------|
         // Build game area compnents.
-        const gameboardView = new GameboardView(boardsize);
+        const gameboardView = new GameboardView(boardsize, controller);
         const gameOptionsView = new GameOptions();
 
         // Mount game area components.
