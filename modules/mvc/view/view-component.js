@@ -57,14 +57,11 @@ export default class ViewComponent {
         return this;
     }
 
-    append(node, validationCallback) {
+    append(node) {
         // Append child to root element (Accepts ViewComponent).
         // Reject invalid node types.
         if (!(node instanceof ViewComponent))
-            throw new TypeError("append() only accepts ViewComponents");
-
-        // Call validation fn if sent.
-        if (typeof validationCallback === "function") validationCallback(node);
+            throw new TypeError("append only accepts ViewComponents");
 
         // Append node.
         this.#el.appendChild(node.element);
@@ -72,19 +69,15 @@ export default class ViewComponent {
         return this;
     }
 
-    mount(target) {
+    appendSelf(target) {
         // Attach component to a ViewComponent in the DOM (Accepts ViewComponent).
-
-        // Get target as DOM element.
-        const parent = target instanceof ViewComponent ? target.element : null;
-
         // Validate target resolved to DOM element.
-        if (!(parent instanceof HTMLElement)) {
-            throw new TypeError(`Invalid mount target`);
+        if (!(target instanceof ViewComponent)) {
+            throw new TypeError("mount only accepts ViewComponenets");
         }
 
         // Append component to parent.
-        parent.appendChild(this.element);
+        target.append(this.#el);
 
         return this;
     }
@@ -107,7 +100,7 @@ export default class ViewComponent {
     readProp(prop) {
         // Checks that prop is on whitelist.
         if (
-            !this.#defaultWhitelist.has(prop) ||
+            !this.#defaultWhitelist.has(prop) &&
             !this.#customWhitelist.has(prop)
         )
             throw new TypeError(`Invalid property.`);
@@ -163,6 +156,8 @@ export default class ViewComponent {
 
         return this;
     }
+
+    // Validation methods.
 
     isString(value) {
         return typeof value === "string" && value.trim() !== "";
