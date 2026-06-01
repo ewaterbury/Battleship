@@ -1,6 +1,7 @@
 import Component from "../view-component.js";
 import AudioComponent from "../audio/audio-component.js";
 import Button from "../button.js";
+import ValidationUtilities from "../../../validation-utilities.js"; // Holds validation checks.
 
 import { EL } from "../../../constants.js";
 
@@ -14,7 +15,7 @@ export default class MuteAudioSetting extends Component {
         super(EL.LI);
 
         // Validate that buttonName is a string.
-        if (!this.isString(buttonName))
+        if (!ValidationUtilities.isString(buttonName))
             throw new TypeError("buttonName must be non-empty string");
 
         // Validate that audio inputs are instances of AudioComponent.

@@ -2,6 +2,7 @@ import Component from "../view-component.js";
 import AudioLoop from "../audio/audio-loop-component.js";
 import Button from "../button.js";
 import { EL } from "../../../constants.js";
+import ValidationUtilities from "../../../validation-utilities.js"; // Holds validation checks.
 
 export default class MuteLoopSetting extends Component {
     #audioLoops;
@@ -13,7 +14,7 @@ export default class MuteLoopSetting extends Component {
         super(EL.LI);
 
         // Validate that buttonName is a string.
-        if (!this.isString(buttonName))
+        if (!ValidationUtilities.isString(buttonName))
             throw new TypeError("buttonName must be non-empty string");
 
         // Validate that audio inputs are instances of AudioComponent.

@@ -1,5 +1,6 @@
 import ViewComponent from "../view-component.js";
 import { EL } from "../../../constants.js";
+import ValidationUtilities from "../../../validation-utilities.js"; // Holds validation checks.
 
 export default class AudioComponent extends ViewComponent {
     constructor(id, src, controls = false) {
@@ -20,7 +21,7 @@ export default class AudioComponent extends ViewComponent {
         );
 
         // Validate src input.
-        if (!this.isString(src))
+        if (!ValidationUtilities.isString(src))
             throw new TypeError("src must be a non-empty string");
 
         // Assign audio source.
