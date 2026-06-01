@@ -1,26 +1,27 @@
-import { PROPS } from "./htmlProps.js";
+import { PROPS } from "./htmlProps.js"; // List of safe, read-only element attributes.
+import ValidationUtilities from "../../validation-utilities.js"; // Holds validation checks.
 
 export default class ViewComponent {
-    // Points to component element.
-    #el;
+    #el; // Points to component element.
 
     // White Lists
     #defaultWhitelist;
     #customWhitelist;
 
     constructor(element, id, ...customWhitelist) {
+        // Initialize whitelists.
         this.#defaultWhitelist = new Set(PROPS.whitelist);
         this.#customWhitelist = new Set();
 
         // Validate then create root element.
-        if (!this.isString(element))
+        if (!ValidationUtilities.isString(element))
             throw new TypeError("Element type must be non-empty string");
 
         this.#el = document.createElement(element);
 
         // Assign id if valid.
         if (id) {
-            if (!this.isString(id))
+            if (!ValidationUtilities.isString(id))
                 throw new TypeError("Element id must be non-empty string");
             this.#el.id = id;
         }
@@ -72,9 +73,8 @@ export default class ViewComponent {
     appendSelf(target) {
         // Attach component to a ViewComponent in the DOM (Accepts ViewComponent).
         // Validate target resolved to DOM element.
-        if (!(target instanceof ViewComponent)) {
-            throw new TypeError("mount only accepts ViewComponenets");
-        }
+        if (!(target instanceof ViewComponent))
+            throw new TypeError("appendSelf only accepts ViewComponenets");
 
         // Append component to parent.
         target.append(this.#el);
@@ -83,7 +83,7 @@ export default class ViewComponent {
     }
 
     on(event, handler, options) {
-        if (!this.isString(event))
+        if (!ValidationUtilities.isString(event))
             throw new TypeError("Event name must be a non-empty string");
 
         if (typeof handler !== "function")
@@ -117,7 +117,7 @@ export default class ViewComponent {
     }
 
     setAttr(attr, value) {
-        if (!this.isString(attr))
+        if (!ValidationUtilities.isString(attr))
             throw new TypeError("Attribute must be a string");
 
         if (!this.#customWhitelist.has(attr))
@@ -132,7 +132,7 @@ export default class ViewComponent {
     }
 
     setProp(prop, value) {
-        if (!this.isString(prop))
+        if (!ValidationUtilities.isString(prop))
             throw new TypeError("Property name must be non-empty string");
 
         if (!this.#customWhitelist.has(prop))
@@ -148,18 +148,12 @@ export default class ViewComponent {
 
     setText(text) {
         // Accepts strings and ints.
-        if (!this.isString(text) && typeof text !== "number")
+        if (!ValidationUtilities.isString(text) && typeof text !== "number")
             throw new TypeError("Text must be a string or number");
 
         // Set root's text content.
         this.#el.textContent = String(text);
 
         return this;
-    }
-
-    // Validation methods.
-
-    isString(value) {
-        return typeof value === "string" && value.trim() !== "";
     }
 }
