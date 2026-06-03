@@ -1,3 +1,4 @@
+// Core Components
 import AudioComponent from "./audio-component.js";
 
 export default class AudioLoop extends AudioComponent {
@@ -9,11 +10,14 @@ export default class AudioLoop extends AudioComponent {
         // Initialize base AudioComponent.
         super(id, src);
 
+        // |----- Validation -----|
+        // Validate interval.
         if (!Number.isFinite(interval) || interval <= 0)
             throw new TypeError(
                 "Loop interval must be a positive finite number",
             );
 
+        // |----- Behavior -----|
         this.#interval = interval;
 
         // Recursive timeout callback.
@@ -26,7 +30,7 @@ export default class AudioLoop extends AudioComponent {
         };
     }
 
-    // Overwrite original play method with arrow function to preserve this inside setTimeout.
+    // Arrow function preserves instance context when invoked indirectly.
     play = () => {
         super.play();
     };
