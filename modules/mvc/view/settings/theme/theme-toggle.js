@@ -1,14 +1,23 @@
+// Core Components
 import Button from "../../button.js";
 
 export default class ThemeToggle extends Button {
     constructor() {
-        // Check for previously saved theme.
+        // Initialize button with click handler for theme toggling.
+        super("theme-button", () => {
+            this.#toggleTheme();
+            this.#updateText();
+        });
+
+        this.#resolveInitialTheme();
+        this.#updateText();
+    }
+
+    #resolveInitialTheme() {
+        // Get previously saved theme.
         const savedTheme = localStorage.getItem("theme");
 
-        // Get prefered theme.
-        // Used saved theme if available.
-        // Then fall back to system preference.
-        // Then default to light.
+        // Resolve initial theme: saved → system preference → light fallback
         const initialTheme = savedTheme
             ? savedTheme
             : window.matchMedia("(prefers-color-scheme: dark)").matches
@@ -18,39 +27,29 @@ export default class ThemeToggle extends Button {
         // Apply theme to <html> element.
         document.documentElement.setAttribute("data-theme", initialTheme);
 
-        // Save prefered theme in local storage.
+        // Save preferred theme in local storage.
         localStorage.setItem("theme", initialTheme);
-
-        // Initialize Button class with suport constructor.
-        // Builds button and attaches callback to event handler.
-        super("theme-button", () => {
-            this.#toggleTheme();
-            this.#updateText();
-        });
-
-        // Set button text.
-        this.#updateText();
     }
 
     // Read current theme from the data-theme attribute.
-    #getTheme() {
+    #getCurrentTheme() {
         return document.documentElement.getAttribute("data-theme");
     }
 
     // Toggle between themes.
     #toggleTheme() {
-        const next = this.#getTheme() === "dark" ? "light" : "dark";
+        const next = this.#getCurrentTheme() === "dark" ? "light" : "dark";
 
         // Apply theme to <html> element.
         document.documentElement.setAttribute("data-theme", next);
 
-        // Save prefered theme in local storage.
+        // Save preferred theme in local storage.
         localStorage.setItem("theme", next);
     }
 
     // Update button display.
     // 🌙 displays on light mode and ☀️ displays on dark mode.
     #updateText() {
-        this.setText(this.#getTheme() === "light" ? "🌙" : "☀️");
+        this.setText(this.#getCurrentTheme() === "light" ? "🌙" : "☀️");
     }
 }
