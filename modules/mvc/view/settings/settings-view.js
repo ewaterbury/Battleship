@@ -16,10 +16,8 @@ export default class SettingsView extends Component {
         super(EL.SECTION, "settings-area");
 
         // |----- UI Construction -----|
-        // Build and append menu header.
         this.append(new Component(EL.H2).setText("Settings:"));
 
-        // Build menu element.
         const settingsMenu = new Component(EL.MENU, "settings-menu");
 
         // Add settings and provide audio references so controls can modify playback state.
@@ -29,7 +27,6 @@ export default class SettingsView extends Component {
             .append(new MuteLoopSetting("Sonar", backgroundAudio))
             .append(new VolumeSetting(backgroundAudio, effectAudio));
 
-        // Append settings inside section container.
         this.append(settingsMenu);
     }
 }

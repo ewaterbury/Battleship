@@ -13,10 +13,7 @@ export default class VolumeSetting extends Component {
         super(EL.LI, "volume");
 
         // |----- UI Construction -----|
-        // Build and append heading.
         this.append(new Component(EL.H3).setText("Volume:"));
-
-        // Build and append volume slider.
         const slider = new VolumeSlider("volume-slider", ...audioSources);
         this.append(slider);
     }

@@ -37,7 +37,6 @@ export default class MuteLoopSetting extends Component {
         this.#audioLoops = audioLoops;
 
         // |----- UI Construction -----|
-        // Build and append header.
         this.append(new Component(EL.H3).setText(`Toggle ${buttonLabel}:`));
 
         // Build mute button with attached callback.
@@ -46,7 +45,6 @@ export default class MuteLoopSetting extends Component {
             this.#muteCallback,
         ).setText("🔊");
 
-        // Append button inside li container.
         this.append(this.#muteButton);
     }
 

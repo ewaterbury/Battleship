@@ -37,7 +37,6 @@ export default class MuteAudioSetting extends Component {
         this.#audioSources = audioComponents;
 
         // |----- UI Construction -----|
-        // Build and append header.
         this.append(new Component(EL.H3).setText(`Toggle ${buttonLabel}:`));
 
         // Build mute button with attached callback.
