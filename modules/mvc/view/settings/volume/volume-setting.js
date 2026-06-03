@@ -1,24 +1,23 @@
+// Core Components
 import Component from "../../view-component.js";
-import AudioLoop from "../../audio/audio-loop-component.js";
-import Button from "../../button.js";
-import VolumeSlider from "./volume-slider-component.js";
+
+// Element Library
 import { EL } from "../../../../constants.js";
 
-export default class VolumeSetting extends Component {
-    #audioSources;
-    #slider;
+// Imported Components
+import VolumeSlider from "./volume-slider-component.js"; // Volume control slider for audio sources.
 
+export default class VolumeSetting extends Component {
     constructor(...audioSources) {
-        // Initialize container with super constructor.
+        // Initialize container (li) and assign ID using super constructor.
         super(EL.LI, "volume");
 
-        // Build volume slider.
-        this.#slider = new VolumeSlider("volume-slider", ...audioSources);
-
+        // |----- UI Construction -----|
         // Build and append heading.
         this.append(new Component(EL.H3).setText("Volume:"));
 
-        // Append slider
-        this.append(this.#slider);
+        // Build and append volume slider.
+        const slider = new VolumeSlider("volume-slider", ...audioSources);
+        this.append(slider);
     }
 }
