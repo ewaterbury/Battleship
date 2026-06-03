@@ -1,27 +1,31 @@
-import { EL } from "../../../constants.js";
-import Utils from "../view-utilities.js";
+// Core Components
 import Component from "../view-component.js";
+
+// Element Library
+import { EL } from "../../../constants.js";
+
+// Imported Components
 import Message from "./message-component.js";
 
 export default class Log extends Component {
     constructor() {
-        // Initialize 'root' using super constructor.
+        // Initialize container (ol) using super constructor.
         super(EL.OL);
     }
 
     logTurn(turn, boardsize) {
-        // Build log entry and append message to log item, then append entry to log list.
+        // Append turn message to log.
         this.append(new Component(EL.LI).append(new Message(turn, boardsize)));
 
-        // Autoscroll to new entry.
-        this.#scrollTo({
+        // Scroll log to latest entry.
+        this.#scrollToLatest({
             top: this.readProp("scrollHeight"),
             behavior: "smooth",
         });
     }
 
-    #scrollTo(options) {
-        // Confirm that input is object.
+    #scrollToLatest(options) {
+        // Validate scroll options object.
         if (!options || typeof options !== "object")
             throw new TypeError("Options must be an object");
 
