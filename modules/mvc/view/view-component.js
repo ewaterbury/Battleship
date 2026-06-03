@@ -1,18 +1,18 @@
-import { PROPS } from "./htmlProps.js"; // List of safe, read-only element attributes.
-import ValidationUtilities from "../../validation-utilities.js"; // Holds validation checks.
+// List of safe, read-only element attributes.
+import { PROPS } from "./htmlProps.js";
+
+// Validation Library
+import ValidationUtilities from "../../validation-utilities.js";
 
 export default class ViewComponent {
     #el; // Points to component element.
 
     // White Lists
-    #defaultWhitelist;
+    #coreWhitelist;
     #customWhitelist;
 
     constructor(element, id, ...customWhitelist) {
-        // Initialize whitelists.
-        this.#defaultWhitelist = new Set(PROPS.whitelist);
-        this.#customWhitelist = new Set();
-
+        // |----- Validation -----|
         // Validate then create root element.
         if (!ValidationUtilities.isString(element))
             throw new TypeError("Element type must be non-empty string");
@@ -26,6 +26,10 @@ export default class ViewComponent {
             this.#el.id = id;
         }
 
+        // Initialize whitelists.
+        this.#coreWhitelist = new Set(PROPS.whitelist);
+        this.#customWhitelist = new Set();
+
         // Add passed attributes to whitelist.
         customWhitelist.forEach((item) => this.#customWhitelist.add(item));
     }
@@ -36,7 +40,6 @@ export default class ViewComponent {
     }
 
     addClass(className) {
-        // Add css class to root element.
         this.#el.classList.add(className);
 
         return this;
@@ -97,12 +100,18 @@ export default class ViewComponent {
         return this;
     }
 
+    readAttr(attr) {
+        // Checks that attribute is on whitelist.
+        if (!this.#customWhitelist.has(attr))
+            throw new TypeError(`Invalid attribute.`);
+
+        // Returns prop value.
+        return this.#el.getAttribute(attr);
+    }
+
     readProp(prop) {
         // Checks that prop is on whitelist.
-        if (
-            !this.#defaultWhitelist.has(prop) &&
-            !this.#customWhitelist.has(prop)
-        )
+        if (!this.#coreWhitelist.has(prop) && !this.#customWhitelist.has(prop))
             throw new TypeError(`Invalid property.`);
 
         // Returns prop value.
