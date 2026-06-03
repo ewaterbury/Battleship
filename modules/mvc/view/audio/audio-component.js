@@ -4,26 +4,28 @@ import ValidationUtilities from "../../../validation-utilities.js"; // Holds val
 
 export default class AudioComponent extends ViewComponent {
     constructor(id, src, controls = false) {
-        // Initialize class with super constructor.
+        // Initialize audio element and assign ID using super constructor.
         super(
             EL.AUDIO,
             id,
 
-            // Whitelisted attributes.
+            // Whitelisted attributes (for setAttr/readAttr):
             "src",
             "controls",
 
-            // Whitelisted props.
+            // Whitelisted props (for setProp/readProp):
             "playbackRate",
             "currentTime",
             "muted",
             "volume",
         );
 
+        // |----- Validation -----|
         // Validate src input.
         if (!ValidationUtilities.isString(src))
             throw new TypeError("src must be a non-empty string");
 
+        // |----- Behavior -----|
         // Assign audio source.
         this.setAttr("src", src);
 
@@ -85,15 +87,15 @@ export default class AudioComponent extends ViewComponent {
     }
 
     setPlaybackSpeed(speed) {
-        // Set playback Speed on element.
+        // Set playback speed on element.
         this.setProp("playbackRate", speed);
 
         return this;
     }
 
-    setVolume(value) {
+    setVolume(volume) {
         // Set volume level on element.
-        this.setProp("volume", value);
+        this.setProp("volume", volume);
 
         return this;
     }
