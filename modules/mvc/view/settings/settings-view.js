@@ -15,6 +15,7 @@ export default class SettingsView extends Component {
         // Initialize container (section) and assign ID using super constructor.
         super(EL.SECTION, "settings-area");
 
+        // |----- UI Construction -----|
         // Build and append menu header.
         this.append(new Component(EL.H2).setText("Settings:"));
 
