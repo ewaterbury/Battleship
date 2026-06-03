@@ -24,6 +24,7 @@ export default class VolumeSlider extends Component {
         // Store audio targets for volume updates.
         this.#audioSources = audioComponents;
 
+        // |----- UI Construction -----|
         // Set attributes on input element.
         [
             { attr: "type", value: "range" },
@@ -35,6 +36,7 @@ export default class VolumeSlider extends Component {
             this.setAttr(pair.attr, pair.value);
         });
 
+        // |----- Behavior -----|
         // Add event listener using on method.
         this.on("input", (e) => {
             const volume = parseFloat(e.target.value); // Parse slider value from input event.
