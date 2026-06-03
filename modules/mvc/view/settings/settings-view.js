@@ -1,30 +1,34 @@
-import { EL } from "../../../constants.js";
+// Core Components
 import Component from "../view-component.js";
 
-// Import settings menu's components.
-import ThemeSetting from "./theme/theme-setting.js"; // Menu item to change site theme.
-import MuteAudioSetting from "./mute-audio-setting.js"; // Menu item to mute audio (Game effects).
-import MuteLoopSetting from "./mute-loop-setting.js"; // Menu item to mute loop (Background track).
-import VolumeSetting from "./volume/volume-setting.js"; // Menu item for application volume (Slider).
+// Element Library
+import { EL } from "../../../constants.js";
+
+// Imported Components
+import ThemeSetting from "./theme/theme-setting.js"; // Theme selector.
+import MuteAudioSetting from "./mute-audio-setting.js"; // Toggle sound effects.
+import MuteLoopSetting from "./mute-loop-setting.js"; // Toggle background music.
+import VolumeSetting from "./volume/volume-setting.js"; // Master volume control.
 
 export default class SettingsView extends Component {
-    constructor(backgroundAudio, ...gameAudio) {
-        // Initialize root element (section) using super constructor.
+    constructor(backgroundAudio, ...effectAudio) {
+        // Initialize root element (section) and assign ID using super constructor.
         super(EL.SECTION, "settings-area");
 
         // Build and append menu header.
         this.append(new Component(EL.H2).setText("Settings:"));
 
-        // Build menu element, store reference in #settings.
-        const settings = new Component(EL.MENU, "settings-menu");
+        // Build menu element.
+        const settingsMenu = new Component(EL.MENU, "settings-menu");
 
-        // Add settings to menu (Pass references to audio to correct componenets).
-        settings
+        // Add settings and provide audio references so controls can modify playback state.
+        settingsMenu
             .append(new ThemeSetting())
-            .append(new MuteAudioSetting("Effects", ...gameAudio))
+            .append(new MuteAudioSetting("Effects", ...effectAudio))
             .append(new MuteLoopSetting("Sonar", backgroundAudio))
-            .append(new VolumeSetting(backgroundAudio, gameAudio));
+            .append(new VolumeSetting(backgroundAudio, effectAudio));
 
-        this.append(settings);
+        // Append settings inside section container.
+        this.append(settingsMenu);
     }
 }
