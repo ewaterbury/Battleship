@@ -1,15 +1,30 @@
+// Core Components
 import Component from "../../view-component.js";
+
+// Element Library
 import { EL } from "../../../../constants.js";
 
 export default class VolumeSlider extends Component {
     #audioSources = [];
 
-    constructor(id, ...audioSources) {
-        super(EL.INPUT, id, "type", "min", "max", "step", "value");
+    constructor(id, ...audioComponents) {
+        // Initialize container (input) and assign ID using super constructor.
+        super(
+            EL.INPUT,
+            id,
 
-        // Saves reference to audio component
-        this.#audioSources = audioSources;
+            // Whitelisted attributes (for setAttr/readAttr):
+            "type",
+            "min",
+            "max",
+            "step",
+            "value",
+        );
 
+        // Store audio targets for volume updates.
+        this.#audioSources = audioComponents;
+
+        // Set attributes on input element.
         [
             { attr: "type", value: "range" },
             { attr: "min", value: "0" },
@@ -20,13 +35,13 @@ export default class VolumeSlider extends Component {
             this.setAttr(pair.attr, pair.value);
         });
 
+        // Add event listener using on method.
         this.on("input", (e) => {
-            const volume = parseFloat(e.target.value);
+            const volume = parseFloat(e.target.value); // Parse slider value from input event.
 
             this.#audioSources.forEach((audio) => {
-                if (audio.setVolume) {
-                    audio.setVolume(volume);
-                }
+                // Apply volume only to objects that implement setVolume.
+                if (audio.setVolume) audio.setVolume(volume);
             });
         });
     }
