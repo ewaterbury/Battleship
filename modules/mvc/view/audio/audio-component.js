@@ -1,6 +1,11 @@
+// Core Components
 import ViewComponent from "../view-component.js";
+
+// Element Library
 import { EL } from "../../../constants.js";
-import ValidationUtilities from "../../../validation-utilities.js"; // Holds validation checks.
+
+// Validation Library
+import ValidationUtilities from "../../../validation-utilities.js";
 
 export default class AudioComponent extends ViewComponent {
     constructor(id, src, controls = false) {
