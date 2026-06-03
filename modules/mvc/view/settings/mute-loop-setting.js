@@ -9,7 +9,7 @@ import AudioLoop from "../audio/audio-loop-component.js"; // Looping audio contr
 import Button from "../button.js"; // Reusable button component.
 
 // Validation Library
-import ValidationUtilities from "../../../validation-utilities.js"; // Holds validation checks.
+import ValidationUtilities from "../../../validation-utilities.js";
 
 export default class MuteLoopSetting extends Component {
     #audioLoops;
