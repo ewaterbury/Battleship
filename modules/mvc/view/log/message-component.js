@@ -1,10 +1,19 @@
-import { CELL, EL } from "../../../constants.js";
-import Utils from "../view-utilities.js";
-import ViewComponent from "../view-component.js";
+// Core Components
+import Component from "../view-component.js";
 
-export default class MessageComponent extends ViewComponent {
+// Battleship Library, Element Library
+import { CELL, EL } from "../../../constants.js";
+
+// View Utilities Library
+import ViewUtilities from "../view-utilities.js";
+
+// Validation Library
+import ValidationUtilities from "../../../validation-utilities.js";
+
+export default class MessageComponent extends Component {
     constructor(turn, boardsize) {
-        // Validate input.
+        // |----- Validation -----|
+        // Validate turn input.
         if (
             !(
                 typeof turn === "object" &&
@@ -23,44 +32,47 @@ export default class MessageComponent extends ViewComponent {
                 cell: cell attacked (int),
                 status: status of attack (string),
                 shipSunk: size of sunken ship (int, 0 if no ship sunk),
-                boardsize: size of gameboard (int),
             }`);
 
-        // Initialize 'root' using super constructor.
+        // Validate boardsize.
+        if (!ValidationUtilities.isPositiveInt(boardsize))
+            throw new TypeError("boardsize must be a postive integer");
+
+        // Initialize container (p) using super constructor.
         super(EL.P);
 
-        // Build and append log.
-        this.#buildMessage(turn);
+        // |----- UI Construction -----|
+        this.#buildMessage(turn, boardsize);
     }
 
     #buildMessage(turn, boardsize) {
         // Build message start.
-        const player = Utils.capitalize(turn.attacker);
-        const cell = Utils.getCellName(turn.cell, boardsize);
+        const player = ViewUtilities.capitalize(turn.attacker);
+        const cell = ViewUtilities.getCellName(turn.cell, boardsize);
 
-        const msgStart = new ViewComponent(EL.SPAN).setText(
+        const msgStart = new Component(EL.SPAN).setText(
             `Turn ${turn.turn}: ${player} attacked ${cell} [ `,
         );
 
-        // Get attack status.
+        // Treat SUNK as HIT in the main attack message.
         const attackStatus = turn.status === CELL.MISS ? CELL.MISS : CELL.HIT;
 
-        // Build message middle (Separated for styling).
-        const attack = new ViewComponent(EL.SPAN)
+        // Build message middle (separated for styling).
+        const attack = new Component(EL.SPAN)
             .setText(attackStatus)
             .addClass(attackStatus);
 
         // Build message end.
-        const msgEnd = new ViewComponent(EL.SPAN).setText(" ]");
+        const msgEnd = new Component(EL.SPAN).setText(" ]");
 
         // Append message components.
         [msgStart, attack, msgEnd].forEach((component) =>
             this.append(component),
         );
 
-        // If ship was sunk, add too message and append.
+        // Add sunk-ship notification if a ship was destroyed.
         if (turn.shipSunk > 0) {
-            const shipSunk = new ViewComponent(EL.SPAN).setText(
+            const shipSunk = new Component(EL.SPAN).setText(
                 ` [ Size ${turn.shipSunk} ship sunk ]`,
             );
 
