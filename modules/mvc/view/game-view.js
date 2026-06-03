@@ -18,7 +18,7 @@ export default class GameView {
 
     // Mount Points (Needed to remove view)
     #gameArea;
-    #gameSidebar;
+    #sidebar;
 
     // Sub-View References
     #logView;
@@ -29,7 +29,7 @@ export default class GameView {
 
         // Build mount targets.
         this.#gameArea = new MountPoint("game-area");
-        this.#gameSidebar = new MountPoint("sidebar-area");
+        this.#sidebar = new MountPoint("sidebar-area");
 
         // |----- GameArea ------|
         // Build game area compnents.
@@ -54,7 +54,7 @@ export default class GameView {
         );
 
         [this.#logView, settingsView].forEach((view) =>
-            this.#gameSidebar.append(view),
+            this.#sidebar.append(view),
         );
 
         // Mount sub-views.
@@ -63,7 +63,7 @@ export default class GameView {
             "after",
         );
 
-        this.#gameSidebar.mount(
+        this.#sidebar.mount(
             document.querySelector("#battleship #game-area"),
             "after",
         );
@@ -71,7 +71,7 @@ export default class GameView {
 
     removeView() {
         this.#gameArea.remove();
-        this.#gameSidebar.remove();
+        this.#sidebar.remove();
     }
 
     // |----- Audio Methods -----|
