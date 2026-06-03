@@ -1,12 +1,16 @@
+// Core Components
 import Component from "./view-component.js";
+
+// Element Library
 import { EL } from "../../constants.js";
 
 export default class MountPoint extends Component {
     constructor(id) {
+        // Initialize mount point (section) and assign ID using super constructor.
         super(EL.SECTION, id);
     }
 
-    mount(target, mountType = "appendChild") {
+    mount(target, method = "appendChild") {
         // Attach component to a target in the DOM.
         // Accepts Component, HTMLElement, or selector string.
 
@@ -25,8 +29,8 @@ export default class MountPoint extends Component {
             throw new TypeError(`Invalid mount target`);
         }
 
-        // Append component to parent.
-        parent[mountType](this.element);
+        // Mount component using requested DOM insertion method.
+        parent[method](this.element);
 
         return this;
     }
