@@ -1,7 +1,14 @@
+// Core Components
 import Component from "../view-component.js";
-import AudioLoop from "../audio/audio-loop-component.js";
-import Button from "../button.js";
+
+// Element Library
 import { EL } from "../../../constants.js";
+
+// Imported Components
+import AudioLoop from "../audio/audio-loop-component.js"; // Looping audio controller.
+import Button from "../button.js"; // Reusable button component.
+
+// Validation Library
 import ValidationUtilities from "../../../validation-utilities.js"; // Holds validation checks.
 
 export default class MuteLoopSetting extends Component {
@@ -9,40 +16,42 @@ export default class MuteLoopSetting extends Component {
     #muteButton;
     #isMuted = false;
 
-    constructor(buttonName, ...AudioLoops) {
-        // Initialize container with super constructor.
+    constructor(buttonLabel, ...audioLoops) {
+        // Initialize container (li) using super constructor.
         super(EL.LI);
 
-        // Validate that buttonName is a string.
-        if (!ValidationUtilities.isString(buttonName))
-            throw new TypeError("buttonName must be non-empty string");
+        // |----- Validation -----|
+        // Validate that buttonLabel is a string.
+        if (!ValidationUtilities.isString(buttonLabel))
+            throw new TypeError("buttonLabel must be non-empty string");
 
-        // Validate that audio inputs are instances of AudioComponent.
-        AudioLoops.forEach((loop) => {
+        // Validate that audio inputs are instances of AudioLoop.
+        audioLoops.forEach((loop) => {
             if (!(loop instanceof AudioLoop))
                 throw new TypeError(
-                    "MuteAudioSetting only accepts instances of AudioLoop",
+                    "MuteLoopSetting only accepts instances of AudioLoop",
                 );
         });
 
         // Save reference to audio loop for later access.
-        this.#audioLoops = AudioLoops;
+        this.#audioLoops = audioLoops;
 
+        // |----- UI Construction -----|
         // Build and append header.
-        this.append(new Component(EL.H3).setText(`Toggle ${buttonName}:`));
+        this.append(new Component(EL.H3).setText(`Toggle ${buttonLabel}:`));
 
         // Build mute button with attached callback.
         this.#muteButton = new Button(
-            `mute-${buttonName}`,
+            `mute-${buttonLabel}`,
             this.#muteCallback,
         ).setText("🔊");
 
+        // Append button inside li container.
         this.append(this.#muteButton);
     }
 
-    // Callback that stops loop.
+    // Toggle loop playback and update button state.
     #muteCallback = () => {
-        console.log("called");
         if (!this.#isMuted) {
             this.#audioLoops.forEach((loop) => loop.stopLoop());
             this.#isMuted = true;
@@ -51,7 +60,7 @@ export default class MuteLoopSetting extends Component {
             this.#isMuted = false;
         }
 
-        // Synch text to mute state.
+        // Sync button text with current mute state.
         this.#muteButton.setText(this.#isMuted ? "🔈" : "🔊");
     };
 }
