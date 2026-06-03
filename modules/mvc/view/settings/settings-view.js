@@ -12,7 +12,7 @@ import VolumeSetting from "./volume/volume-setting.js"; // Master volume control
 
 export default class SettingsView extends Component {
     constructor(backgroundAudio, ...effectAudio) {
-        // Initialize root element (section) and assign ID using super constructor.
+        // Initialize container (section) and assign ID using super constructor.
         super(EL.SECTION, "settings-area");
 
         // Build and append menu header.
