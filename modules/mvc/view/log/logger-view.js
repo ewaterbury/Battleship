@@ -1,37 +1,33 @@
-import { EL } from "../../../constants.js";
-import Utils from "../view-utilities.js";
+// Core Components
 import Component from "../view-component.js";
+
+// Element Library
+import { EL } from "../../../constants.js";
+
+// Imported Components
 import Log from "./log-component.js";
 
 export default class LoggerView extends Component {
     #logList;
 
     constructor() {
-        // Initialize 'root' using super constructor.
+        // Initialize container (section) and assign ID using super constructor.
         super(EL.SECTION, "log-area");
 
-        // Build and append log.
-        this.#buildLog();
-    }
-
-    #buildLog() {
-        // Build header.
+        // |----- UI Construction -----|
         const header = new Component(EL.H2).setText("Log");
-
-        // Build ordered list (Cached for repeat access).
         this.#logList = new Log();
-
-        // Append header and log list.
         [header, this.#logList].forEach((component) => this.append(component));
     }
 
     logTurn(turn, boardsize) {
-        this.#logList.logTurn(turn);
+        this.#logList.logTurn(turn, boardsize);
 
         return this;
     }
 
     clearLog() {
+        // Clear all log entries from DOM
         this.#logList.exposeRoot().replaceChildren();
 
         return this;
