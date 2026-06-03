@@ -6,6 +6,7 @@ export const EL = {
     H2: "h2",
     H3: "h3",
     INPUT: "input",
+    LABEL: "label",
     LI: "li",
     MENU: "menu",
     OL: "ol",
