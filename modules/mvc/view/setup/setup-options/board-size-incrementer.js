@@ -5,9 +5,14 @@ import Component from "../../view-component.js";
 import { EL } from "../../../../constants.js";
 
 export default class BoardSizeIncrementer extends Component {
-    constructor() {
+    #controller;
+
+    constructor(controller) {
         // Initialize root element (li) using super constructor.
         super(EL.LI);
+
+        // Store a reference to the controller for board size updates.
+        this.#controller = controller;
 
         // |----- UI Construction -----|
         const form = new Component(EL.FORM);
@@ -37,16 +42,18 @@ export default class BoardSizeIncrementer extends Component {
             .setAttr("name", "board-size-count")
             .setAttr("type", "number")
 
-            .setAttr("min", 7) // Minimum board size.
-            .setAttr("max", 12) // Minimum board size.
-            .setAttr("value", 10); // Starting board size.
+            .setAttr("min", controller.boardSize.min) // Minimum board size.
+            .setAttr("max", controller.boardSize.max) // Minimum board size.
+            .setAttr("value", controller.boardSize.current); // Starting board size.
 
         [label, shipCount].forEach((component) => form.append(component));
 
+        // |----- Behavior -----|
+        // Add event to update board size on input.
+        shipCount.on("input", (e) => {
+            controller.boardSize.current = e.target.value;
+        });
+
         this.append(form);
     }
-
-    #increment = () => {};
-
-    #decrement = () => {};
 }
