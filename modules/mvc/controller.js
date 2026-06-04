@@ -2,55 +2,36 @@
 import Model from "./model/model.js";
 
 // Top Level View Modules
+import PreGameView from "./view/pre-game-view.js";
 import GameView from "./view/game-view.js";
+// import PostGameView from "./view/post-game-view.js"
 
 // Audio Components
 import AudioComponent from "./view/audio/audio-component.js";
 import AudioLoop from "./view/audio/audio-loop-component.js";
 
 export default class Controller {
-    // Game Model
-    #model;
+    // Initialize game model.
+    #model = new Model();
 
-    // Views
+    // Initialize active view.
     #activeView;
 
-    #boardsize = 10;
+    // Initialize boardSize with default value (10);
+    #boardSize = 10;
 
     constructor() {
-        // Initialize game model.
-        this.#model = new Model();
-
-        // Initialize effects audio.
-        this.gameEffects = {
-            hit: new AudioComponent("hit", "./audio/hit.mp3"),
-            miss: new AudioComponent("miss", "./audio/miss.wav"),
-            sunk: new AudioComponent("sunk", "./audio/sunk.wav"),
-        };
-
-        // Initialize backing audio.
-        this.backingAudio = new AudioLoop(
-            "sonar",
-            "./audio/ping.wav",
-            2800,
-        ).startLoop();
+        this.#initializeTheme();
+        this.#initializeBackingAudio();
+        this.#initializeEffectsAudio();
     }
 
-    get boardsize() {
-        return this.#boardsize;
-    }
-
-    // Application States
-    initializeApp() {
-        // |---------- Set Inital Theme ----------|
-
-        // Check for previously saved theme.
+    // |----- Initialization Helpers -----|
+    #initializeTheme() {
+        // Get previously saved theme.
         const savedTheme = localStorage.getItem("theme");
 
-        // Get prefered theme.
-        // Used saved theme if available.
-        // Then fall back to system preference.
-        // Then default to light.
+        // Resolve initial theme: saved -> system preference -> light fallback
         const initialTheme = savedTheme
             ? savedTheme
             : window.matchMedia("(prefers-color-scheme: dark)").matches
@@ -64,16 +45,35 @@ export default class Controller {
         localStorage.setItem("theme", initialTheme);
     }
 
-    // |----- Game State Initialization Methods -----|
+    #initializeBackingAudio() {
+        // Initialize in public field to allow view access.
+        this.backingAudio = new AudioLoop(
+            "sonar",
+            "./audio/ping.wav",
+            2800,
+        ).startLoop();
+    }
 
-    startPreGame() {}
+    #initializeEffectsAudio() {
+        // Initialize in public field to allow view access.
+        this.gameEffects = {
+            hit: new AudioComponent("hit", "./audio/hit.mp3"),
+            miss: new AudioComponent("miss", "./audio/miss.wav"),
+            sunk: new AudioComponent("sunk", "./audio/sunk.wav"),
+        };
+    }
+
+    // |----- Game State Methods -----|
+    startPreGame() {
+        this.#updateView(new PreGameView());
+    }
 
     startGame() {
         // Start new game in model.
-        this.#model.newGame();
+        // this.#model.newGame();
 
         // Call update view with initilized GameView.
-        this.#updateView(new GameView(boardsize, this));
+        this.#updateView(new GameView(10, this));
     }
 
     startPostGame() {}
@@ -87,14 +87,13 @@ export default class Controller {
     }
 
     // |----- Log -----|
-    sendlog() {
-        // Get turn from model.
-        // Send turn to View.
-        this.#activeView.logTurn(this.#model.latest);
+    postLogEntry() {
+        // Get turn data from model and post it to log.
+        this.#activeView.postLogEntry(this.#model.latestTurn);
     }
 
     // |----- Audio -----|
-    effect(status) {
+    playEffect(status) {
         this.gameEffects[status].play();
     }
 }
