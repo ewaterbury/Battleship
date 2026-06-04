@@ -5,8 +5,8 @@ import Component from "../../view-component.js";
 import { EL } from "../../../../constants.js";
 
 // Import components.
-import BoardsizeIncrementer from "./boardsize.js"; // Incrementer input to set boardsize.
-import FleetComp from "./fleet-comp/fleet-comp.js"; // Menu to specfiy fleet composition.
+import BoardSizeIncrementer from "./board-size-incrementer.js"; // Menu item to specify board size.
+import FleetComp from "./fleet-comp/fleet-comp.js"; // Submenu to specfiy fleet composition.
 
 export default class SetupOptions extends Component {
     constructor(backgroundAudio, ...gameAudio) {
@@ -15,7 +15,7 @@ export default class SetupOptions extends Component {
 
         // |----- UI Construction -----|
         this.append(new Component(EL.H2).setText("Customize Options:"));
-        this.append(new BoardsizeIncrementer());
+        this.append(new BoardSizeIncrementer());
         this.append(new FleetComp());
     }
 }
