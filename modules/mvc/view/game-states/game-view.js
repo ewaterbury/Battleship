@@ -1,15 +1,15 @@
 // Core Components
-import Component from "./view-component.js";
-import MountPoint from "./mount-point.js";
+import Component from "./../view-component.js";
+import MountPoint from "./../mount-point.js";
 
 // Element Library
-import { EL } from "../../constants.js";
+import { EL } from "../../../constants.js";
 
 // Sub-View Modules
-import GameboardView from "./gameboard/gameboard-view.js";
-import GameOptions from "./game-options/game-options-view.js";
-import LogView from "./log/logger-view.js";
-import SettingsView from "./settings/settings-view.js";
+import GameboardView from "./../gameboard/gameboard-view.js";
+import GameOptions from "./../game-options/game-options-view.js";
+import LogView from "./../log/logger-view.js";
+import SettingsView from "./../settings/settings-view.js";
 
 // Top level view that displays game UI.
 export default class GameView {
@@ -23,7 +23,7 @@ export default class GameView {
     // Sub-View References
     #logView;
 
-    constructor(boardsize, controller) {
+    constructor(controller) {
         // Save reference to controller.
         this.#controller = controller;
 
@@ -33,7 +33,7 @@ export default class GameView {
 
         // |----- GameArea ------|
         // Build game area compnents.
-        const gameboardView = new GameboardView(boardsize, controller);
+        const gameboardView = new GameboardView(controller);
         const gameOptionsView = new GameOptions();
 
         // Mount game area components.
@@ -43,7 +43,7 @@ export default class GameView {
 
         // |----- GameSidebar ------|
         // Build log and settings.
-        this.#logView = new LogView(boardsize);
+        this.#logView = new LogView(controller);
 
         // Initialize settings.
         const settingsView = new SettingsView(
@@ -77,7 +77,7 @@ export default class GameView {
     // |----- Audio Methods -----|
 
     // |----- Log Methods -----|
-    logTurn(turn) {
+    postEntry(turn) {
         this.#logView.logTurn(turn);
         return this;
     }
