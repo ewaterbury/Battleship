@@ -2,8 +2,8 @@
 import Model from "./model/model.js";
 
 // Top Level View Modules
-import PreGameView from "./view/pre-game-view.js";
-import GameView from "./view/game-view.js";
+import PreGameView from "./view/game-states/pre-game-view.js";
+import GameView from "./view/game-states/game-view.js";
 // import PostGameView from "./view/post-game-view.js"
 
 // Audio Components
@@ -17,13 +17,14 @@ export default class Controller {
     // Initialize active view.
     #activeView;
 
-    // Initialize boardSize with default value (10);
-    #boardSize = 10;
-
     constructor() {
         this.#initializeTheme();
         this.#initializeBackingAudio();
         this.#initializeEffectsAudio();
+
+        // Public Properties
+        this.boardSize = this.#model.boardSize;
+        this.fleetTemplate = this.#model.fleetTemplate;
     }
 
     // |----- Initialization Helpers -----|
@@ -65,7 +66,7 @@ export default class Controller {
 
     // |----- Game State Methods -----|
     startPreGame() {
-        this.#updateView(new PreGameView());
+        this.#updateView(new PreGameView(this));
     }
 
     startGame() {
@@ -73,7 +74,7 @@ export default class Controller {
         // this.#model.newGame();
 
         // Call update view with initilized GameView.
-        this.#updateView(new GameView(10, this));
+        this.#updateView(new GameView(this));
     }
 
     startPostGame() {}
@@ -95,5 +96,10 @@ export default class Controller {
     // |----- Audio -----|
     playEffect(status) {
         this.gameEffects[status].play();
+    }
+    // |----- Fleet Template -----|
+    updateFleetTemplate(templateUpdate) {
+        // Returns update status (pass fail).
+        return this.#model.updateFleetTemplate(templateUpdate);
     }
 }
