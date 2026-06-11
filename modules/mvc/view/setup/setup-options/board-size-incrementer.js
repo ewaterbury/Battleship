@@ -48,12 +48,15 @@ export default class BoardSizeIncrementer extends Component {
 
         [label, shipCount].forEach((component) => form.append(component));
 
+        this.append(form);
+
         // |----- Behavior -----|
         // Add event to update board size on input.
         shipCount.on("input", (e) => {
+            // Update board size on controller.
             controller.boardSize.current = e.target.value;
-        });
 
-        this.append(form);
+            // Render new ship placement board.
+        });
     }
 }
