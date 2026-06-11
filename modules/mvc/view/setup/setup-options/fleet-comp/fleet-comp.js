@@ -7,8 +7,8 @@ import { EL } from "../../../../../constants.js";
 // Imported Components
 import ShipIncrementer from "./ship-incrementer.js"; // Menu item to specify ship count for a ship type.
 
-export default class FleetComp extends Component {
-    constructor() {
+export default class FleetComposer extends Component {
+    constructor(controller) {
         // Initialize root element (li) and assign ID using super constructor.
         super(EL.LI, `fleet-incrementer`);
 
@@ -24,9 +24,7 @@ export default class FleetComp extends Component {
             { type: "Cruiser", size: 3, count: 2 },
             { type: "Destroyer", size: 5, count: 1 },
         ].forEach((ship) => {
-            shipList.append(
-                new ShipIncrementer(ship.size, ship.type, ship.count),
-            );
+            shipList.append(new ShipIncrementer(controller, ship));
         });
 
         [form, legend, shipList].forEach((compnent) => this.append(compnent));
