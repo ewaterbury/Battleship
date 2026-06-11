@@ -23,8 +23,8 @@ export const DEFAULT_VALUES = {
     BOARD_SIZE: 10,
 
     // Default Ship Counts and Sizes
-    BATTLESHIP: { COUNT: 1, SIZE: 4 },
-    CARRIER: { COUNT: 1, SIZE: 5 },
-    CRUISER: { COUNT: 2, SIZE: 3 },
-    DESTROYER: { COUNT: 1, SIZE: 2 },
+    BATTLESHIP: { TYPE: "battleship", COUNT: 1, SIZE: 4 },
+    CARRIER: { TYPE: "carrier", COUNT: 1, SIZE: 5 },
+    CRUISER: { TYPE: "cruiser", COUNT: 2, SIZE: 3 },
+    DESTROYER: { TYPE: "destroyer", COUNT: 1, SIZE: 2 },
 };
