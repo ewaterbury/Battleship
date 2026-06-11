@@ -22,16 +22,21 @@ export default class PreGameView {
         this.#controller = controller;
 
         // Build mount targets.
-        this.#setupArea = new MountPoint("setup-area");
+        this.#setupArea = new SetupView(controller);
         this.#sidebar = new MountPoint("sidebar-area");
-
-        // |----- Setup Area ------|
-        this.#setupArea.append(new SetupView(controller));
 
         // |----- Sidebar ------|
         // This will hold settings menu.
 
-        this.#setupArea.mount(document.querySelector("#battleship"));
+        this.#setupArea.mount(
+            document.querySelector("#battleship header"),
+            "after",
+        );
+
+        this.#sidebar.mount(
+            document.querySelector("#battleship #setup-area"),
+            "after",
+        );
     }
 
     removeView() {
