@@ -6,7 +6,8 @@ import { EL } from "../../../../constants.js";
 
 // Import components.
 import BoardSizeIncrementer from "./board-size-incrementer.js"; // Menu item to specify board size.
-import FleetComp from "./fleet-comp/fleet-comp.js"; // Submenu to specfiy fleet composition.
+import FleetComposer from "./fleet-comp/fleet-comp.js"; // Submenu to specfiy fleet composition.
+import Button from "../../button.js"; // Button used to reset fleet size and board size to default.
 
 export default class SetupOptions extends Component {
     constructor(controller) {
@@ -14,8 +15,15 @@ export default class SetupOptions extends Component {
         super(EL.SECTION, "setup-options-area");
 
         // |----- UI Construction -----|
-        this.append(new Component(EL.H2).setText("Customize Options:"));
+        // Contoller is passed to relevant components during initialization.
+        this.append(new Component(EL.H2).setText("Setup Options:"));
         this.append(new BoardSizeIncrementer(controller));
-        this.append(new FleetComp(controller));
+        this.append(new FleetComposer(controller));
+        this.append(
+            new Button().setText("Reset Game Options"),
+            this.#resetSetup,
+        );
     }
+
+    #resetSetup = () => {};
 }
