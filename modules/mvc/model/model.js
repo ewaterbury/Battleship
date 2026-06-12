@@ -11,13 +11,13 @@ export default class Model {
     constructor() {
         // Represents board size (e.g., 10 x 10).
         this.boardSize = {
-            current: DEFAULT_VALUES.BOARD_SIZE,
+            current: DEFAULT_VALUES.BOARD_SIZE.DEFAULT,
         };
 
         // Set min and max board sizes as read-only fields.
         Object.defineProperties(this.boardSize, {
-            min: { value: 7, writable: false },
-            max: { value: 12, writable: false },
+            min: { value: DEFAULT_VALUES.BOARD_SIZE.MIN, writable: false },
+            max: { value: DEFAULT_VALUES.BOARD_SIZE.MAX, writable: false },
         });
 
         // Represents fleet composition for the next game.
@@ -81,13 +81,13 @@ export default class Model {
 
     // |----- Board Size -----|
     updateBoardSize(boardSize) {
-        if (boardSize !== this.boardSize.current) {
-            this.boardSize.current = boardSize;
+        // Check if board should be updated.
+        const updateBoard = boardSize !== this.boardSize.current;
 
-            return true;
-        }
+        if (updateBoard) this.boardSize.current = boardSize;
 
-        return false;
+        // Return whether board was updated.
+        return updateBoard;
     }
 
     // |----- Fleet Template -----|
