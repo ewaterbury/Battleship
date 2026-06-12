@@ -65,11 +65,11 @@ export default class Controller {
     }
 
     // |----- Game State Methods -----|
-    startPreGame() {
+    renderPreGame() {
         this.#updateView(new PreGameView(this));
     }
 
-    startGame() {
+    renderGame() {
         // Start new game in model.
         // this.#model.newGame();
 
@@ -77,8 +77,9 @@ export default class Controller {
         this.#updateView(new GameView(this));
     }
 
-    startPostGame() {}
+    renderPostGame() {}
 
+    // Game State Helper
     #updateView(view) {
         // Clear current view.
         if (this.#activeView) this.#activeView.remove();
@@ -97,6 +98,12 @@ export default class Controller {
     playEffect(status) {
         this.gameEffects[status].play();
     }
+
+    // |----- Board Size -----|
+    updateBoardSize(boardSize) {
+        if (this.#model.updateBoardSize(boardSize)) this.renderPreGame();
+    }
+
     // |----- Fleet Template -----|
     updateFleetTemplate(templateUpdate) {
         // Returns update status (pass fail).
