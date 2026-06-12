@@ -7,7 +7,7 @@ import { EL } from "../../../constants.js";
 
 // Sub-View Modules
 import GameboardView from "./../gameboard/gameboard-view.js";
-import GameOptions from "./../game-options/game-options-view.js";
+import GameOptions from "../game-options/game-options-component.js";
 import LogView from "./../log/logger-view.js";
 import SettingsView from "./../settings/settings-view.js";
 
@@ -41,7 +41,7 @@ export default class GameView {
             this.#gameArea.append(view),
         );
 
-        // |----- GameSidebar ------|
+        // |----- Sidebar ------|
         // Build log and settings.
         this.#logView = new LogView(controller);
 
