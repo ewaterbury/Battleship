@@ -4,18 +4,18 @@ import ViewComponent from "../../view-component.js";
 // Elements Library
 import { EL } from "../../../../constants.js";
 
-// Utility Libraries
+// VAlidation Library
 import ValidationUtilities from "../../../../validation-utilities.js";
 
 // Imported Components
-import PlacementCell from "./placement-cell-component.js";
+import PlacementCell from "./placement-cell-component.js"; // Used to build board grid.
 
 export default class PlacementBoard extends ViewComponent {
     constructor(controller) {
-        // Save boardSize for repeated use.
-        const boardSize = controller.boardSize.current;
+        const boardSize = controller.boardSize.current; // Save for repeated use.
 
         // |----- Validation -----|
+
         // Validate boardsize input.
         if (!ValidationUtilities.isPositiveInt(boardSize))
             throw new TypeError("BoardSize must be a positive integer");
@@ -23,14 +23,17 @@ export default class PlacementBoard extends ViewComponent {
             throw new TypeError("BoardSize must be between 5 and 12");
 
         // |----- Build Board Container-----|
+
         // Initialize root element (section) and assign ID using super constructor.
         super(EL.SECTION, "ship-placement-board");
 
         // |----- Stylesheet -----|
+
         // Set boardsize on stylesheet (Needed for grid display).
         document.documentElement.style.setProperty("--board-size", boardSize);
 
         // |----- UI Construction -----|
+
         const label = new ViewComponent(EL.H3).setText("Place your ships."); // Build board caption.
         const corner = new ViewComponent(EL.DIV).addClass("corner"); // Build layout spacer (Formatting only).
         const colLabels = this.#buildColLabels(boardSize); // Build column Labels (Top row of board).
@@ -41,6 +44,8 @@ export default class PlacementBoard extends ViewComponent {
             this.append(component),
         );
     }
+
+    // |----- UI Construction Helpers -----|
 
     #buildColLabels(boardSize) {
         // Build col labels (Top row of board).
@@ -58,7 +63,8 @@ export default class PlacementBoard extends ViewComponent {
         const rowLabels = new ViewComponent(EL.DIV).addClass("row-labels");
 
         for (let row = 0; row < boardsize; row++) {
-            const A_CHAR = 65;
+            const A_CHAR = 65; // ASCII index for 'A'.
+
             rowLabels.append(
                 new ViewComponent(EL.SPAN).setText(
                     String.fromCharCode(A_CHAR + row),
