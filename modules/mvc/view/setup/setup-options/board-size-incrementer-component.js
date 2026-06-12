@@ -15,6 +15,7 @@ export default class BoardSizeIncrementer extends Component {
         this.#controller = controller;
 
         // |----- UI Construction -----|
+
         const form = new Component(EL.FORM);
 
         const label = new Component(
@@ -38,7 +39,7 @@ export default class BoardSizeIncrementer extends Component {
             "max",
             "value",
         )
-            .setText(10)
+            .setText(controller.boardSize.current)
             .setAttr("name", "board-size-count")
             .setAttr("type", "number")
 
@@ -51,12 +52,9 @@ export default class BoardSizeIncrementer extends Component {
         this.append(form);
 
         // |----- Behavior -----|
-        // Add event to update board size on input.
         shipCount.on("input", (e) => {
-            // Update board size on controller.
-            controller.boardSize.current = e.target.value;
-
-            // Render new ship placement board.
+            // Direct controller to update board size.
+            controller.updateBoardSize(parseInt(e.target.value));
         });
     }
 }
