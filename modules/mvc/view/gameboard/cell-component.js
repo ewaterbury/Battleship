@@ -1,8 +1,12 @@
+// Core Components
 import Component from "../view-component.js";
+
+// Elements Library
 import { EL } from "../../../constants.js";
+
+// Utility Libraries
 import ViewUtils from "../view-utilities.js";
 import ValUtils from "../../../validation-utilities.js";
-import Controller from "../../controller.js";
 
 export default class CellComponent extends Component {
     #controller;
@@ -27,7 +31,14 @@ export default class CellComponent extends Component {
             throw new TypeError("Invalid controller interface");
         }
 
-        super(EL.DIV, `${player}-${cellNumber}`, "dataset");
+        // Initialize cell and assign ID using super constructor.
+        super(
+            EL.DIV,
+            `${player}-${cellNumber}`,
+
+            // Whitelisted properties (for setProp/readProp):
+            "dataset",
+        );
 
         // Save reference to controller.
         this.#controller = controller;
