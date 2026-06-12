@@ -10,7 +10,9 @@ export default class Model {
 
     constructor() {
         // Represents board size (e.g., 10 x 10).
-        this.boardSize = { current: DEFAULT_VALUES.BOARD_SIZE };
+        this.boardSize = {
+            current: DEFAULT_VALUES.BOARD_SIZE,
+        };
 
         // Set min and max board sizes as read-only fields.
         Object.defineProperties(this.boardSize, {
@@ -22,18 +24,25 @@ export default class Model {
         // Defaults to standard Battleship fleet [2, 3, 3, 4, 5].
         this.fleetTemplate = {
             carrier: {
+                type: DEFAULT_VALUES.CARRIER.TYPE,
                 size: DEFAULT_VALUES.CARRIER.SIZE,
                 count: DEFAULT_VALUES.CARRIER.COUNT,
             },
+
             battleship: {
+                type: DEFAULT_VALUES.BATTLESHIP.TYPE,
                 size: DEFAULT_VALUES.BATTLESHIP.SIZE,
                 count: DEFAULT_VALUES.BATTLESHIP.COUNT,
             },
+
             cruiser: {
+                type: DEFAULT_VALUES.CRUISER.TYPE,
                 size: DEFAULT_VALUES.CRUISER.SIZE,
-                count: DEFAULT_VALUES.CRUISER.SIZE,
+                count: DEFAULT_VALUES.CRUISER.COUNT,
             },
+
             destroyer: {
+                type: DEFAULT_VALUES.DESTROYER.TYPE,
                 size: DEFAULT_VALUES.DESTROYER.SIZE,
                 count: DEFAULT_VALUES.DESTROYER.COUNT,
             },
@@ -41,13 +50,57 @@ export default class Model {
 
         // Set ship.size as read-only field.
         for (const ship of Object.values(this.fleetTemplate))
-            Object.defineProperty(ship, "size", {
+            Object.defineProperties(ship, {
+                type: { value: ship.type, writable: false },
                 size: { value: ship.size, writable: false },
             });
     }
 
     get latestTurn() {
         return this.#battleship.latestTurn;
+    }
+
+    get maxFleetSize() {
+        // Max ship count is set to 30% of cells with a floor of 16 cells (total size of standard fleet).
+        return Math.max(Math.floor(this.boardSize.current ** 2 * 0.3), 16);
+    }
+
+    get fleetSize() {
+        let totalCells = 0;
+
+        Object.values(this.fleetTemplate).forEach(
+            (ship) => (total += ship.count * ship.size),
+        );
+
+        return totalCells;
+    }
+
+    // |--------------- Pre Game ---------------|
+
+    // |---------- Game Settings ----------|
+    // |----- Fleet Template -----|
+    updateFleetTemplate(templateUpdate) {
+        // Current count of ship being updated.
+        const currentCount = this.fleetTemplate[templateUpdate.type].count;
+
+        // Change in count of ship being updated.
+        const countChange =
+            currentCount + (templateUpdate.count - currentCount);
+
+        // updated template size
+        const updatedTemplateSize =
+            this.fleetSize + countChange * templateUpdate.size;
+
+        // If new fleet size is valid, update ship count.
+        if (
+            updatedTemplateSize <= this.maxFleetSize &&
+            this.updatedTemplateSize > 0
+        ) {
+            this.fleetTemplate[templateUpdate.type].count += countChange;
+            return true;
+        } else {
+            return false;
+        }
     }
 
     // Initialize new game
@@ -61,7 +114,7 @@ export default class Model {
         // Send attack.
         this.#battleship.sendAttack(attack);
 
-        //Log attack.
+        // Log attack.
         this.#battleship.logAttack(attack);
 
         // Get turn result before going to next turn.
