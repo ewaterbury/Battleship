@@ -78,6 +78,18 @@ export default class Model {
     // |--------------- Pre Game ---------------|
 
     // |---------- Game Settings ----------|
+
+    // |----- Board Size -----|
+    updateBoardSize(boardSize) {
+        if (boardSize !== this.boardSize.current) {
+            this.boardSize.current = boardSize;
+
+            return true;
+        }
+
+        return false;
+    }
+
     // |----- Fleet Template -----|
     updateFleetTemplate(templateUpdate) {
         // Current count of ship being updated.
