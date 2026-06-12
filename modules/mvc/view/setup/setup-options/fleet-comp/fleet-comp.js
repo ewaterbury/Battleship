@@ -18,15 +18,10 @@ export default class FleetComposer extends Component {
         const shipList = new Component(EL.MENU);
 
         // Add instance of ShipIncrementer for each ship.
-        [
-            { type: "Carrier", size: 5, count: 1 },
-            { type: "Battleship", size: 4, count: 1 },
-            { type: "Cruiser", size: 3, count: 2 },
-            { type: "Destroyer", size: 5, count: 1 },
-        ].forEach((ship) => {
-            shipList.append(new ShipIncrementer(controller, ship));
-        });
+        Object.values(controller.fleetTemplate).forEach((ship) =>
+            shipList.append(new ShipIncrementer(controller, ship)),
+        );
 
-        [form, legend, shipList].forEach((compnent) => this.append(compnent));
+        [form, legend, shipList].forEach((component) => this.append(component));
     }
 }
