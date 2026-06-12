@@ -5,9 +5,9 @@ import MountPoint from "../mount-point.js";
 import { EL, DEFAULT_VALUES } from "../../../constants.js";
 
 // Import components.
-import SetupOptions from "./setup-options/setup-options.js";
+import SetupOptions from "./setup-options/setup-options-component.js";
 import PlacementBoard from "./placement-board/placement-board-component.js";
-import ShipContainer from "./ship-container.js";
+import ShipContainer from "./ship-container/ship-container-component.js";
 
 export default class SetupView extends MountPoint {
     constructor(controller) {
@@ -16,7 +16,7 @@ export default class SetupView extends MountPoint {
 
         // |----- Construct UI -----|
         this.append(new SetupOptions(controller));
-        // this.append(new ShipContainer());
+        this.append(new ShipContainer(controller));
         this.append(new PlacementBoard(controller));
     }
 }
