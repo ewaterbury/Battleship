@@ -16,11 +16,16 @@ export const EL = {
     P: "p",
     SECTION: "section",
     SPAN: "span",
+    UL: "ul",
 };
 
 export const DEFAULT_VALUES = {
     // Default Board Size
-    BOARD_SIZE: 10,
+    BOARD_SIZE: {
+        DEFAULT: 10,
+        MIN: 7,
+        MAX: 12,
+    },
 
     // Default Ship Counts and Sizes
     BATTLESHIP: { TYPE: "battleship", COUNT: 1, SIZE: 4 },
