@@ -107,6 +107,7 @@ export default class Controller {
     // |----- Fleet Template -----|
     updateFleetTemplate(templateUpdate) {
         // Returns update status (pass fail).
-        return this.#model.updateFleetTemplate(templateUpdate);
+        this.#model.updateFleetTemplate(templateUpdate);
+        this.renderPreGame();
     }
 }
