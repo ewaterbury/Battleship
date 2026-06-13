@@ -69,7 +69,7 @@ export default class Model {
         let totalCells = 0;
 
         Object.values(this.fleetTemplate).forEach(
-            (ship) => (total += ship.count * ship.size),
+            (ship) => (totalCells += ship.count * ship.size),
         );
 
         return totalCells;
@@ -84,35 +84,67 @@ export default class Model {
         // Check if board should be updated.
         const updateBoard = boardSize !== this.boardSize.current;
 
-        if (updateBoard) this.boardSize.current = boardSize;
+        if (updateBoard) {
+            // Update board size
+            this.boardSize.current = boardSize;
 
-        // Return whether board was updated.
+            // Shrink fleet to be below maxFleetSize threshold.
+            if (this.fleetSize > this.maxFleetSize) this.#minifyFleet();
+        }
+
+        // Return whether board was updated (Signals controller to update view).
         return updateBoard;
     }
 
+    #minifyFleet() {
+        // Add fleet template to iterable structure.
+        const fleet = Object.values(this.fleetTemplate);
+
+        // Sort in descending order.
+        fleet.sort((a, b) => b.size - a.size);
+
+        // Remove empty ships.
+        fleet.forEach((ship) => {
+            if (ship.count === 0) fleet.splice(fleet.indexOf(ship), 1);
+        });
+
+        while (this.fleetSize > this.maxFleetSize) {
+            // Get largest ship.
+            const ship = fleet[0];
+
+            // Decrement count.
+            ship.count--;
+
+            // Update this.fleetTemplate.
+            this.updateFleetTemplate({
+                count: ship.count,
+                size: ship.size,
+                type: ship.type,
+            });
+
+            // Remove ship if count is zero.
+            if (!fleet[0].count) fleet.splice(0, 1);
+        }
+    }
+
     // |----- Fleet Template -----|
-    updateFleetTemplate(templateUpdate) {
+    updateFleetTemplate(update) {
         // Current count of ship being updated.
-        const currentCount = this.fleetTemplate[templateUpdate.type].count;
+        const currentCount = this.fleetTemplate[update.type].count;
 
         // Change in count of ship being updated.
-        const countChange =
-            currentCount + (templateUpdate.count - currentCount);
+        const countChange = update.count - currentCount;
 
         // updated template size
-        const updatedTemplateSize =
-            this.fleetSize + countChange * templateUpdate.size;
+        const updatedFleet = this.fleetSize + countChange * update.size;
 
         // If new fleet size is valid, update ship count.
+        // Allow fleets larger than max size when count is descending.
         if (
-            updatedTemplateSize <= this.maxFleetSize &&
-            this.updatedTemplateSize > 0
-        ) {
-            this.fleetTemplate[templateUpdate.type].count += countChange;
-            return true;
-        } else {
-            return false;
-        }
+            (updatedFleet <= this.maxFleetSize || countChange < 0) &&
+            updatedFleet > 0
+        )
+            this.fleetTemplate[update.type].count = update.count;
     }
 
     // Initialize new game
