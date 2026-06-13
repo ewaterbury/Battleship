@@ -59,8 +59,8 @@ export default class ShipIncrementer extends Component {
 
             // Build template update object (sent to controller -> model).
             const templateUpdate = {
-                update: e.data,
-                size: data.shipSize,
+                count: Number(e.data),
+                size: Number(data.shipSize),
                 type: data.shipType,
             };
 
