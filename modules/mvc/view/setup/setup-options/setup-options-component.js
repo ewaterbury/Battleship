@@ -20,9 +20,9 @@ export default class SetupOptions extends ViewComponent {
 
         const menu = new ViewComponent(EL.MENU);
 
-        menu.append(new BoardSizeIncrementer(controller));
-        menu.append(new FleetComposer(controller));
-        menu.append(new DefaultSettings(controller));
+        menu.append(new BoardSizeIncrementer(controller))
+            .append(new FleetComposer(controller))
+            .append(new DefaultSettings(controller));
 
         this.append(menu);
     }
