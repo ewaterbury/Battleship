@@ -12,7 +12,7 @@ export default class DefaultSettings extends ViewComponent {
 
     constructor(controller) {
         // Initialize root element (li) using super constructor.
-        super(EL.LI);
+        super(EL.LI, "reset-setup-option");
 
         this.#controller = controller;
 

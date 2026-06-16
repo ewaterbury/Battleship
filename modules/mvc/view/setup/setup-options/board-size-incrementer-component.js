@@ -16,7 +16,7 @@ export default class BoardSizeIncrementer extends Component {
 
         // |----- UI Construction -----|
 
-        const form = new Component(EL.FORM);
+        const form = new Component(EL.FORM, "board-size-incrementer");
 
         const label = new Component(
             EL.LABEL,
@@ -33,14 +33,12 @@ export default class BoardSizeIncrementer extends Component {
             "board-size-count", // ship count ID.
 
             // Whitelisted attributes (for setAtrr/readAttr):
-            "name",
             "type",
             "min",
             "max",
             "value",
         )
             .setText(controller.boardSize.current)
-            .setAttr("name", "board-size-count")
             .setAttr("type", "number")
 
             .setAttr("min", controller.boardSize.min) // Minimum board size.

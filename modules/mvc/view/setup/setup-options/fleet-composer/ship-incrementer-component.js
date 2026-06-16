@@ -13,7 +13,7 @@ export default class ShipIncrementer extends Component {
 
     constructor(controller, ship) {
         // Initialize root element (li) and assign ID using super constructor.
-        super(EL.LI, `${name}-incrementer`);
+        super(EL.LI);
 
         // Store a reference to the controller for fleet updates.
         this.#controller = controller;
@@ -33,16 +33,14 @@ export default class ShipIncrementer extends Component {
 
         this.#input = new Component(
             EL.INPUT,
-            "", // Blank string to bypass id.
+            inputName, // Blank string to bypass id.
 
             // Whitelisted attributes (for setAtrr/readAttr):
-            "name",
             "type",
             "min",
             "value",
             "dataset",
         )
-            .setAttr("name", inputName)
             .setAttr("type", "number")
             .setAttr("min", 0) // Minimum input value.
             .setAttr("value", ship.count)
