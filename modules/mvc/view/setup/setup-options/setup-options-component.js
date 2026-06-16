@@ -7,7 +7,7 @@ import { EL } from "../../../../constants.js";
 // Import Components.
 import BoardSizeIncrementer from "./board-size-incrementer-component.js"; // Menu item to specify board size.
 import FleetComposer from "./fleet-composer/fleet-composer-component.js"; // Submenu to specfiy fleet composition.
-import Button from "../../button.js"; // Button used to reset fleet size and board size to default.
+import DefaultSettings from "./default-settings-component.js";
 
 export default class SetupOptions extends ViewComponent {
     constructor(controller) {
@@ -22,14 +22,7 @@ export default class SetupOptions extends ViewComponent {
 
         menu.append(new BoardSizeIncrementer(controller));
         menu.append(new FleetComposer(controller));
-
-        menu.append(
-            new ViewComponent(EL.LI).append(
-                new Button("reset-setup", this.#resetSetup).setText(
-                    "Reset Setup Options",
-                ),
-            ),
-        );
+        menu.append(new DefaultSettings(controller));
 
         this.append(menu);
     }
