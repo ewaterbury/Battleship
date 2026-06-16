@@ -28,8 +28,10 @@ export const DEFAULT_VALUES = {
     },
 
     // Default Ship Counts and Sizes
-    BATTLESHIP: { TYPE: "battleship", COUNT: 1, SIZE: 4 },
-    CARRIER: { TYPE: "carrier", COUNT: 1, SIZE: 5 },
-    CRUISER: { TYPE: "cruiser", COUNT: 2, SIZE: 3 },
-    DESTROYER: { TYPE: "destroyer", COUNT: 1, SIZE: 2 },
+    SHIPS: {
+        BATTLESHIP: { TYPE: "battleship", COUNT: 1, SIZE: 4 },
+        CARRIER: { TYPE: "carrier", COUNT: 1, SIZE: 5 },
+        CRUISER: { TYPE: "cruiser", COUNT: 2, SIZE: 3 },
+        DESTROYER: { TYPE: "destroyer", COUNT: 1, SIZE: 2 },
+    },
 };
