@@ -24,27 +24,27 @@ export default class Model {
         // Defaults to standard Battleship fleet [2, 3, 3, 4, 5].
         this.fleetTemplate = {
             carrier: {
-                type: DEFAULT_VALUES.CARRIER.TYPE,
-                size: DEFAULT_VALUES.CARRIER.SIZE,
-                count: DEFAULT_VALUES.CARRIER.COUNT,
+                type: DEFAULT_VALUES.SHIPS.CARRIER.TYPE,
+                size: DEFAULT_VALUES.SHIPS.CARRIER.SIZE,
+                count: DEFAULT_VALUES.SHIPS.CARRIER.COUNT,
             },
 
             battleship: {
-                type: DEFAULT_VALUES.BATTLESHIP.TYPE,
-                size: DEFAULT_VALUES.BATTLESHIP.SIZE,
-                count: DEFAULT_VALUES.BATTLESHIP.COUNT,
+                type: DEFAULT_VALUES.SHIPS.BATTLESHIP.TYPE,
+                size: DEFAULT_VALUES.SHIPS.BATTLESHIP.SIZE,
+                count: DEFAULT_VALUES.SHIPS.BATTLESHIP.COUNT,
             },
 
             cruiser: {
-                type: DEFAULT_VALUES.CRUISER.TYPE,
-                size: DEFAULT_VALUES.CRUISER.SIZE,
-                count: DEFAULT_VALUES.CRUISER.COUNT,
+                type: DEFAULT_VALUES.SHIPS.CRUISER.TYPE,
+                size: DEFAULT_VALUES.SHIPS.CRUISER.SIZE,
+                count: DEFAULT_VALUES.SHIPS.CRUISER.COUNT,
             },
 
             destroyer: {
-                type: DEFAULT_VALUES.DESTROYER.TYPE,
-                size: DEFAULT_VALUES.DESTROYER.SIZE,
-                count: DEFAULT_VALUES.DESTROYER.COUNT,
+                type: DEFAULT_VALUES.SHIPS.DESTROYER.TYPE,
+                size: DEFAULT_VALUES.SHIPS.DESTROYER.SIZE,
+                count: DEFAULT_VALUES.SHIPS.DESTROYER.COUNT,
             },
         };
 
@@ -78,6 +78,22 @@ export default class Model {
     // |--------------- Pre Game ---------------|
 
     // |---------- Game Settings ----------|
+
+    // |----- Default Settings -----|
+    resetGameSettings() {
+        // Set board to default size.
+        this.boardSize.current = DEFAULT_VALUES.BOARD_SIZE.DEFAULT;
+
+        // Set fleet counts to default sizes.
+        this.fleetTemplate.battleship.count =
+            DEFAULT_VALUES.SHIPS.BATTLESHIP.COUNT;
+        this.fleetTemplate.carrier.count = DEFAULT_VALUES.SHIPS.CARRIER.COUNT;
+        this.fleetTemplate.cruiser.count = DEFAULT_VALUES.SHIPS.CRUISER.COUNT;
+        this.fleetTemplate.destroyer.count =
+            DEFAULT_VALUES.SHIPS.DESTROYER.COUNT;
+
+        console.log("called");
+    }
 
     // |----- Board Size -----|
     updateBoardSize(boardSize) {

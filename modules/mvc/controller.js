@@ -10,6 +10,9 @@ import GameView from "./view/game-states/game-view.js";
 import AudioComponent from "./view/audio/audio-component.js";
 import AudioLoop from "./view/audio/audio-loop-component.js";
 
+// Defaults Library
+import { DEFAULT_VALUES } from "../constants.js";
+
 export default class Controller {
     // Initialize game model.
     #model = new Model();
@@ -97,6 +100,14 @@ export default class Controller {
     // |----- Audio -----|
     playEffect(status) {
         this.gameEffects[status].play();
+    }
+
+    // |---------- Game Settings (Pre Game) ----------|
+
+    // |----- Default Settings -----|
+    resetGameSettings() {
+        this.#model.resetGameSettings();
+        this.renderPreGame();
     }
 
     // |----- Board Size -----|
