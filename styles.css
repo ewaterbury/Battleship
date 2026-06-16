@@ -7,8 +7,7 @@
     }
 }
 
-@layer base {
-    /* Default Theme Variables */
+@layer variables {
     :root {
         /* Board Size */
         --board-size: 0;
@@ -35,7 +34,9 @@
         --margin-4: 16px;
         --margin-5: 32px;
     }
+}
 
+@layer themes {
     /* Light Theme */
     :root,
     [data-theme="light"] {
@@ -68,7 +69,9 @@
         --ship: #9aa3b2;
         --empty: #1a1f33;
     }
+}
 
+@layer base {
     body {
         /* Display (Self) */
         margin: 0;
