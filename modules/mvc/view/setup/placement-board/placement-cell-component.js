@@ -18,19 +18,21 @@ export default class PlacementCell extends ViewComponent {
             throw new TypeError("cell number must be a positive integer");
 
         // Validate controller
-        // if (
-        //     !controller ||
-        //     typeof controller.sendAttack !== "function" ||
-        //     typeof controller.boardsize !== "number" ||
-        //     typeof controller.activePlayer !== "string"
-        // ) {
-        //     throw new TypeError("Invalid controller interface");
-        // }
+        if (
+            !controller ||
+            typeof controller.sendAttack !== "function" ||
+            typeof controller.boardsize !== "number" ||
+            typeof controller.activePlayer !== "string"
+        ) {
+            throw new TypeError("Invalid controller interface");
+        }
 
         super(EL.DIV, `placement-${cellNumber}`, "dataset");
 
         // Save reference to controller.
         this.#controller = controller;
+
+        this.addClass("board-cell");
 
         // Attach data to cell, set cell text, add callback.
         this.addDataset("cell", cellNumber)
