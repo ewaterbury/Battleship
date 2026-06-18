@@ -34,7 +34,9 @@ export default class PlacementBoard extends ViewComponent {
 
         // |----- UI Construction -----|
 
-        const label = new ViewComponent(EL.H3).setText("Place your ships."); // Build board caption.
+        this.addClass("board");
+
+        const label = new ViewComponent(EL.H3).setText("Place your ships..."); // Build board caption.
         const corner = new ViewComponent(EL.DIV).addClass("corner"); // Build layout spacer (Formatting only).
         const colLabels = this.#buildColLabels(boardSize); // Build column Labels (Top row of board).
         const rowLabels = this.#buildRowLabels(boardSize); // Build row labels (Left column of board).
