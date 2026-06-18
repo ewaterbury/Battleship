@@ -15,8 +15,14 @@ export default class ShipContainer extends ViewComponent {
         super(EL.SECTION, "ship-container-area");
 
         // |----- UI Construction -----|
-        for (const ship of Object.values(controller.fleetTemplate)) {
-            for (let i = 0; i < ship.count; i++) this.append(new Ship(ship, i));
-        }
+        this.append(new ViewComponent(EL.H2).setText("Fleet:"));
+
+        const container = new ViewComponent(EL.DIV);
+
+        for (const ship of Object.values(controller.fleetTemplate))
+            for (let i = 0; i < ship.count; i++)
+                container.append(new Ship(ship, i));
+
+        this.append(container);
     }
 }
