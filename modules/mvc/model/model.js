@@ -19,21 +19,6 @@ export default class Model {
         return this.#battleship.latestTurn;
     }
 
-    get maxFleetSize() {
-        // Max ship count is set to 30% of cells with a floor of 16 cells (total size of standard fleet).
-        return Math.max(Math.floor(this.boardSize.current ** 2 * 0.3), 16);
-    }
-
-    get fleetSize() {
-        let totalCells = 0;
-
-        Object.values(this.fleetTemplate).forEach(
-            (ship) => (totalCells += ship.count * ship.size),
-        );
-
-        return totalCells;
-    }
-
     // Initialize new game
     newGame(playerFleet) {
         this.#battleship = new Battleship(this.boardSize, playerFleet);
