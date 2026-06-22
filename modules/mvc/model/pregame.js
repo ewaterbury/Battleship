@@ -2,18 +2,12 @@
 import { DEFAULT_VALUES } from "../../constants.js";
 
 export default class Pregame {
+    #boardSize;
+
     constructor() {
         // |----- Board Size -----|
         // Represents board size for next game (e.g., 10 x 10).
-        this.boardSize = {
-            current: DEFAULT_VALUES.BOARD_SIZE.DEFAULT,
-        };
-
-        // Set min and max board sizes as read-only fields.
-        Object.defineProperties(this.boardSize, {
-            min: { value: DEFAULT_VALUES.BOARD_SIZE.MIN, writable: false },
-            max: { value: DEFAULT_VALUES.BOARD_SIZE.MAX, writable: false },
-        });
+        this.#boardSize = DEFAULT_VALUES.BOARD_SIZE.DEFAULT;
 
         // |----- Fleet Template -----|
         // Represents fleet composition for next game.
@@ -53,12 +47,19 @@ export default class Pregame {
 
         // |----- Placement Fleet -----|
         // Tracks placement status of individual ships.
-        this.placementFleet = this.#generatePlacementFleet();
+        this.fleet = this.#generatePlacementFleet();
     }
 
-    get maxFleetSize() {
-        // Max ship count is set to 30% of cells with a floor of 16 cells (total size of standard fleet).
-        return Math.max(Math.floor(this.boardSize.current ** 2 * 0.3), 16);
+    get boardSize() {
+        return this.#boardSize;
+    }
+
+    get minBoardSize() {
+        return DEFAULT_VALUES.BOARD_SIZE.MIN;
+    }
+
+    get maxBoardSize() {
+        return DEFAULT_VALUES.BOARD_SIZE.MAX;
     }
 
     get fleetSize() {
@@ -70,30 +71,39 @@ export default class Pregame {
 
         return totalCells;
     }
+
+    get maxFleetSize() {
+        // Max ship count is set to 30% of cells with a floor of 16 cells (total size of standard fleet).
+        return Math.max(Math.floor(this.#boardSize ** 2 * 0.3), 16);
+    }
     // |---------- Game Settings (Pregame) ----------|
 
     // |----- Reset to Default Settings -----|
     resetGameSettings() {
         // Set board to default size.
-        this.boardSize.current = DEFAULT_VALUES.BOARD_SIZE.DEFAULT;
+        this.#boardSize = DEFAULT_VALUES.BOARD_SIZE.DEFAULT;
 
         // Set fleet counts to default sizes.
         this.template.battleship.count = DEFAULT_VALUES.SHIPS.BATTLESHIP.COUNT;
         this.template.carrier.count = DEFAULT_VALUES.SHIPS.CARRIER.COUNT;
         this.template.cruiser.count = DEFAULT_VALUES.SHIPS.CRUISER.COUNT;
         this.template.destroyer.count = DEFAULT_VALUES.SHIPS.DESTROYER.COUNT;
+
+        this.#refreshFleet();
     }
 
     // |----- Board Size -----|
     updateBoardSize(boardSize) {
         // Check if board should be updated.
-        const update = boardSize !== this.boardSize.current;
+        const update = boardSize !== this.#boardSize;
 
         if (update) {
-            this.boardSize.current = boardSize;
+            this.#boardSize = boardSize;
 
             // Shrink fleet to be below maxFleetSize.
             if (this.fleetSize > this.maxFleetSize) this.#minifyTemplate();
+
+            this.#refreshFleet();
         }
 
         // Return if update was performed (Signals controller to update view).
@@ -101,16 +111,10 @@ export default class Pregame {
     }
 
     #minifyTemplate() {
-        // Add fleet template to iterable structure.
-        const fleet = Object.values(this.template);
-
-        // Sort in descending order.
-        fleet.sort((a, b) => b.size - a.size);
-
-        // Remove empty ships.
-        fleet.forEach((ship) => {
-            if (ship.count === 0) fleet.splice(fleet.indexOf(ship), 1);
-        });
+        // Add sorted, filtered fleet template to iterable structure.
+        const fleet = Object.values(this.template)
+            .filter((ship) => ship.count > 0)
+            .sort((a, b) => b.size - a.size);
 
         while (this.fleetSize > this.maxFleetSize) {
             // Get largest ship.
@@ -147,8 +151,11 @@ export default class Pregame {
         if (
             (updatedFleet <= this.maxFleetSize || countChange < 0) &&
             updatedFleet > 0
-        )
+        ) {
             this.template[update.type].count = update.count;
+            // Refresh placement fleet.
+            this.#refreshFleet();
+        }
     }
 
     // |----- Placement Fleet -----|
@@ -168,12 +175,17 @@ export default class Pregame {
         return fleet;
     }
 
+    #refreshFleet() {
+        // Refresh placement fleet.
+        this.fleet = this.#generatePlacementFleet();
+    }
+
     // |----- Placing Ships -----|
     selectShip(selected) {
         // Confirms that ship was selected correctly.
         let updated = false;
 
-        this.placementFleet.forEach((ship) => {
+        this.fleet.forEach((ship) => {
             ship.selected = false;
 
             if (ship.size === selected.size && ship.id === selected.id) {
