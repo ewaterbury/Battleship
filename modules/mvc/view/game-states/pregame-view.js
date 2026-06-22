@@ -10,6 +10,9 @@ import SetupView from "./../setup/setup-view.js";
 import SettingsView from "./../settings/settings-view.js";
 import LogView from "./../log/logger-view.js";
 
+// Functions
+import { cellSizeObserver } from "../setup/placement-board/cell-size-observer.js";
+
 // Top level view that displays game UI.
 export default class PreGameView {
     // Controller
@@ -50,6 +53,9 @@ export default class PreGameView {
             "after",
         );
 
+        // Adds ResizeObserver to first placement-board-cell element to set cell size for ships in ship container.
+        cellSizeObserver(document.getElementById("placement-1"));
+
         this.#sidebar.mount(
             document.querySelector("#battleship #setup-area"),
             "after",
@@ -61,5 +67,6 @@ export default class PreGameView {
         this.#sidebar.remove();
     }
 
-    // |----- Audio Methods -----|
+    // |----- Placing Ships -----|
+    selectShip() {}
 }
