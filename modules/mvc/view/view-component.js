@@ -85,6 +85,10 @@ export default class ViewComponent {
         return this;
     }
 
+    hasClass(className) {
+        return this.#el.classList.contains(className);
+    }
+
     on(event, handler, options) {
         if (!ValidationUtilities.isString(event))
             throw new TypeError("Event name must be a non-empty string");
@@ -121,6 +125,20 @@ export default class ViewComponent {
     remove() {
         // Remove this component's root element from DOM.
         this.#el.remove();
+
+        return this;
+    }
+
+    removeClass(className) {
+        // Accepts strings.
+        if (!ValidationUtilities.isString(className))
+            throw new TypeError("className must be a string");
+
+        // Only accepts existing classes.
+        if (!this.#el.classList.contains(className))
+            throw new RangeError(`Element does not have class "${className}"`);
+
+        this.#el.classList.remove(className);
 
         return this;
     }
