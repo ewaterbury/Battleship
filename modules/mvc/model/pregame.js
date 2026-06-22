@@ -63,13 +63,10 @@ export default class Pregame {
     }
 
     get fleetSize() {
-        let totalCells = 0;
-
-        Object.values(this.template).forEach(
-            (ship) => (totalCells += ship.count * ship.size),
+        return Object.values(this.template).reduce(
+            (total, ship) => (total += ship.count * ship.size),
+            0,
         );
-
-        return totalCells;
     }
 
     get maxFleetSize() {
@@ -95,19 +92,17 @@ export default class Pregame {
     // |----- Board Size -----|
     updateBoardSize(boardSize) {
         // Check if board should be updated.
-        const update = boardSize !== this.#boardSize;
+        if (boardSize === this.#boardSize) return false;
 
-        if (update) {
-            this.#boardSize = boardSize;
+        this.#boardSize = boardSize;
 
-            // Shrink fleet to be below maxFleetSize.
-            if (this.fleetSize > this.maxFleetSize) this.#minifyTemplate();
+        // Shrink fleet to be below maxFleetSize.
+        if (this.fleetSize > this.maxFleetSize) this.#minifyTemplate();
 
-            this.#refreshFleet();
-        }
+        this.#refreshFleet();
 
         // Return if update was performed (Signals controller to update view).
-        return update;
+        return true;
     }
 
     #minifyTemplate() {
@@ -182,18 +177,17 @@ export default class Pregame {
 
     // |----- Placing Ships -----|
     selectShip(selected) {
-        // Confirms that ship was selected correctly.
-        let updated = false;
-
+        // Set selected status to false on ships.
         this.fleet.forEach((ship) => {
             ship.selected = false;
-
-            if (ship.size === selected.size && ship.id === selected.id) {
-                ship.selected = true;
-                updated = true;
-            }
         });
 
-        if (!updated) throw RangeError("Selected ship not found.");
+        const ship = this.fleet.find(
+            (ship) => ship.size === selected.size && ship.id === selected.id,
+        );
+
+        if (!ship) throw RangeError("Selected ship not found");
+
+        ship.selected = true;
     }
 }
