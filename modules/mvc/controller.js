@@ -1,33 +1,35 @@
-// Model Modules
+// Top Level Model Module.
 import Model from "./model/model.js";
 
-// Top Level View Modules
-import PreGameView from "./view/game-states/pre-game-view.js";
+// Top Level View Modules.
+import PregameView from "./view/game-states/pregame-view.js";
 import GameView from "./view/game-states/game-view.js";
 // import PostGameView from "./view/post-game-view.js"
 
-// Audio Components
+// Audio Components.
 import AudioComponent from "./view/audio/audio-component.js";
 import AudioLoop from "./view/audio/audio-loop-component.js";
-
-// Defaults Library
-import { DEFAULT_VALUES } from "../constants.js";
 
 export default class Controller {
     // Initialize game model.
     #model = new Model();
 
-    // Initialize active view.
-    #activeView;
+    // Holds active view (Pregame, game, or Postgame).
+    #view;
 
     constructor() {
+        // Initialize audio.
         this.#initializeTheme();
         this.#initializeBackingAudio();
         this.#initializeEffectsAudio();
+    }
 
-        // Public Properties
-        this.boardSize = this.#model.boardSize;
-        this.fleetTemplate = this.#model.fleetTemplate;
+    get boardSize() {
+        return this.#model.pregame.boardSize;
+    }
+
+    get fleetTemplate() {
+        return this.#model.pregame.template;
     }
 
     // |----- Initialization Helpers -----|
@@ -68,8 +70,8 @@ export default class Controller {
     }
 
     // |----- Game State Methods -----|
-    renderPreGame() {
-        this.#updateView(new PreGameView(this));
+    renderPregame() {
+        this.#updateView(new PregameView(this));
     }
 
     renderGame() {
@@ -85,16 +87,16 @@ export default class Controller {
     // Game State Helper
     #updateView(view) {
         // Clear current view.
-        if (this.#activeView) this.#activeView.remove();
+        if (this.#view) this.#view.remove();
 
         // Set active view to passed.
-        this.#activeView = view;
+        this.#view = view;
     }
 
     // |----- Log -----|
     postLogEntry() {
         // Get turn data from model and post it to log.
-        this.#activeView.postLogEntry(this.#model.latestTurn);
+        this.#view.postLogEntry(this.#model.latestTurn);
     }
 
     // |----- Audio -----|
@@ -102,23 +104,29 @@ export default class Controller {
         this.gameEffects[status].play();
     }
 
-    // |---------- Game Settings (Pre Game) ----------|
+    // |---------- Game Settings (Pregame) ----------|
 
-    // |----- Default Settings -----|
+    // |----- Reset to Default Settings -----|
     resetGameSettings() {
-        this.#model.resetGameSettings();
-        this.renderPreGame();
+        this.#model.pregame.resetGameSettings();
+        this.renderPregame();
     }
 
     // |----- Board Size -----|
     updateBoardSize(boardSize) {
-        if (this.#model.updateBoardSize(boardSize)) this.renderPreGame();
+        if (this.#model.pregame.updateBoardSize(boardSize))
+            this.renderPregame();
     }
 
     // |----- Fleet Template -----|
     updateFleetTemplate(templateUpdate) {
-        // Returns update status (pass fail).
-        this.#model.updateFleetTemplate(templateUpdate);
-        this.renderPreGame();
+        this.#model.pregame.updateTemplate(templateUpdate);
+        this.renderPregame();
+    }
+
+    // |----- Placing Ships -----|
+    selectShip(ship) {
+        this.#model.pregame.selectShip(ship);
+        this.#view.selectShip(ship);
     }
 }
