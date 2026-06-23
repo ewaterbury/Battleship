@@ -17,16 +17,6 @@ export default class PlacementCell extends ViewComponent {
         if (!ValidationUtilities.isPositiveInt(cellNumber))
             throw new TypeError("cell number must be a positive integer");
 
-        // Validate controller
-        if (
-            !controller ||
-            typeof controller.sendAttack !== "function" ||
-            typeof controller.boardsize !== "number" ||
-            typeof controller.activePlayer !== "string"
-        ) {
-            throw new TypeError("Invalid controller interface");
-        }
-
         super(EL.DIV, `placement-${cellNumber}`, "dataset");
 
         // Save reference to controller.
@@ -35,7 +25,7 @@ export default class PlacementCell extends ViewComponent {
         this.addClass("board-cell");
 
         // Attach data to cell, set cell text, add callback.
-        this.addDataset("cell", cellNumber)
+        this.addDataset("num", cellNumber)
             .addDataset("state", "empty")
             .setText(
                 ViewUtilities.getCellName(
@@ -43,8 +33,61 @@ export default class PlacementCell extends ViewComponent {
                     this.#controller.boardSize.current,
                 ),
             )
-            .on("click", this.#placeShip);
+            .on("mouseenter", this.#displayShip);
     }
 
     #placeShip = () => {};
+
+    #displayShip = () => {
+        const boardSize = this.#controller.boardSize.current;
+        const selectedShip = this.#controller.selectedShip;
+        const orientation = this.#controller.orientation;
+        const cell = this.readProp("dataset");
+        const startCell = cell.num;
+
+        // Clear highlighted cells.
+        document
+            .querySelectorAll(".highlight")
+            .forEach((el) => el.classList.remove("highlight"));
+
+        // Terminate on invalid cell.
+        if (!selectedShip) return;
+        if (cell.state !== "empty") return;
+
+        const ship = [];
+
+        // Vertical display logic.
+        if (orientation === "vertical") {
+            // Build ship
+            for (let i = 0; i < selectedShip.size; i++)
+                ship.push(Number(startCell) + boardSize * i);
+
+            // Fit ship to board (shift upwards).
+            while (ship[ship.length - 1] > boardSize ** 2)
+                for (let i = 0; i < ship.length; i++) ship[i] -= boardSize;
+        }
+        // Horizontal display logic.
+        else {
+            const staysInRow = (ship) => {
+                const startRow = Math.floor((ship[0] - 1) / boardSize);
+
+                return ship.every(
+                    (cell) => Math.floor((cell - 1) / boardSize) === startRow,
+                );
+            };
+
+            // Build ship
+            for (let i = 0; i < selectedShip.size; i++)
+                ship.push(Number(startCell) + i);
+
+            // Fit ship to board (shift left).
+            while (!staysInRow(ship))
+                for (let i = 0; i < ship.length; i++) ship[i] -= 1;
+        }
+
+        ship.forEach((cell) => {
+            const el = document.getElementById(`placement-${cell}`);
+            el.classList.add("highlight");
+        });
+    };
 }
