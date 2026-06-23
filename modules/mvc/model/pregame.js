@@ -76,7 +76,7 @@ export default class Pregame {
     // |---------- Game Settings (Pregame) ----------|
 
     // |----- Reset to Default Settings -----|
-    resetGameSettings() {
+    resetToDefaults() {
         // Set board to default size.
         this.#boardSize = DEFAULT_VALUES.BOARD_SIZE.DEFAULT;
 

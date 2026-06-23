@@ -18,14 +18,14 @@ export default class DefaultSettings extends ViewComponent {
 
         // |----- UI Construction -----|
         this.append(
-            new Button("reset-setup", this.#resetOnClick).setText(
+            new Button("reset-setup", this.#resetToDefaults).setText(
                 "Reset to defaults",
             ),
         );
     }
 
     // Callback to reset game settings.
-    #resetOnClick = () => {
-        this.#controller.resetGameSettings();
+    #resetToDefaults = () => {
+        this.#controller.resetToDefaults();
     };
 }

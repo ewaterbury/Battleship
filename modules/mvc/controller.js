@@ -25,11 +25,19 @@ export default class Controller {
     }
 
     get boardSize() {
-        return this.#model.pregame.boardSize;
+        return {
+            current: this.#model.pregame.boardSize,
+            min: this.#model.pregame.minBoardSize,
+            max: this.#model.pregame.maxBoardSize,
+        };
     }
 
     get fleetTemplate() {
         return this.#model.pregame.template;
+    }
+
+    get placementFleet() {
+        return this.#model.pregame.fleet;
     }
 
     // |----- Initialization Helpers -----|
@@ -107,8 +115,8 @@ export default class Controller {
     // |---------- Game Settings (Pregame) ----------|
 
     // |----- Reset to Default Settings -----|
-    resetGameSettings() {
-        this.#model.pregame.resetGameSettings();
+    resetToDefaults() {
+        this.#model.pregame.resetToDefaults();
         this.renderPregame();
     }
 
@@ -127,6 +135,6 @@ export default class Controller {
     // |----- Placing Ships -----|
     selectShip(ship) {
         this.#model.pregame.selectShip(ship);
-        this.#view.selectShip(ship);
+        this.renderPregame();
     }
 }
