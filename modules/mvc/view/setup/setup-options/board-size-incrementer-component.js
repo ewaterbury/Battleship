@@ -8,6 +8,8 @@ export default class BoardSizeIncrementer extends Component {
     #controller;
 
     constructor(controller) {
+        const boardSize = controller.boardSize;
+
         // Initialize root element (li) using super constructor.
         super(EL.LI);
 
@@ -38,12 +40,10 @@ export default class BoardSizeIncrementer extends Component {
             "max",
             "value",
         )
-            .setText(controller.boardSize.current)
             .setAttr("type", "number")
-
-            .setAttr("min", controller.boardSize.min) // Minimum board size.
-            .setAttr("max", controller.boardSize.max) // Minimum board size.
-            .setAttr("value", controller.boardSize.current); // Starting board size.
+            .setAttr("min", boardSize.min) // Minimum board size.
+            .setAttr("max", boardSize.max) // Minimum board size.
+            .setAttr("value", boardSize.current); // Current board size.
 
         [label, shipCount].forEach((component) => form.append(component));
 
@@ -52,7 +52,7 @@ export default class BoardSizeIncrementer extends Component {
         // |----- Behavior -----|
         shipCount.on("input", (e) => {
             // Direct controller to update board size.
-            controller.updateBoardSize(parseInt(e.target.value));
+            this.#controller.updateBoardSize(Number(e.target.value));
         });
     }
 }
