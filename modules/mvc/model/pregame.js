@@ -48,18 +48,16 @@ export default class Pregame {
         // |----- Placement Fleet -----|
         // Tracks placement status of individual ships.
         this.fleet = this.#generatePlacementFleet();
+
+        this.orientation = "vertical";
     }
 
     get boardSize() {
-        return this.#boardSize;
-    }
-
-    get minBoardSize() {
-        return DEFAULT_VALUES.BOARD_SIZE.MIN;
-    }
-
-    get maxBoardSize() {
-        return DEFAULT_VALUES.BOARD_SIZE.MAX;
+        return {
+            current: this.#boardSize,
+            min: DEFAULT_VALUES.BOARD_SIZE.MIN,
+            max: DEFAULT_VALUES.BOARD_SIZE.MAX,
+        };
     }
 
     get fleetSize() {
@@ -73,6 +71,13 @@ export default class Pregame {
         // Max ship count is set to 30% of cells with a floor of 16 cells (total size of standard fleet).
         return Math.max(Math.floor(this.#boardSize ** 2 * 0.3), 16);
     }
+
+    get selectedShip() {
+        const selected = this.fleet.find((ship) => ship.selected === true);
+
+        return selected ? selected : null;
+    }
+
     // |---------- Game Settings (Pregame) ----------|
 
     // |----- Reset to Default Settings -----|
@@ -86,48 +91,49 @@ export default class Pregame {
         this.template.cruiser.count = DEFAULT_VALUES.SHIPS.CRUISER.COUNT;
         this.template.destroyer.count = DEFAULT_VALUES.SHIPS.DESTROYER.COUNT;
 
-        this.#refreshFleet();
+        this.fleet = this.#generatePlacementFleet();
     }
 
     // |----- Board Size -----|
     updateBoardSize(boardSize) {
+        // Shrinks fleet to (or below) max size.
+        const minifyTemplate = () => {
+            // Add sorted, filtered fleet template to iterable structure.
+            const fleet = Object.values(this.template)
+                .filter((ship) => ship.count > 0)
+                .sort((a, b) => b.size - a.size);
+
+            while (this.fleetSize > this.maxFleetSize) {
+                // Get largest ship.
+                const ship = fleet[0];
+
+                // Decrement count.
+                ship.count--;
+
+                // Update this.template.
+                this.updateTemplate({
+                    count: ship.count,
+                    size: ship.size,
+                    type: ship.type,
+                });
+
+                // Remove ship if count is zero.
+                if (!fleet[0].count) fleet.splice(0, 1);
+            }
+        };
+
         // Check if board should be updated.
         if (boardSize === this.#boardSize) return false;
 
         this.#boardSize = boardSize;
 
         // Shrink fleet to be below maxFleetSize.
-        if (this.fleetSize > this.maxFleetSize) this.#minifyTemplate();
+        if (this.fleetSize > this.maxFleetSize) minifyTemplate();
 
-        this.#refreshFleet();
+        this.fleet = this.#generatePlacementFleet();
 
         // Return if update was performed (Signals controller to update view).
         return true;
-    }
-
-    #minifyTemplate() {
-        // Add sorted, filtered fleet template to iterable structure.
-        const fleet = Object.values(this.template)
-            .filter((ship) => ship.count > 0)
-            .sort((a, b) => b.size - a.size);
-
-        while (this.fleetSize > this.maxFleetSize) {
-            // Get largest ship.
-            const ship = fleet[0];
-
-            // Decrement count.
-            ship.count--;
-
-            // Update this.template.
-            this.updateTemplate({
-                count: ship.count,
-                size: ship.size,
-                type: ship.type,
-            });
-
-            // Remove ship if count is zero.
-            if (!fleet[0].count) fleet.splice(0, 1);
-        }
     }
 
     // |----- Fleet Template -----|
@@ -149,8 +155,24 @@ export default class Pregame {
         ) {
             this.template[update.type].count = update.count;
             // Refresh placement fleet.
-            this.#refreshFleet();
+            this.fleet = this.#generatePlacementFleet();
         }
+    }
+
+    // |----- Placing Ships -----|
+    selectShip(selected) {
+        // Set selected status to false on ships.
+        this.fleet.forEach((ship) => {
+            ship.selected = false;
+        });
+
+        const ship = this.fleet.find(
+            (ship) => ship.size === selected.size && ship.id === selected.id,
+        );
+
+        if (!ship) throw RangeError("Selected ship not found");
+
+        ship.selected = true;
     }
 
     // |----- Placement Fleet -----|
@@ -168,26 +190,5 @@ export default class Pregame {
         }
 
         return fleet;
-    }
-
-    #refreshFleet() {
-        // Refresh placement fleet.
-        this.fleet = this.#generatePlacementFleet();
-    }
-
-    // |----- Placing Ships -----|
-    selectShip(selected) {
-        // Set selected status to false on ships.
-        this.fleet.forEach((ship) => {
-            ship.selected = false;
-        });
-
-        const ship = this.fleet.find(
-            (ship) => ship.size === selected.size && ship.id === selected.id,
-        );
-
-        if (!ship) throw RangeError("Selected ship not found");
-
-        ship.selected = true;
     }
 }
