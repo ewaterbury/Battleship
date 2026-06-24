@@ -2,7 +2,7 @@
 import ViewComponent from "../../view-component.js";
 
 // Elements Library
-import { EL } from "../../../../constants.js";
+import { EL, DEFAULT_VALUES } from "../../../../constants.js";
 
 // Utility Libraries
 import ViewUtilities from "../../view-utilities.js";
@@ -22,6 +22,7 @@ export default class PlacementCell extends ViewComponent {
         // Save reference to controller.
         this.#controller = controller;
 
+        // |----- UI Construction -----|
         this.addClass("board-cell");
 
         // Attach data to cell, set cell text, add callback.
@@ -32,18 +33,16 @@ export default class PlacementCell extends ViewComponent {
                     cellNumber,
                     this.#controller.boardSize.current,
                 ),
-            )
-            .on("mouseenter", this.#displayShip);
-    }
+            );
 
-    #placeShip = () => {};
+        // |----- Behavior -----|
+        this.on("mouseenter", this.#displayShip);
+    }
 
     #displayShip = () => {
         const boardSize = this.#controller.boardSize.current;
         const selectedShip = this.#controller.selectedShip;
-        const orientation = this.#controller.orientation;
         const cell = this.readProp("dataset");
-        const startCell = cell.num;
 
         // Clear highlighted cells.
         document
@@ -57,10 +56,12 @@ export default class PlacementCell extends ViewComponent {
         const ship = [];
 
         // Vertical display logic.
-        if (orientation === "vertical") {
+        if (
+            this.#controller.orientation === DEFAULT_VALUES.ORIENTATION.VERTICAL
+        ) {
             // Build ship
             for (let i = 0; i < selectedShip.size; i++)
-                ship.push(Number(startCell) + boardSize * i);
+                ship.push(Number(cell.num) + boardSize * i);
 
             // Fit ship to board (shift upwards).
             while (ship[ship.length - 1] > boardSize ** 2)
@@ -78,7 +79,7 @@ export default class PlacementCell extends ViewComponent {
 
             // Build ship
             for (let i = 0; i < selectedShip.size; i++)
-                ship.push(Number(startCell) + i);
+                ship.push(Number(cell.num) + i);
 
             // Fit ship to board (shift left).
             while (!staysInRow(ship))
@@ -90,4 +91,6 @@ export default class PlacementCell extends ViewComponent {
             el.classList.add("highlight");
         });
     };
+
+    #placeShip = () => {};
 }
