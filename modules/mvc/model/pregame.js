@@ -12,31 +12,13 @@ export default class Pregame {
         // |----- Fleet Template -----|
         // Represents fleet composition for next game.
         // Defaults to standard Battleship fleet [2, 3, 3, 4, 5].
-        this.template = {
-            carrier: {
-                type: DEFAULT_VALUES.SHIPS.CARRIER.TYPE,
-                size: DEFAULT_VALUES.SHIPS.CARRIER.SIZE,
-                count: DEFAULT_VALUES.SHIPS.CARRIER.COUNT,
-            },
-
-            battleship: {
-                type: DEFAULT_VALUES.SHIPS.BATTLESHIP.TYPE,
-                size: DEFAULT_VALUES.SHIPS.BATTLESHIP.SIZE,
-                count: DEFAULT_VALUES.SHIPS.BATTLESHIP.COUNT,
-            },
-
-            cruiser: {
-                type: DEFAULT_VALUES.SHIPS.CRUISER.TYPE,
-                size: DEFAULT_VALUES.SHIPS.CRUISER.SIZE,
-                count: DEFAULT_VALUES.SHIPS.CRUISER.COUNT,
-            },
-
-            destroyer: {
-                type: DEFAULT_VALUES.SHIPS.DESTROYER.TYPE,
-                size: DEFAULT_VALUES.SHIPS.DESTROYER.SIZE,
-                count: DEFAULT_VALUES.SHIPS.DESTROYER.COUNT,
-            },
-        };
+        this.template = {};
+        for (const ship of ["carrier", "battleship", "cruiser", "destroyer"])
+            this.template[ship] = {
+                type: DEFAULT_VALUES.SHIPS[ship.toUpperCase()].TYPE,
+                size: DEFAULT_VALUES.SHIPS[ship.toUpperCase()].SIZE,
+                count: DEFAULT_VALUES.SHIPS[ship.toUpperCase()].COUNT,
+            };
 
         // Set ship size as read-only field.
         for (const ship of Object.values(this.template))
