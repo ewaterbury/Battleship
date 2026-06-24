@@ -22,13 +22,10 @@ export default class PlacementBoard extends ViewComponent {
         if (boardSize < 5 || boardSize > 12)
             throw new TypeError("BoardSize must be between 5 and 12");
 
-        // |----- Build Board Container-----|
-
         // Initialize root element (section) and assign ID using super constructor.
         super(EL.SECTION, "ship-placement-board");
 
         // |----- Stylesheet -----|
-
         // Set boardsize on stylesheet (Needed for grid display).
         document.documentElement.style.setProperty("--board-size", boardSize);
 
