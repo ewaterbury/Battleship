@@ -34,4 +34,10 @@ export const DEFAULT_VALUES = {
         CRUISER: { TYPE: "cruiser", COUNT: 2, SIZE: 3 },
         DESTROYER: { TYPE: "destroyer", COUNT: 1, SIZE: 2 },
     },
+
+    // Possible Ship Orientations
+    ORIENTATION: {
+        VERTICAL: "vertical",
+        HORIZONTAL: "horizontal",
+    },
 };
