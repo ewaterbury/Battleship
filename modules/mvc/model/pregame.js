@@ -157,6 +157,13 @@ export default class Pregame {
         ship.selected = true;
     }
 
+    toggleOrientation() {
+        this.orientation =
+            this.orientation === DEFAULT_VALUES.ORIENTATION.VERTICAL
+                ? DEFAULT_VALUES.ORIENTATION.HORIZONTAL
+                : DEFAULT_VALUES.ORIENTATION.VERTICAL;
+    }
+
     // |----- Placement Fleet -----|
     #generatePlacementFleet() {
         const fleet = []; //  Represents individual ships for upcoming game.
