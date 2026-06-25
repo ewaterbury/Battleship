@@ -1,8 +1,8 @@
 // Core Components
 import Component from "../../view-component.js";
 
-// Elements Library
-import { EL } from "../../../../constants.js";
+// Elements Library, Events Library
+import { EL, EVENT } from "../../../../constants.js";
 
 export default class BoardSizeIncrementer extends Component {
     #controller;
@@ -50,7 +50,7 @@ export default class BoardSizeIncrementer extends Component {
         this.append(form);
 
         // |----- Behavior -----|
-        shipCount.on("input", (e) => {
+        shipCount.on(EVENT.INPUT, (e) => {
             // Direct controller to update board size.
             this.#controller.updateBoardSize(Number(e.target.value));
         });

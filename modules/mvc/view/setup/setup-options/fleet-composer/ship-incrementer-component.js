@@ -1,8 +1,8 @@
 // Core Components
 import Component from "../../../view-component.js";
 
-// Elements Library
-import { EL } from "../../../../../constants.js";
+// Elements Library, Events Library
+import { EL, EVENT } from "../../../../../constants.js";
 
 // View Utitilities Library
 import ViewUtilities from "../../../view-utilities.js";
@@ -51,7 +51,7 @@ export default class ShipIncrementer extends Component {
 
         // |----- Behavior -----|
         // Add event to update board size on input.
-        this.#input.on("input", (e) => {
+        this.#input.on(EVENT.INPUT, (e) => {
             // Get custom data attributes from input element.
             const data = this.#input.readProp("dataset");
 

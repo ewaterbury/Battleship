@@ -1,8 +1,8 @@
 // Core Components
 import Component from "./view-component.js";
 
-// Element Library
-import { EL } from "./../../constants.js";
+// Element Library, Events Library
+import { EL, EVENT } from "./../../constants.js";
 
 export default class Button extends Component {
     constructor(id, onClick) {
@@ -11,7 +11,7 @@ export default class Button extends Component {
 
         // |----- Behavior -----|
         // Attach click handler to button.
-        this.element.addEventListener("click", (e) => {
+        this.element.addEventListener(EVENT.INPUT, (e) => {
             onClick(e);
         });
     }

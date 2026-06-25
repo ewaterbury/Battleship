@@ -1,8 +1,8 @@
 // Core Components
 import Component from "../view-component.js";
 
-// Elements Library
-import { EL } from "../../../constants.js";
+// Cell Library, Elements Library, Events Library
+import { CELL, EL, EVENT } from "../../../constants.js";
 
 // Utility Libraries
 import ViewUtils from "../view-utilities.js";
@@ -46,11 +46,11 @@ export default class CellComponent extends Component {
         // Attach data to cell, set cell text, add callback.
         this.addDataset("cell", cellNumber)
             .addDataset("player", player)
-            .addDataset("state", "empty")
+            .addDataset("state", CELL.EMPTY)
             .setText(
                 ViewUtils.getCellName(cellNumber, this.#controller.boardsize),
             )
-            .on("click", this.#sendAttack);
+            .on(EVENT.CLICK, this.#sendAttack);
     }
 
     #isValidCell() {
@@ -60,7 +60,7 @@ export default class CellComponent extends Component {
         // Return if cell belongs to active player and empty.
         return (
             cellData["player"] === this.#controller.activePlayer &&
-            cellData["state"] === "empty"
+            cellData["state"] === CELL.EMPTY
         );
     }
 

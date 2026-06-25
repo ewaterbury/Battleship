@@ -1,8 +1,8 @@
 // Core Components
 import ViewComponent from "../../../view-component.js";
 
-// Element Library
-import { EL } from "../../../../../constants.js";
+// Element Library, Events Library
+import { EL, EVENT } from "../../../../../constants.js";
 
 export default class VolumeSlider extends ViewComponent {
     #audioSources = [];
@@ -38,7 +38,7 @@ export default class VolumeSlider extends ViewComponent {
 
         // |----- Behavior -----|
         // Add event listener using on method.
-        this.on("input", (e) => {
+        this.on(EVENT.INPUT, (e) => {
             const volume = parseFloat(e.target.value); // Parse slider value from input event.
 
             this.#audioSources.forEach((audio) => {

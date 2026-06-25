@@ -1,8 +1,8 @@
 // Core Components
 import ViewComponent from "../../view-component.js";
 
-// Elements Library
-import { EL, DEFAULT_VALUES } from "../../../../constants.js";
+// Elements Library, Events Library
+import { EL, EVENT, DEFAULT_VALUES } from "../../../../constants.js";
 
 // Utility Libraries
 import ViewUtilities from "../../view-utilities.js";
@@ -36,7 +36,7 @@ export default class PlacementCell extends ViewComponent {
             );
 
         // |----- Behavior -----|
-        this.on("mouseenter", this.#displayShip);
+        this.on(EVENT.MOUSE_ENTER, this.#displayShip);
     }
 
     #displayShip = () => {
