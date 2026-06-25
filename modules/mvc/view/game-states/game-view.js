@@ -8,17 +8,14 @@ import { EL } from "../../../constants.js";
 // Sub-View Modules
 import GameboardView from "./../gameboard/gameboard-view.js";
 import GameOptions from "../game-options/game-options-component.js";
-import LogView from "./../log/logger-view.js";
-import SettingsView from "./../settings/settings-view.js";
 
 // Top level view that displays game UI.
 export default class GameView {
     // Controller
     #controller;
 
-    // Mount Points (Needed to remove view)
+    // Mount Point (Needed to remove view)
     #gameArea;
-    #sidebar;
 
     // Sub-View References
     #logView;
@@ -29,7 +26,6 @@ export default class GameView {
 
         // Build mount targets.
         this.#gameArea = new MountPoint("game-area");
-        this.#sidebar = new MountPoint("sidebar-area");
 
         // |----- GameArea ------|
         // Build game area compnents.
@@ -41,44 +37,14 @@ export default class GameView {
             this.#gameArea.append(view),
         );
 
-        // |----- Sidebar ------|
-        // Build log and settings.
-        this.#logView = new LogView(controller);
-
-        // Initialize settings.
-        const settingsView = new SettingsView(
-            this.#controller.backingAudio,
-            this.#controller.gameEffects.hit,
-            this.#controller.gameEffects.miss,
-            this.#controller.gameEffects.sunk,
-        );
-
-        [this.#logView, settingsView].forEach((view) =>
-            this.#sidebar.append(view),
-        );
-
         // Mount sub-views.
         this.#gameArea.mount(
             document.querySelector("#battleship header"),
-            "after",
-        );
-
-        this.#sidebar.mount(
-            document.querySelector("#battleship #game-area"),
             "after",
         );
     }
 
     removeView() {
         this.#gameArea.remove();
-        this.#sidebar.remove();
-    }
-
-    // |----- Audio Methods -----|
-
-    // |----- Log Methods -----|
-    postEntry(turn) {
-        this.#logView.logTurn(turn);
-        return this;
     }
 }
