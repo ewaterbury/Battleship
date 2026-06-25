@@ -19,6 +19,10 @@ export const EL = {
     UL: "ul",
 };
 
+export const EVENT = {
+    KEYDOWN: "keydown",
+};
+
 export const DEFAULT_VALUES = {
     // Default Board Size
     BOARD_SIZE: {
