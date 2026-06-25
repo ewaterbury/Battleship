@@ -2,6 +2,7 @@
 import Model from "./model/model.js";
 
 // Top Level View Modules.
+import SidebarView from "./view/sidebar/sidebar-view.js";
 import PregameView from "./view/game-states/pregame-view.js";
 import GameView from "./view/game-states/game-view.js";
 // import PostGameView from "./view/post-game-view.js"
@@ -14,22 +15,35 @@ export default class Controller {
     // Initialize game model.
     #model = new Model();
 
-    // Holds active view (Pregame, game, or Postgame).
-    #view;
+    // Holds active view (Pregame, Game, or Postgame).
+    #gameView;
+
+    #sidebarView;
+
+    // Holds reference to document object.
+    #document;
 
     constructor() {
+        // Get document.
+        this.#document = document;
+
         // Initialize audio.
         this.#initializeTheme();
         this.#initializeBackingAudio();
         this.#initializeEffectsAudio();
+
+        // Initialize pregame view.
+        this.#gameView = new PregameView(this);
+        this.#sidebarView = new SidebarView(this);
+    }
+
+    // |----- Getters -----|
+    get document() {
+        return this.#document;
     }
 
     get boardSize() {
-        return {
-            current: this.#model.pregame.boardSize,
-            min: this.#model.pregame.minBoardSize,
-            max: this.#model.pregame.maxBoardSize,
-        };
+        return this.#model.pregame.boardSize;
     }
 
     get fleetTemplate() {
@@ -38,6 +52,14 @@ export default class Controller {
 
     get placementFleet() {
         return this.#model.pregame.fleet;
+    }
+
+    get selectedShip() {
+        return this.#model.pregame.selectedShip;
+    }
+
+    get orientation() {
+        return this.#model.pregame.orientation;
     }
 
     // |----- Initialization Helpers -----|
@@ -95,16 +117,16 @@ export default class Controller {
     // Game State Helper
     #updateView(view) {
         // Clear current view.
-        if (this.#view) this.#view.remove();
+        if (this.#gameView) this.#gameView.remove();
 
         // Set active view to passed.
-        this.#view = view;
+        this.#gameView = view;
     }
 
     // |----- Log -----|
     postLogEntry() {
         // Get turn data from model and post it to log.
-        this.#view.postLogEntry(this.#model.latestTurn);
+        this.#sidebarView.postLogEntry(this.#model.latestTurn);
     }
 
     // |----- Audio -----|
@@ -136,5 +158,9 @@ export default class Controller {
     selectShip(ship) {
         this.#model.pregame.selectShip(ship);
         this.renderPregame();
+    }
+
+    toggleOrientation() {
+        this.#model.pregame.toggleOrientation();
     }
 }
