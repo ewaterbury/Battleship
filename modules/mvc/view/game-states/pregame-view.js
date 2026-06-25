@@ -5,10 +5,10 @@ import MountPoint from "./../mount-point.js";
 // Element Library, Event Library
 import { EL, EVENT } from "../../../constants.js";
 
-// Sub-View Modules
-import SetupView from "./../setup/setup-view.js";
-import SettingsView from "./../settings/settings-view.js";
-import LogView from "./../log/logger-view.js";
+// Import Components
+import SetupOptions from "../setup/setup-options/setup-options-component.js";
+import PlacementBoard from "../setup/placement-board/placement-board-component.js";
+import ShipContainer from "../setup/ship-container/ship-container-component.js";
 
 // UI Layout Modules
 import { cellSizeObserver } from "../UI-layout/cell-size-observer.js";
@@ -18,9 +18,11 @@ export default class PreGameView {
     // Controller
     #controller;
 
-    // Mount Points (Needed to remove view)
+    // Mount Point (Needed to remove view)
     #setupArea;
-    #sidebar;
+    #options;
+    #ships;
+    #board;
 
     // Sub-View References
     #logView;
@@ -29,37 +31,23 @@ export default class PreGameView {
         // Save reference to controller.
         this.#controller = controller;
 
-        // Build mount targets.
-        this.#setupArea = new SetupView(controller);
-        this.#sidebar = new MountPoint("sidebar-area");
+        // Initialize mount point and components.
+        this.#setupArea = new MountPoint("setup-area");
+        this.#options = new SetupOptions(controller);
+        this.#ships = new ShipContainer(controller);
+        this.#board = new PlacementBoard(controller);
 
-        // |----- Sidebar ------|
-        // Build log and settings.
-        this.#logView = new LogView(controller);
-
-        // Initialize settings.
-        const settingsView = new SettingsView(
-            this.#controller.backingAudio,
-            this.#controller.gameEffects.hit,
-            this.#controller.gameEffects.miss,
-            this.#controller.gameEffects.sunk,
+        // ----- Construct UI -----|
+        [this.#options, this.#ships, this.#board].forEach((component) =>
+            this.#setupArea.append(component),
         );
-
-        this.#sidebar.append(this.#logView);
-        this.#sidebar.append(settingsView);
 
         this.#setupArea.mount(
-            document.querySelector("#battleship header"),
+            controller.document.querySelector("header"),
             "after",
         );
-
         // Adds ResizeObserver to first placement-board-cell element to set cell size for ships in ship container.
         cellSizeObserver(document.getElementById("placement-1"));
-
-        this.#sidebar.mount(
-            document.querySelector("#battleship #setup-area"),
-            "after",
-        );
 
         // |----- Behavior -----|
         document.addEventListener(EVENT.KEYDOWN, this.#rotateOnR);
@@ -68,13 +56,12 @@ export default class PreGameView {
     remove() {
         // Remove global event listeners.
         document.removeEventListener(EVENT.KEYDOWN, this.#rotateOnR);
+
+        // Remove mount point.
         this.#setupArea.remove();
-        this.#sidebar.remove();
     }
 
     // |----- Placing Ships -----|
-    selectShip() {}
-
     #rotateOnR = (event) => {
         if (event.key === "r" || event.key === "R")
             this.#controller.toggleOrientation();
