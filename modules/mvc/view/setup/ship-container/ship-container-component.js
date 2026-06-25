@@ -8,21 +8,28 @@ import { EL } from "../../../../constants.js";
 import Ship from "./ship-component.js";
 
 export default class ShipContainer extends ViewComponent {
-    #ships;
+    #container;
+    #ships = [];
+    #controller;
 
     constructor(controller) {
         // Initialize root element (section) and assign ID using super constructor.
         super(EL.SECTION, "ship-container-area");
 
+        this.#controller = controller;
+
         // |----- UI Construction -----|
         this.append(new ViewComponent(EL.H2).setText("Fleet:"));
 
-        const container = new ViewComponent(EL.DIV);
+        this.#container = new ViewComponent(EL.DIV);
 
-        for (const ship of Object.values(controller.fleetTemplate))
-            for (let i = 0; i < ship.count; i++)
-                container.append(new Ship(ship, i));
+        for (const ship of Object.values(controller.placementFleet))
+            this.#ships.push(new Ship(controller, ship));
 
-        this.append(container);
+        this.#ships.forEach((ship) => {
+            this.#container.append(ship);
+        });
+
+        this.append(this.#container);
     }
 }
