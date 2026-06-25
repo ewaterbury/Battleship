@@ -1,5 +1,5 @@
 // Core Components
-import Button from "../../button.js";
+import Button from "../../../button.js";
 
 export default class ThemeToggle extends Button {
     constructor() {

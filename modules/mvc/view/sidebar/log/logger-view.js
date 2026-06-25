@@ -1,8 +1,8 @@
 // Core Components
-import Component from "../view-component.js";
+import Component from "../../view-component.js";
 
 // Element Library
-import { EL } from "../../../constants.js";
+import { EL } from "../../../../constants.js";
 
 // Imported Components
 import Log from "./log-component.js";

@@ -1,14 +1,14 @@
 // Core Components
-import Component from "../view-component.js";
+import Component from "../../view-component.js";
 
 // Battleship Library, Element Library
-import { CELL, EL } from "../../../constants.js";
+import { CELL, EL } from "../../../../constants.js";
 
 // View Utilities Library
-import ViewUtilities from "../view-utilities.js";
+import ViewUtilities from "../../view-utilities.js";
 
 // Validation Library
-import ValidationUtilities from "../../../validation-utilities.js";
+import ValidationUtilities from "../../../../validation-utilities.js";
 
 export default class MessageComponent extends Component {
     constructor(turn, boardsize) {

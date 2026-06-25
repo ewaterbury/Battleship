@@ -1,17 +1,17 @@
 // Core Components
-import Component from "../view-component.js";
+import ViewComponent from "../../view-component.js";
 
 // Element Library
-import { EL } from "../../../constants.js";
+import { EL } from "../../../../constants.js";
 
 // Imported Components
-import AudioComponent from "../audio/audio-component.js"; // Audio controller.
-import Button from "../button.js"; // Reusable button component.
+import AudioComponent from "../../audio/audio-component.js";
+import Button from "../../button.js";
 
 // Validation Library
-import ValidationUtilities from "../../../validation-utilities.js";
+import ValidationUtilities from "../../../../validation-utilities.js";
 
-export default class MuteAudioSetting extends Component {
+export default class MuteAudioSetting extends ViewComponent {
     #audioSources;
     #muteButton;
     #isMuted = false;
@@ -37,7 +37,7 @@ export default class MuteAudioSetting extends Component {
         this.#audioSources = audioComponents;
 
         // |----- UI Construction -----|
-        this.append(new Component(EL.H3).setText(`Toggle ${buttonLabel}:`));
+        this.append(new ViewComponent(EL.H3).setText(`Toggle ${buttonLabel}:`));
 
         // Build mute button with attached callback.
         this.#muteButton = new Button(

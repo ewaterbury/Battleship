@@ -1,10 +1,10 @@
 // Core Components
-import Component from "../../view-component.js";
+import ViewComponent from "../../../view-component.js";
 
 // Element Library
-import { EL } from "../../../../constants.js";
+import { EL } from "../../../../../constants.js";
 
-export default class VolumeSlider extends Component {
+export default class VolumeSlider extends ViewComponent {
     #audioSources = [];
 
     constructor(id, ...audioComponents) {
