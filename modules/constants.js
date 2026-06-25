@@ -20,7 +20,10 @@ export const EL = {
 };
 
 export const EVENT = {
+    CLICK: "click",
+    INPUT: "input",
     KEYDOWN: "keydown",
+    MOUSE_ENTER: "mouseenter",
 };
 
 export const DEFAULT_VALUES = {
