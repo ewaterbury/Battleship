@@ -67,6 +67,23 @@ export default class PreGameView {
         this.#buildView();
     }
 
+    #refreshOptions() {
+        this.#options.remove();
+        this.#options = new SetupOptions(this.#controller);
+        this.#window.element.prepend(this.#options.element);
+    }
+
+    #refreshBoard() {
+        this.#board.remove();
+        this.#board = new PlacementBoard(this.#controller);
+        this.#window.append(this.#board);
+
+        // Adds resizeObserver to first placement-board cell element.
+        cellSizeObserver(
+            this.#controller.document.getElementById("placement-1"),
+        );
+    }
+
     remove() {
         // Remove global event listeners.
         this.#controller.document.removeEventListener(
@@ -81,9 +98,8 @@ export default class PreGameView {
     updateBoardSize(fleetUpdated) {
         const controller = this.#controller;
 
-        if (fleetUpdated) {
-            this.#refreshView();
-        }
+        if (fleetUpdated === true) this.#refreshView();
+        else this.#refreshBoard();
     }
 
     // Event Listener Callbacks
