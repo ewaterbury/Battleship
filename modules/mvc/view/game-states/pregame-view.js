@@ -24,9 +24,6 @@ export default class PreGameView {
     #ships;
     #board;
 
-    // Array of all components in apped order.
-    #componentsList;
-
     // Sub-View References
     #logView;
 
@@ -34,29 +31,40 @@ export default class PreGameView {
         // Save reference to controller.
         this.#controller = controller;
 
-        // Initialize mount point and components.
-        this.#window = new MountPoint("setup-area");
-        this.#options = new SetupOptions(controller);
-        this.#ships = new ShipContainer(controller);
-        this.#board = new PlacementBoard(controller);
-
-        this.#componentsList = [this.#options, this.#ships, this.#board];
-
-        // ----- Construct UI -----|
-        this.#componentsList.forEach((component) => {
-            this.#window.append(component);
-        });
-
-        this.#window.mount(
+        // Initialize mount point and mount on DOM.
+        this.#window = new MountPoint("setup-area").mount(
             controller.document.querySelector("header"),
             "after",
         );
 
-        // Adds ResizeObserver to first placement-board-cell element to set cell size for ships in ship container.
-        cellSizeObserver(document.getElementById("placement-1"));
+        this.#buildView();
 
         // |----- Behavior -----|
-        document.addEventListener(EVENT.KEYDOWN, this.#rotateOnR);
+        controller.document.addEventListener(EVENT.KEYDOWN, this.#rotateOnR);
+    }
+
+    #getComponents() {
+        return [this.#options, this.#ships, this.#board];
+    }
+
+    #buildView() {
+        this.#options = new SetupOptions(this.#controller);
+        this.#ships = new ShipContainer(this.#controller);
+        this.#board = new PlacementBoard(this.#controller);
+
+        this.#getComponents().forEach((component) =>
+            this.#window.append(component),
+        );
+
+        // Adds resizeObserver to first placement-board cell element.
+        cellSizeObserver(
+            this.#controller.document.getElementById("placement-1"),
+        );
+    }
+
+    #refreshView() {
+        this.#getComponents().forEach((component) => component.remove());
+        this.#buildView();
     }
 
     remove() {
@@ -74,17 +82,8 @@ export default class PreGameView {
         const controller = this.#controller;
 
         if (fleetUpdated) {
-            // Remove compnents.
-            this.#componentsList.forEach((component) => component.remove());
-
-            this.#options = new SetupOptions(controller);
-            this.#ships = new ShipContainer(controller);
-            this.#board = new PlacementBoard(controller);
+            this.#refreshView();
         }
-
-        this.#componentsList.forEach((component) =>
-            this.#window.append(component),
-        );
     }
 
     // Event Listener Callbacks
