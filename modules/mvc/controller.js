@@ -144,8 +144,12 @@ export default class Controller {
 
     // |----- Board Size -----|
     updateBoardSize(boardSize) {
-        if (this.#model.pregame.updateBoardSize(boardSize))
-            this.renderPregame();
+        // UpdateStatus:
+        //  - null on no update
+        //  - false on only board update
+        //  - true on board and fleet update
+        const updateStatus = this.#model.pregame.updateBoardSize(boardSize);
+        if (updateStatus !== null) this.#gameView.updateBoardSize(updateStatus);
     }
 
     // |----- Fleet Template -----|
