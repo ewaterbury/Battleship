@@ -114,6 +114,9 @@ export default class PreGameView {
         if (fleetUpdated) this.#refreshShips();
     }
 
+    resetToDefaults() {
+        this.#refreshView();
+    }
     // |---------- Event Listener Callbacks ----------|
     // Listerners attached to global document must be removed on teardown.
 
