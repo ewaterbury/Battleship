@@ -6,6 +6,7 @@ import { EL, EVENT } from "../../../../constants.js";
 
 export default class BoardSizeIncrementer extends Component {
     #controller;
+    #input;
 
     constructor(controller) {
         const boardSize = controller.boardSize;
@@ -30,7 +31,7 @@ export default class BoardSizeIncrementer extends Component {
             .setText("Board Size:")
             .setAttr("for", "board-size-count");
 
-        const shipCount = new Component(
+        this.#input = new Component(
             EL.INPUT,
             "board-size-count", // ship count ID.
 
@@ -45,14 +46,29 @@ export default class BoardSizeIncrementer extends Component {
             .setAttr("max", boardSize.max) // Minimum board size.
             .setAttr("value", boardSize.current); // Current board size.
 
-        [label, shipCount].forEach((component) => form.append(component));
+        [label, this.#input].forEach((component) => form.append(component));
 
         this.append(form);
 
         // |----- Behavior -----|
-        shipCount.on(EVENT.INPUT, (e) => {
-            // Direct controller to update board size.
-            this.#controller.updateBoardSize(Number(e.target.value));
-        });
+        this.#input.on(EVENT.INPUT, this.#updateBoardSize);
     }
+
+    #updateBoardSize = (e) => {
+        const input = Number(e.target.value);
+
+        // Get board size from input.
+        // Defaults to current boardsize on invalid input.
+        const boardSize =
+            input >= 7 && input <= 12
+                ? input
+                : this.#controller.boardSize.current;
+
+        // Reset input field on invalid input.
+        if (!(input >= 7 && input <= 12))
+            this.#input.setAttr("value", boardSize);
+
+        // Direct controller to update board size.
+        this.#controller.updateBoardSize(boardSize);
+    };
 }
