@@ -43,15 +43,14 @@ export default class Pregame {
     }
 
     get fleetSize() {
-        return Object.values(this.template).reduce(
-            (total, ship) => (total += ship.count * ship.size),
-            0,
-        );
-    }
+        return {
+            current: Object.values(this.template).reduce(
+                (total, ship) => (total += ship.count * ship.size),
+                0,
+            ),
 
-    get maxFleetSize() {
-        // Max ship count is set to 30% of cells with a floor of 16 cells (total size of standard fleet).
-        return Math.max(Math.floor(this.#boardSize ** 2 * 0.3), 16);
+            max: Math.max(Math.floor(this.#boardSize ** 2 * 0.3), 16),
+        };
     }
 
     get selectedShip() {
@@ -85,7 +84,7 @@ export default class Pregame {
                 .filter((ship) => ship.count > 0)
                 .sort((a, b) => b.size - a.size);
 
-            while (this.fleetSize > this.maxFleetSize) {
+            while (this.fleetSize.current > this.fleetSize.max) {
                 // Get largest ship.
                 const ship = fleet[0];
 
@@ -109,8 +108,8 @@ export default class Pregame {
 
         this.#boardSize = boardSize;
 
-        // Shrink fleet to be below maxFleetSize.
-        if (this.fleetSize > this.maxFleetSize) {
+        // Shrink fleet to be below max fleet size.
+        if (this.fleetSize.current > this.fleetSize.max) {
             minifyTemplate();
 
             this.fleet = this.#generatePlacementFleet();
@@ -133,12 +132,12 @@ export default class Pregame {
         const countChange = update.count - currentCount;
 
         // updated template size
-        const updatedFleet = this.fleetSize + countChange * update.size;
+        const updatedFleet = this.fleetSize.current + countChange * update.size;
 
         // If new fleet size is valid, update ship count.
         // Allow fleets larger than max size when count is descending.
         if (
-            (updatedFleet <= this.maxFleetSize || countChange < 0) &&
+            (updatedFleet <= this.fleetSize.max || countChange < 0) &&
             updatedFleet > 0
         ) {
             this.template[update.type].count = update.count;
