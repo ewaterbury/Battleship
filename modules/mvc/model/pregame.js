@@ -127,7 +127,7 @@ export default class Pregame {
     }
 
     // |----- Fleet Template -----|
-    updateTemplate(update) {
+    updateFleetTemplate(update) {
         // Current count of ship being updated.
         const currentCount = this.template[update.type].count;
 
@@ -147,7 +147,13 @@ export default class Pregame {
 
             // Refresh placement fleet.
             this.#generatePlacementFleet();
+
+            // Return true on fleet update.
+            return true;
         }
+
+        // Return false on no update.
+        return false;
     }
 
     // |----- Placing Ships -----|
