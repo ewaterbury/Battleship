@@ -12,6 +12,7 @@ import ShipContainer from "../setup/ship-container/ship-container-component.js";
 
 // UI Layout Modules
 import { cellSizeObserver } from "../UI-layout/cell-size-observer.js";
+import Ship from "../setup/ship-container/ship-component.js";
 
 // Top level view that displays game UI.
 export default class PreGameView {
@@ -62,6 +63,7 @@ export default class PreGameView {
         );
     }
 
+    // |----- Refresh Methods -----|
     #refreshView() {
         this.#getComponents().forEach((component) => component.remove());
         this.#buildView();
@@ -71,6 +73,12 @@ export default class PreGameView {
         this.#options.remove();
         this.#options = new SetupOptions(this.#controller);
         this.#window.element.prepend(this.#options.element);
+    }
+
+    #refreshShips() {
+        this.#ships.remove();
+        this.#ships = new ShipContainer(this.#controller);
+        this.#window.element.firstElementChild.after(this.#ships.element);
     }
 
     #refreshBoard() {
@@ -95,15 +103,20 @@ export default class PreGameView {
         this.#window.remove();
     }
 
+    // |----- Controller Update Commands -----|
     updateBoardSize(fleetUpdated) {
-        const controller = this.#controller;
-
         if (fleetUpdated === true) this.#refreshView();
         else this.#refreshBoard();
     }
 
-    // Event Listener Callbacks
-    // Listerners attached to global document must be removed on tear down.
+    updateFleetTemplate(fleetUpdated) {
+        this.#refreshOptions();
+        if (fleetUpdated) this.#refreshShips();
+    }
+
+    // |---------- Event Listener Callbacks ----------|
+    // Listerners attached to global document must be removed on teardown.
+
     // |----- Placing Ships -----|
     #rotateOnR = (event) => {
         if (event.key === "r" || event.key === "R")
