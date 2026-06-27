@@ -154,8 +154,9 @@ export default class Controller {
 
     // |----- Fleet Template -----|
     updateFleetTemplate(templateUpdate) {
-        this.#model.pregame.updateTemplate(templateUpdate);
-        this.renderPregame();
+        this.#gameView.updateFleetTemplate(
+            this.#model.pregame.updateFleetTemplate(templateUpdate),
+        );
     }
 
     // |----- Placing Ships -----|
