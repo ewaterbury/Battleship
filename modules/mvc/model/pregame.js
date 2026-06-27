@@ -27,10 +27,11 @@ export default class Pregame {
                 size: { value: ship.size, writable: false },
             });
 
-        // |----- Placement Fleet -----|
+        // Build placement fleet.
         // Tracks placement status of individual ships.
-        this.fleet = this.#generatePlacementFleet();
+        this.#generatePlacementFleet();
 
+        // Set default orientation for placing ships.
         this.orientation = "vertical";
     }
 
@@ -72,7 +73,8 @@ export default class Pregame {
         this.template.cruiser.count = DEFAULT_VALUES.SHIPS.CRUISER.COUNT;
         this.template.destroyer.count = DEFAULT_VALUES.SHIPS.DESTROYER.COUNT;
 
-        this.fleet = this.#generatePlacementFleet();
+        // Refresh placement fleet.
+        this.#generatePlacementFleet();
     }
 
     // |----- Board Size -----|
@@ -112,7 +114,8 @@ export default class Pregame {
         if (this.fleetSize.current > this.fleetSize.max) {
             minifyTemplate();
 
-            this.fleet = this.#generatePlacementFleet();
+            // Refresh placement fleet.
+            this.#generatePlacementFleet();
 
             // Return true if fleet was updated.
             // Signals controller to redraw fleet.
@@ -141,8 +144,9 @@ export default class Pregame {
             updatedFleet > 0
         ) {
             this.template[update.type].count = update.count;
+
             // Refresh placement fleet.
-            this.fleet = this.#generatePlacementFleet();
+            this.#generatePlacementFleet();
         }
     }
 
@@ -171,18 +175,17 @@ export default class Pregame {
 
     // |----- Placement Fleet -----|
     #generatePlacementFleet() {
-        const fleet = []; //  Represents individual ships for upcoming game.
+        this.fleet = []; // Clear current fleet.
 
+        // Add new ships to fleet.
         for (const ship of Object.values(this.template)) {
             for (let i = 0; i < ship.count; i++)
-                fleet.push({
+                this.fleet.push({
                     type: ship.type,
                     size: ship.size,
                     id: i,
                     selected: false,
                 });
         }
-
-        return fleet;
     }
 }
