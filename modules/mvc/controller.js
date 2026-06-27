@@ -139,7 +139,7 @@ export default class Controller {
     // |----- Reset to Default Settings -----|
     resetToDefaults() {
         this.#model.pregame.resetToDefaults();
-        this.renderPregame();
+        this.#gameView.resetToDefaults();
     }
 
     // |----- Board Size -----|
