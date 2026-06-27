@@ -11,7 +11,7 @@ export default class Button extends Component {
 
         // |----- Behavior -----|
         // Attach click handler to button.
-        this.element.addEventListener(EVENT.INPUT, (e) => {
+        this.element.addEventListener(EVENT.CLICK, (e) => {
             onClick(e);
         });
     }
