@@ -104,18 +104,24 @@ export default class Pregame {
             }
         };
 
-        // Check if board should be updated.
-        if (boardSize === this.#boardSize) return false;
+        // Return null on no update.
+        if (boardSize === this.#boardSize) return null;
 
         this.#boardSize = boardSize;
 
         // Shrink fleet to be below maxFleetSize.
-        if (this.fleetSize > this.maxFleetSize) minifyTemplate();
+        if (this.fleetSize > this.maxFleetSize) {
+            minifyTemplate();
 
-        this.fleet = this.#generatePlacementFleet();
+            this.fleet = this.#generatePlacementFleet();
 
-        // Return if update was performed (Signals controller to update view).
-        return true;
+            // Return true if fleet was updated.
+            // Signals controller to redraw fleet.
+            return true;
+        }
+
+        // Return false if fleet was updated.
+        return false;
     }
 
     // |----- Fleet Template -----|
