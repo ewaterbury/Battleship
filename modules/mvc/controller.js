@@ -168,4 +168,8 @@ export default class Controller {
     toggleOrientation() {
         this.#model.pregame.toggleOrientation();
     }
+
+    getShipFromCell(cell) {
+        return this.#model.pregame.getShipFromCell(cell);
+    }
 }
