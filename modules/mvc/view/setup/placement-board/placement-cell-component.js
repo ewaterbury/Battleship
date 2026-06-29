@@ -78,20 +78,24 @@ export default class PlacementCell extends ViewComponent {
 
         // Set callbacks (vertical).
         if (orientation === DEFAULT_VALUES.ORIENTATION.VERTICAL) {
-            buildShip = (cell, count) => Number(cell) + boardSize * count;
+            buildShip = (ship) => {
+                for (let i = 0; i < selectedShip.size; i++)
+                    ship.push(Number(cell.num) + boardSize * i);
+            };
 
             // Fit ship to board (shift upwards).
             fitShip = (ship) => {
                 while (ship[ship.length - 1] > boardSize ** 2)
                     for (let i = 0; i < ship.length; i++) ship[i] -= boardSize;
-
-                return ship;
             };
         }
 
         // Set callbacks (horizontal).
         else if (orientation === DEFAULT_VALUES.ORIENTATION.HORIZONTAL) {
-            buildShip = (cell, count) => Number(cell) + count;
+            buildShip = (ship) => {
+                for (let i = 0; i < selectedShip.size; i++)
+                    ship.push(Number(cell.num) + i);
+            };
 
             // Fit ship to board (shift left).
             fitShip = (ship) => {
@@ -106,17 +110,14 @@ export default class PlacementCell extends ViewComponent {
 
                 while (!staysInRow(ship))
                     for (let i = 0; i < ship.length; i++) ship[i] -= 1;
-
-                return ship;
             };
         }
 
         // Throw error on invaild ship orientation.
         else throw new TypeError("Invalid ship orientation");
 
-        for (let i = 0; i < selectedShip.size; i++)
-            ship.push(buildShip(cell.num, i));
-
-        return fitShip(ship);
+        buildShip(ship);
+        fitShip(ship);
+        return ship;
     }
 }
