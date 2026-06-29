@@ -37,10 +37,11 @@ export default class PlacementCell extends ViewComponent {
 
         // |----- Behavior -----|
         this.on(EVENT.MOUSE_ENTER, this.#displayShip);
+
+        this.on(EVENT.CLICK, this.#placeShip);
     }
 
     #displayShip = () => {
-        const boardSize = this.#controller.boardSize.current;
         const selectedShip = this.#controller.selectedShip;
         const cell = this.readProp("dataset");
 
@@ -53,44 +54,69 @@ export default class PlacementCell extends ViewComponent {
         if (!selectedShip) return;
         if (cell.state !== "empty") return;
 
-        const ship = [];
-
-        // Vertical display logic.
-        if (
-            this.#controller.orientation === DEFAULT_VALUES.ORIENTATION.VERTICAL
-        ) {
-            // Build ship
-            for (let i = 0; i < selectedShip.size; i++)
-                ship.push(Number(cell.num) + boardSize * i);
-
-            // Fit ship to board (shift upwards).
-            while (ship[ship.length - 1] > boardSize ** 2)
-                for (let i = 0; i < ship.length; i++) ship[i] -= boardSize;
-        }
-        // Horizontal display logic.
-        else {
-            const staysInRow = (ship) => {
-                const startRow = Math.floor((ship[0] - 1) / boardSize);
-
-                return ship.every(
-                    (cell) => Math.floor((cell - 1) / boardSize) === startRow,
-                );
-            };
-
-            // Build ship
-            for (let i = 0; i < selectedShip.size; i++)
-                ship.push(Number(cell.num) + i);
-
-            // Fit ship to board (shift left).
-            while (!staysInRow(ship))
-                for (let i = 0; i < ship.length; i++) ship[i] -= 1;
-        }
-
-        ship.forEach((cell) => {
+        this.#buildShip(cell, selectedShip).forEach((cell) => {
             const el = document.getElementById(`placement-${cell}`);
             el.classList.add("highlight");
         });
     };
 
-    #placeShip = () => {};
+    #placeShip = () => {
+        if (this.#controller.selectedShip) {
+        }
+    };
+
+    // |----- Helpers -----|
+    #buildShip(cell, selectedShip) {
+        const boardSize = this.#controller.boardSize.current;
+        const orientation = this.#controller.orientation;
+
+        const ship = [];
+
+        // Callbacks determined by orientation.
+        let buildShip;
+        let fitShip;
+
+        // Set callbacks (vertical).
+        if (orientation === DEFAULT_VALUES.ORIENTATION.VERTICAL) {
+            buildShip = (cell, count) => Number(cell) + boardSize * count;
+
+            // Fit ship to board (shift upwards).
+            fitShip = (ship) => {
+                while (ship[ship.length - 1] > boardSize ** 2)
+                    for (let i = 0; i < ship.length; i++) ship[i] -= boardSize;
+
+                return ship;
+            };
+        }
+
+        // Set callbacks (horizontal).
+        else if (orientation === DEFAULT_VALUES.ORIENTATION.HORIZONTAL) {
+            buildShip = (cell, count) => Number(cell) + count;
+
+            // Fit ship to board (shift left).
+            fitShip = (ship) => {
+                const staysInRow = (ship) => {
+                    const startRow = Math.floor((ship[0] - 1) / boardSize);
+
+                    return ship.every(
+                        (cell) =>
+                            Math.floor((cell - 1) / boardSize) === startRow,
+                    );
+                };
+
+                while (!staysInRow(ship))
+                    for (let i = 0; i < ship.length; i++) ship[i] -= 1;
+
+                return ship;
+            };
+        }
+
+        // Throw error on invaild ship orientation.
+        else throw new TypeError("Invalid ship orientation");
+
+        for (let i = 0; i < selectedShip.size; i++)
+            ship.push(buildShip(cell.num, i));
+
+        return fitShip(ship);
+    }
 }
