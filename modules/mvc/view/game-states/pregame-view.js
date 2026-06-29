@@ -103,7 +103,7 @@ export default class PreGameView {
         this.#window.remove();
     }
 
-    // |----- Controller Update Commands -----|
+    // |----- View Update Commands -----|
     updateBoardSize(fleetUpdated) {
         if (fleetUpdated === true) this.#refreshView();
         else this.#refreshBoard();
@@ -130,7 +130,17 @@ export default class PreGameView {
             const hovered =
                 this.#controller.document.querySelector(".board-cell:hover");
 
-            if (hovered) hovered.dispatchEvent(new MouseEvent("mouseenter"));
+            if (hovered)
+                hovered.dispatchEvent(new MouseEvent(EVENT.MOUSE_ENTER));
         }
     };
+
+    placeShip() {
+        this.#refreshBoard();
+        this.#refreshShips();
+    }
+
+    failedPlacement() {
+        alert("Ships must be placed on unoccupied tiles");
+    }
 }
