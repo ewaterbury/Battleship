@@ -60,6 +60,21 @@ export default class Pregame {
         return selected ? selected : null;
     }
 
+    get occupiedCells() {
+        // Aggregate occupied cells in a set.
+        const occupiedCells = new Set();
+
+        this.fleet
+            .filter((ship) => ship.location !== null)
+            .forEach((ship) => {
+                ship.location.forEach((cell) => {
+                    occupiedCells.add(cell);
+                });
+            });
+
+        return occupiedCells;
+    }
+
     // |---------- Game Settings (Pregame) ----------|
 
     // |----- Reset to Default Settings -----|
@@ -179,6 +194,37 @@ export default class Pregame {
                 : DEFAULT_VALUES.ORIENTATION.VERTICAL;
     }
 
+    placeShip(ship) {
+        const validPlacement = (ship) => {
+            // Get list of ships that have been placed.
+            const placedShips = this.fleet.filter(
+                (ship) => ship.location !== null,
+            );
+
+            // Aggregate occupied cells in a set.
+            const occupiedCells = this.occupiedCells;
+
+            // Remove slected ships cells from occupied cells.
+            // Allows for smoother ship repositioning.
+            if (this.selectedShip.location) {
+                this.selectedShip.location.forEach((cell) =>
+                    occupiedCells.delete(cell),
+                );
+            }
+
+            // Return true on valid placement.
+            return !ship.some((cell) => occupiedCells.has(cell));
+        };
+
+        if (this.selectedShip) {
+            if (validPlacement(ship)) {
+                this.selectedShip.location = ship;
+                return true;
+            }
+        }
+
+        return false;
+    }
     // |----- Placement Fleet -----|
     #generatePlacementFleet() {
         this.fleet = []; // Clear current fleet.
@@ -191,6 +237,7 @@ export default class Pregame {
                     size: ship.size,
                     id: i,
                     selected: false,
+                    location: null,
                 });
         }
     }
