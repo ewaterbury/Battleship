@@ -11,7 +11,7 @@ import ValidationUtilities from "../../../../validation-utilities.js";
 export default class PlacementCell extends ViewComponent {
     #controller;
 
-    constructor(cellNumber, controller) {
+    constructor(cellNumber, isOccupied, controller) {
         // |----- Input Validation -----|
         // Validate cellNumber
         if (!ValidationUtilities.isPositiveInt(cellNumber))
@@ -27,7 +27,7 @@ export default class PlacementCell extends ViewComponent {
 
         // Attach data to cell, set cell text, add callback.
         this.addDataset("num", cellNumber)
-            .addDataset("state", "empty")
+            .addDataset("state", isOccupied ? "ship" : "empty")
             .setText(
                 ViewUtilities.getCellName(
                     cellNumber,
@@ -52,7 +52,6 @@ export default class PlacementCell extends ViewComponent {
 
         // Terminate on invalid cell.
         if (!selectedShip) return;
-        if (cell.state !== "empty") return;
 
         this.#controller.getShipFromCell(cell).forEach((cell) => {
             const el = document.getElementById(`placement-${cell}`);
@@ -62,9 +61,13 @@ export default class PlacementCell extends ViewComponent {
 
     #placeShip = () => {
         const selectedShip = this.#controller.selectedShip;
-        const cell = this.readProp("dataset");
 
         if (selectedShip) {
+            const ship = this.#controller.getShipFromCell(
+                this.readProp("dataset"),
+            );
+
+            this.#controller.placeShip(ship);
         }
     };
 }
