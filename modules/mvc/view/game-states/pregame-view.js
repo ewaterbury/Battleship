@@ -117,12 +117,20 @@ export default class PreGameView {
     resetToDefaults() {
         this.#refreshView();
     }
+
     // |---------- Event Listener Callbacks ----------|
     // Listerners attached to global document must be removed on teardown.
 
     // |----- Placing Ships -----|
     #rotateOnR = (event) => {
-        if (event.key === "r" || event.key === "R")
+        if (event.key === "r" || event.key === "R") {
             this.#controller.toggleOrientation();
+
+            // Trigger mouse enter event on currently hovered cell to update ship placement display.
+            const hovered =
+                this.#controller.document.querySelector(".board-cell:hover");
+
+            if (hovered) hovered.dispatchEvent(new MouseEvent("mouseenter"));
+        }
     };
 }
