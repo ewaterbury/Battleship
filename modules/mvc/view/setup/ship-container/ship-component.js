@@ -20,6 +20,8 @@ export default class Ship extends ViewComponent {
 
         if (ship.selected) this.addClass("selected");
 
+        if (ship.location) this.addClass("placed");
+
         for (let i = 0; i < ship.size; i++)
             this.append(
                 new ViewComponent(EL.DIV, "", "dataset").addDataset(
