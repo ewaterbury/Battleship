@@ -78,10 +78,16 @@ export default class PlacementBoard extends ViewComponent {
         // Build board grid.
         const grid = new ViewComponent(EL.DIV).addClass("board-grid");
 
+        const occupiedCells = controller.occupiedCells;
+
         // Fill board grid with cell components.
         const totalCells = boardSize ** 2;
         for (let cellNum = 1; cellNum <= totalCells; cellNum++) {
-            const cell = new PlacementCell(cellNum, controller);
+            const cell = new PlacementCell(
+                cellNum,
+                occupiedCells.has(cellNum),
+                controller,
+            );
             grid.append(cell);
         }
 
