@@ -54,70 +54,17 @@ export default class PlacementCell extends ViewComponent {
         if (!selectedShip) return;
         if (cell.state !== "empty") return;
 
-        this.#buildShip(cell, selectedShip).forEach((cell) => {
+        this.#controller.getShipFromCell(cell).forEach((cell) => {
             const el = document.getElementById(`placement-${cell}`);
             el.classList.add("highlight");
         });
     };
 
     #placeShip = () => {
-        if (this.#controller.selectedShip) {
+        const selectedShip = this.#controller.selectedShip;
+        const cell = this.readProp("dataset");
+
+        if (selectedShip) {
         }
     };
-
-    // |----- Helpers -----|
-    #buildShip(cell, selectedShip) {
-        const boardSize = this.#controller.boardSize.current;
-        const orientation = this.#controller.orientation;
-
-        const ship = [];
-
-        // Callbacks determined by orientation.
-        let buildShip;
-        let fitShip;
-
-        // Set callbacks (vertical).
-        if (orientation === DEFAULT_VALUES.ORIENTATION.VERTICAL) {
-            buildShip = (ship) => {
-                for (let i = 0; i < selectedShip.size; i++)
-                    ship.push(Number(cell.num) + boardSize * i);
-            };
-
-            // Fit ship to board (shift upwards).
-            fitShip = (ship) => {
-                while (ship[ship.length - 1] > boardSize ** 2)
-                    for (let i = 0; i < ship.length; i++) ship[i] -= boardSize;
-            };
-        }
-
-        // Set callbacks (horizontal).
-        else if (orientation === DEFAULT_VALUES.ORIENTATION.HORIZONTAL) {
-            buildShip = (ship) => {
-                for (let i = 0; i < selectedShip.size; i++)
-                    ship.push(Number(cell.num) + i);
-            };
-
-            // Fit ship to board (shift left).
-            fitShip = (ship) => {
-                const staysInRow = (ship) => {
-                    const startRow = Math.floor((ship[0] - 1) / boardSize);
-
-                    return ship.every(
-                        (cell) =>
-                            Math.floor((cell - 1) / boardSize) === startRow,
-                    );
-                };
-
-                while (!staysInRow(ship))
-                    for (let i = 0; i < ship.length; i++) ship[i] -= 1;
-            };
-        }
-
-        // Throw error on invaild ship orientation.
-        else throw new TypeError("Invalid ship orientation");
-
-        buildShip(ship);
-        fitShip(ship);
-        return ship;
-    }
 }
