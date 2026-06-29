@@ -62,6 +62,10 @@ export default class Controller {
         return this.#model.pregame.orientation;
     }
 
+    get occupiedCells() {
+        return this.#model.pregame.occupiedCells;
+    }
+
     // |----- Initialization Helpers -----|
     #initializeTheme() {
         // Get previously saved theme.
@@ -171,5 +175,14 @@ export default class Controller {
 
     getShipFromCell(cell) {
         return this.#model.pregame.getShipFromCell(cell);
+    }
+
+    placeShip(ship) {
+        const updateStatus = this.#model.pregame.placeShip(ship);
+        if (updateStatus) {
+            this.#gameView.placeShip();
+        } else {
+            this.#gameView.failedPlacement();
+        }
     }
 }
