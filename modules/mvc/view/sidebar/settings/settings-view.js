@@ -16,7 +16,7 @@ export default class SettingsView extends ViewComponent {
         super(EL.SECTION, "settings-area");
 
         // |----- UI Construction -----|
-        this.append(new ViewComponent(EL.H2).setText("Settings:"));
+        this.append(new ViewComponent(EL.H2).setText("Settings"));
 
         const settingsMenu = new ViewComponent(EL.MENU, "settings-menu");
 

@@ -13,7 +13,7 @@ export default class ThemeSetting extends ViewComponent {
         super(EL.LI);
 
         // |----- UI Construction -----|
-        this.append(new ViewComponent(EL.H3).setText("Toggle Theme:"));
+        this.append(new ViewComponent(EL.SPAN).setText("Toggle Theme:"));
         this.append(new ThemeToggle());
     }
 }

@@ -37,7 +37,9 @@ export default class MuteLoopSetting extends ViewComponent {
         this.#audioLoops = audioLoops;
 
         // |----- UI Construction -----|
-        this.append(new ViewComponent(EL.H3).setText(`Toggle ${buttonLabel}:`));
+        this.append(
+            new ViewComponent(EL.SPAN).setText(`Toggle ${buttonLabel}:`),
+        );
 
         // Build mute button with attached callback.
         this.#muteButton = new Button(
