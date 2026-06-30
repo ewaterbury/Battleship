@@ -6,6 +6,7 @@ import { EL } from "../../../../constants.js";
 
 // Imported Components
 import Ship from "./ship-component.js";
+import Button from "../../button.js";
 
 export default class ShipContainer extends ViewComponent {
     #container;
@@ -21,7 +22,7 @@ export default class ShipContainer extends ViewComponent {
         // |----- UI Construction -----|
         this.append(new ViewComponent(EL.H2).setText("Fleet:"));
 
-        this.#container = new ViewComponent(EL.DIV);
+        this.#container = new ViewComponent(EL.DIV).addClass("ship-container");
 
         for (const ship of Object.values(controller.placementFleet))
             this.#ships.push(new Ship(controller, ship));
@@ -30,6 +31,14 @@ export default class ShipContainer extends ViewComponent {
             this.#container.append(ship);
         });
 
+        const autoPlaceButton = new Button(
+            "auto-place-ships",
+            this.#autoPlaceShips,
+        ).setText("Place Ships For Me");
+
         this.append(this.#container);
+        this.append(autoPlaceButton);
     }
+
+    #autoPlaceShips = () => {};
 }
