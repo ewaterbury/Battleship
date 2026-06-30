@@ -9,8 +9,11 @@ import ValidationUtilities from "../../../../validation-utilities.js";
 
 // Imported Components
 import PlacementCell from "./placement-cell-component.js"; // Used to build board grid.
+import Button from "../../button.js";
 
 export default class PlacementBoard extends ViewComponent {
+    #controller;
+
     constructor(controller) {
         const boardSize = controller.boardSize.current; // Save for repeated use.
 
@@ -25,6 +28,8 @@ export default class PlacementBoard extends ViewComponent {
         // Initialize root element (section) and assign ID using super constructor.
         super(EL.SECTION, "ship-placement-board");
 
+        this.#controller = controller;
+
         // |----- Stylesheet -----|
         // Set boardsize on stylesheet (Needed for grid display).
         document.documentElement.style.setProperty("--board-size", boardSize);
@@ -38,9 +43,10 @@ export default class PlacementBoard extends ViewComponent {
         const colLabels = this.#buildColLabels(boardSize); // Build column Labels (Top row of board).
         const rowLabels = this.#buildRowLabels(boardSize); // Build row labels (Left column of board).
         const boardGrid = this.#buildBoardGrid(controller, boardSize); // Build board grid.
+        const launchGame = this.#buildLaunchGame(controller);
 
-        [label, corner, colLabels, rowLabels, boardGrid].forEach((component) =>
-            this.append(component),
+        [label, corner, colLabels, rowLabels, boardGrid, launchGame].forEach(
+            (component) => this.append(component),
         );
     }
 
@@ -93,4 +99,14 @@ export default class PlacementBoard extends ViewComponent {
 
         return grid;
     }
+
+    #buildLaunchGame(controller) {
+        return new Button("launch-game", this.#launchGame).setText(
+            "Launch Game",
+        );
+    }
+
+    #launchGame = () => {
+        this.#controller.launchGame();
+    };
 }
