@@ -5,6 +5,14 @@
         box-sizing: border-box;
     }
 
+    h2 {
+        font-size: var(--font-lg);
+    }
+
+    h3 {
+        font-size: var(--font-md);
+    }
+
     h2,
     h3 {
         padding: 0;
@@ -17,9 +25,18 @@
         /* Board Size */
         --board-size: 0;
 
-        /* Font Vars */
+        /* Font Types */
         --font-title: "Black Ops One";
         --font-primary: "Roboto";
+
+        /* Font Sizes */
+        --font-xs: 0.75rem; /* 12px */
+        --font-sm: 0.875rem; /* 14px */
+        --font-md: 1rem; /* 16px */
+        --font-lg: 1.25rem; /* 20px */
+        --font-xl: 1.5rem; /* 24px */
+        --font-2xl: 2rem; /* 32px */
+        --font-3xl: 2.5rem; /* 40px */
 
         /* Spacing Vars */
         --spacing-1: 1px;
@@ -38,10 +55,10 @@
         /* Height/Width */
         --view-port-height: 100dvh;
 
-        --setup-options-height: 40dvh;
+        --setup-options-height: 35dvh;
         --setup-options-width: 30dvw;
 
-        --ship-container-height: 40dvh;
+        --ship-container-height: 35dvh;
         --ship-container-width: 30dvw;
 
         /* Board Cell */
@@ -96,6 +113,7 @@
         margin: 0;
         padding: 0;
         height: var(--view-port-height);
+        overflow: hidden;
 
         /* Background */
         background-color: var(--bg);
@@ -112,7 +130,7 @@
 
         /* Display (Children)*/
         display: grid;
-        grid-template-rows: auto 1fr auto auto;
+        grid-template-rows: auto minmax(0, 1fr) auto auto;
         grid-template-columns: auto auto;
 
         header {
@@ -242,7 +260,7 @@
         /* Display (Children)*/
         display: grid;
         grid-template-columns: auto 1fr;
-        grid-template-rows: auto auto 1fr;
+        grid-template-rows: auto auto 1fr auto;
 
         h3 {
             /* Display (Self) */
@@ -296,6 +314,13 @@
 
             /* Text/Font */
             color: transparent;
+        }
+
+        #launch-game {
+            /* Display (Self) */
+            grid-row: 4 / 5;
+            grid-column: 1 / 3;
+            margin-block-start: var(--spacing-5);
         }
     }
 
@@ -475,8 +500,8 @@
         /* Display (Children)*/
         display: flex;
         flex-direction: column;
-
         align-items: stretch;
+        gap: var(--spacing-5);
 
         /* Background */
         background-color: var(--surface);
@@ -498,7 +523,6 @@
 
             #board-size-incrementer {
                 display: flex;
-                padding-block-end: var(--spacing-5);
 
                 label {
                     /* Display (Self)*/
@@ -583,18 +607,18 @@
         display: flex;
         flex-direction: column;
         justify-content: space-between;
+        gap: var(--spacing-5);
 
         /* Background */
         background-color: var(--surface);
 
-        div {
+        .ship-container {
             /* Display (Self) */
             flex: 1;
+            overflow: auto;
 
             /* Display (Children)*/
             display: grid;
-            grid-template-rows: repeat(5, auto);
-            grid-auto-flow: column;
             gap: var(--spacing-5);
 
             div.ship {
