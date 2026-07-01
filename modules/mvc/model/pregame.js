@@ -1,6 +1,8 @@
 // Default Model Values
 import { DEFAULT_VALUES } from "../../constants.js";
 
+import FleetGenerator from "./computer-logic/fleet-generator.js";
+
 export default class Pregame {
     #boardSize;
 
@@ -240,6 +242,36 @@ export default class Pregame {
                     location: null,
                 });
         }
+    }
+
+    autoPlaceShips() {
+        // Prepare input for FleetGenerator.
+        const shipLengths = [];
+        Object.entries(this.template).forEach((ship) => {
+            for (let i = 0; i < ship[1].count; i++) {
+                shipLengths.push(ship[1].size);
+            }
+        });
+
+        // Get placement tiles from FleetGenerator.
+        const shipLocations = FleetGenerator.generateFleet(
+            shipLengths,
+            this.#boardSize,
+        );
+
+        // Clear current placements.
+        this.#generatePlacementFleet();
+
+        // Assign ships to this.fleet.
+        shipLocations.forEach((shipPlacement) => {
+            const ship = this.fleet.find(
+                (ship) =>
+                    ship.location === null &&
+                    ship.size === shipPlacement.length,
+            );
+
+            ship.location = shipPlacement;
+        });
     }
 
     // |----- Helpers -----|
