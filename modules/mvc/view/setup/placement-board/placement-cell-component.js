@@ -14,8 +14,10 @@ export default class PlacementCell extends ViewComponent {
     constructor(cellNumber, isOccupied, controller) {
         // |----- Input Validation -----|
         // Validate cellNumber
-        if (!ValidationUtilities.isPositiveInt(cellNumber))
-            throw new TypeError("cell number must be a positive integer");
+        if (!ValidationUtilities.isPositiveInt(cellNumber) && cellNumber !== 0)
+            throw new TypeError(
+                "cell number must be a integer greater than or equal to zero",
+            );
 
         super(EL.DIV, `placement-${cellNumber}`, "dataset");
 

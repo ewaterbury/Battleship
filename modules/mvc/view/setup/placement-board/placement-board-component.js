@@ -88,7 +88,7 @@ export default class PlacementBoard extends ViewComponent {
 
         // Fill board grid with cell components.
         const totalCells = boardSize ** 2;
-        for (let cellNum = 1; cellNum <= totalCells; cellNum++) {
+        for (let cellNum = 0; cellNum < totalCells; cellNum++) {
             const cell = new PlacementCell(
                 cellNum,
                 occupiedCells.has(cellNum),

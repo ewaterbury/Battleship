@@ -10,7 +10,7 @@ export default class ViewUtilities {
     static getCellName(cell, boardsize) {
         const A_CHAR = 65;
         const row = Math.floor(cell / boardsize);
-        const col = cell % boardsize ? cell % boardsize : boardsize;
+        const col = (cell % boardsize) + 1;
         return String.fromCharCode(A_CHAR + row) + col;
     }
 }
