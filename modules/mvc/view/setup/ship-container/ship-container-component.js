@@ -40,5 +40,7 @@ export default class ShipContainer extends ViewComponent {
         this.append(autoPlaceButton);
     }
 
-    #autoPlaceShips = () => {};
+    #autoPlaceShips = () => {
+        this.#controller.autoPlaceShips();
+    };
 }
