@@ -47,11 +47,15 @@
         --spacing-6: 24px;
         --spacing-7: 32px;
 
-        /* Borders */
+        /* |----- Borders -----|*/
         --thin-border: var(--spacing-1) solid var(--border);
         --std-border: var(--spacing-2) solid var(--border);
+
+        /* Cell Borders */
         --cell-border: var(--spacing-2) solid var(--empty);
-        --selected-border: var(--spacing-2) solid var(--selected-ship-border);
+
+        /* Ship Placement Borders */
+        --ship-border: var(--spacing-2) solid var(--ship);
 
         /* Height/Width */
         --view-port-height: 100dvh;
@@ -81,11 +85,11 @@
 
         --hit: #d64545;
         --miss: #4a90e2;
-        --ship: #6b6b6b;
         --empty: #ffffff;
 
-        --selected-ship: #4a4a4a;
-        --selected-ship-border: black;
+        --ship: #6b6b6b;
+        --selected-ship: #f4b400;
+        --placed-ship: #4a4a4a;
     }
 
     /* Dark Theme */
@@ -100,11 +104,11 @@
 
         --hit: #ff4d4d;
         --miss: #4da3ff;
-        --ship: #9aa3b2;
         --empty: #1a1f33;
 
-        --selected-ship: #6f7885;
-        --selected-ship-border: white;
+        --ship: #9aa3b2;
+        --selected-ship: #ffd43b;
+        --placed-ship: #6f7885;
     }
 }
 
@@ -357,12 +361,12 @@
         }
 
         &:hover {
-            /* Background */
             opacity: 1;
         }
 
         &.highlight {
-            border: 2px solid red;
+            border-color: var(--selected-ship);
+            background-color: var(--selected-ship);
         }
     }
 }
@@ -524,12 +528,17 @@
                     height: var(--board-cell-side);
                     aspect-ratio: 1;
                     background-color: var(--ship);
+                    border: var(--ship-border);
+                }
+
+                &.placed div {
+                    background-color: var(--placed-ship);
+                    border-color: var(--placed-ship);
                 }
 
                 &.selected div {
-                    border: var(--selected-border);
-
                     background-color: var(--selected-ship);
+                    border-color: var(--selected-ship);
                 }
             }
         }
