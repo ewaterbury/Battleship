@@ -185,4 +185,9 @@ export default class Controller {
             this.#gameView.failedPlacement();
         }
     }
+
+    autoPlaceShips() {
+        this.#model.pregame.autoPlaceShips();
+        this.#gameView.placeShip();
+    }
 }
