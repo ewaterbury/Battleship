@@ -1,5 +1,5 @@
-// Top Level Model Module.
-import Model from "./model/model.js";
+// Top Level Model Modules.
+import Pregame from "./model/pregame.js";
 
 // Top Level View Modules.
 import SidebarView from "./view/sidebar/sidebar-view.js";
@@ -13,7 +13,7 @@ import AudioLoop from "./view/audio/audio-loop-component.js";
 
 export default class Controller {
     // Initialize game model.
-    #model = new Model();
+    #gameStage;
 
     // Holds active view (Pregame, Game, or Postgame).
     #gameView;
@@ -33,6 +33,7 @@ export default class Controller {
         this.#initializeEffectsAudio();
 
         // Initialize pregame view.
+        this.#gameStage = new Pregame(this);
         this.#gameView = new PregameView(this);
         this.#sidebarView = new SidebarView(this);
     }
@@ -43,27 +44,27 @@ export default class Controller {
     }
 
     get boardSize() {
-        return this.#model.pregame.boardSize;
+        return this.#gameStage.boardSize;
     }
 
     get fleetTemplate() {
-        return this.#model.pregame.template;
+        return this.#gameStage.template;
     }
 
     get placementFleet() {
-        return this.#model.pregame.fleet;
+        return this.#gameStage.fleet;
     }
 
     get selectedShip() {
-        return this.#model.pregame.selectedShip;
+        return this.#gameStage.selectedShip;
     }
 
     get orientation() {
-        return this.#model.pregame.orientation;
+        return this.#gameStage.orientation;
     }
 
     get occupiedCells() {
-        return this.#model.pregame.occupiedCells;
+        return this.#gameStage.occupiedCells;
     }
 
     // |----- Initialization Helpers -----|
@@ -110,7 +111,7 @@ export default class Controller {
 
     renderGame() {
         // Start new game in model.
-        // this.#model.newGame();
+        // this.#gameStage.newGame();
 
         // Call update view with initilized GameView.
         this.#updateView(new GameView(this));
@@ -130,7 +131,7 @@ export default class Controller {
     // |----- Log -----|
     postLogEntry() {
         // Get turn data from model and post it to log.
-        this.#sidebarView.postLogEntry(this.#model.latestTurn);
+        this.#sidebarView.postLogEntry(this.#gameStage.latestTurn);
     }
 
     // |----- Audio -----|
@@ -142,7 +143,7 @@ export default class Controller {
 
     // |----- Reset to Default Settings -----|
     resetToDefaults() {
-        this.#model.pregame.resetToDefaults();
+        this.#gameStage.resetToDefaults();
         this.#gameView.resetToDefaults();
     }
 
@@ -152,33 +153,33 @@ export default class Controller {
         //  - null on no update
         //  - false on only board update
         //  - true on board and fleet update
-        const updateStatus = this.#model.pregame.updateBoardSize(boardSize);
+        const updateStatus = this.#gameStage.updateBoardSize(boardSize);
         if (updateStatus !== null) this.#gameView.updateBoardSize(updateStatus);
     }
 
     // |----- Fleet Template -----|
     updateFleetTemplate(templateUpdate) {
         this.#gameView.updateFleetTemplate(
-            this.#model.pregame.updateFleetTemplate(templateUpdate),
+            this.#gameStage.updateFleetTemplate(templateUpdate),
         );
     }
 
     // |----- Placing Ships -----|
     toggleShipSelect(selectedShip) {
-        this.#model.pregame.toggleShipSelect(selectedShip);
+        this.#gameStage.toggleShipSelect(selectedShip);
         this.renderPregame();
     }
 
     toggleOrientation() {
-        this.#model.pregame.toggleOrientation();
+        this.#gameStage.toggleOrientation();
     }
 
     getShipFromCell(cell) {
-        return this.#model.pregame.getShipFromCell(cell);
+        return this.#gameStage.getShipFromCell(cell);
     }
 
     placeShip(ship) {
-        const updateStatus = this.#model.pregame.placeShip(ship);
+        const updateStatus = this.#gameStage.placeShip(ship);
         if (updateStatus) {
             this.#gameView.placeShip();
         } else {
@@ -187,7 +188,7 @@ export default class Controller {
     }
 
     autoPlaceShips() {
-        this.#model.pregame.autoPlaceShips();
+        this.#gameStage.autoPlaceShips();
         this.#gameView.placeShip();
     }
 }
