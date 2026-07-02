@@ -164,8 +164,8 @@ export default class Controller {
     }
 
     // |----- Placing Ships -----|
-    selectShip(ship) {
-        this.#model.pregame.selectShip(ship);
+    toggleShipSelect(selectedShip) {
+        this.#model.pregame.toggleShipSelect(selectedShip);
         this.renderPregame();
     }
 
