@@ -124,6 +124,11 @@ export default class PreGameView {
         this.#refreshView();
     }
 
+    toggleShipSelect() {
+        this.#refreshBoard();
+        this.#refreshShips();
+    }
+
     // |---------- Event Listener Callbacks ----------|
     // Listerners attached to global document must be removed on teardown.
 
