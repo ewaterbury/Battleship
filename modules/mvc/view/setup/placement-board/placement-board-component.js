@@ -2,7 +2,7 @@
 import ViewComponent from "../../view-component.js";
 
 // Elements Library
-import { EL } from "../../../../constants.js";
+import { EL, EVENT } from "../../../../constants.js";
 
 // VAlidation Library
 import ValidationUtilities from "../../../../validation-utilities.js";
@@ -97,6 +97,8 @@ export default class PlacementBoard extends ViewComponent {
             grid.append(cell);
         }
 
+        grid.on(EVENT.MOUSE_LEAVE, this.#stopDisplayingShip);
+
         return grid;
     }
 
@@ -105,6 +107,13 @@ export default class PlacementBoard extends ViewComponent {
             "Launch Game",
         );
     }
+
+    #stopDisplayingShip = () => {
+        // Clear highlighted cells.
+        this.#controller.document
+            .querySelectorAll(".highlight")
+            .forEach((el) => el.classList.remove("highlight"));
+    };
 
     #launchGame = () => {
         this.#controller.launchGame();

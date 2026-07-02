@@ -48,7 +48,7 @@ export default class PlacementCell extends ViewComponent {
         const cell = this.readProp("dataset");
 
         // Clear highlighted cells.
-        document
+        this.#controller.document
             .querySelectorAll(".highlight")
             .forEach((el) => el.classList.remove("highlight"));
 
@@ -56,7 +56,9 @@ export default class PlacementCell extends ViewComponent {
         if (!selectedShip) return;
 
         this.#controller.getShipFromCell(cell).forEach((cell) => {
-            const el = document.getElementById(`placement-${cell}`);
+            const el = this.#controller.document.getElementById(
+                `placement-${cell}`,
+            );
             el.classList.add("highlight");
         });
     };
