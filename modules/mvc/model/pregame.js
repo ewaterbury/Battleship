@@ -193,6 +193,7 @@ export default class Pregame {
         });
 
         selectedShip.selected = true;
+        selectedShip.location = null;
     }
 
     #deselectShip() {
