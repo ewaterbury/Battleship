@@ -36,7 +36,7 @@ export default class Ship extends ViewComponent {
     selectShip = () => {
         const data = this.readProp("dataset");
 
-        this.#controller.selectShip({
+        this.#controller.toggleShipSelect({
             type: data.type,
             size: Number(data.size),
             id: Number(data.countId),
