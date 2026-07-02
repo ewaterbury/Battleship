@@ -38,7 +38,8 @@ export default class Controller {
         this.#sidebarView = new SidebarView(this);
     }
 
-    // |----- Getters -----|
+    // |---------- Getters ----------|
+    // |----- General -----|
     get document() {
         return this.#document;
     }
@@ -47,6 +48,7 @@ export default class Controller {
         return this.#gameStage.boardSize;
     }
 
+    // |----- Pregame -----|
     get fleetTemplate() {
         return this.#gameStage.template;
     }
@@ -67,7 +69,7 @@ export default class Controller {
         return this.#gameStage.occupiedCells;
     }
 
-    // |----- Initialization Helpers -----|
+    // |----- Initialization -----|
     #initializeTheme() {
         // Get previously saved theme.
         const savedTheme = localStorage.getItem("theme");
@@ -104,31 +106,7 @@ export default class Controller {
         };
     }
 
-    // |----- Game State Methods -----|
-    renderPregame() {
-        this.#updateView(new PregameView(this));
-    }
-
-    renderGame() {
-        // Start new game in model.
-        // this.#gameStage.newGame();
-
-        // Call update view with initilized GameView.
-        this.#updateView(new GameView(this));
-    }
-
-    renderPostGame() {}
-
-    // Game State Helper
-    #updateView(view) {
-        // Clear current view.
-        if (this.#gameView) this.#gameView.remove();
-
-        // Set active view to passed.
-        this.#gameView = view;
-    }
-
-    // |----- Log -----|
+    // |----- Side Bar -----|
     postLogEntry() {
         // Get turn data from model and post it to log.
         this.#sidebarView.postLogEntry(this.#gameStage.latestTurn);
@@ -139,15 +117,13 @@ export default class Controller {
         this.gameEffects[status].play();
     }
 
-    // |---------- Game Settings (Pregame) ----------|
+    // |----- Pregame -----|
 
-    // |----- Reset to Default Settings -----|
     resetToDefaults() {
         this.#gameStage.resetToDefaults();
         this.#gameView.resetToDefaults();
     }
 
-    // |----- Board Size -----|
     updateBoardSize(boardSize) {
         // UpdateStatus:
         //  - null on no update
@@ -157,25 +133,19 @@ export default class Controller {
         if (updateStatus !== null) this.#gameView.updateBoardSize(updateStatus);
     }
 
-    // |----- Fleet Template -----|
     updateFleetTemplate(templateUpdate) {
         this.#gameView.updateFleetTemplate(
             this.#gameStage.updateFleetTemplate(templateUpdate),
         );
     }
 
-    // |----- Placing Ships -----|
     toggleShipSelect(selectedShip) {
         this.#gameStage.toggleShipSelect(selectedShip);
-        this.renderPregame();
+        this.#gameView.toggleShipSelect();
     }
 
     toggleOrientation() {
         this.#gameStage.toggleOrientation();
-    }
-
-    getShipFromCell(cell) {
-        return this.#gameStage.getShipFromCell(cell);
     }
 
     placeShip(ship) {
@@ -190,5 +160,9 @@ export default class Controller {
     autoPlaceShips() {
         this.#gameStage.autoPlaceShips();
         this.#gameView.placeShip();
+    }
+
+    getShipFromCell(cell) {
+        return this.#gameStage.getShipFromCell(cell);
     }
 }
