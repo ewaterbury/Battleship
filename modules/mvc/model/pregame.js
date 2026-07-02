@@ -328,11 +328,12 @@ export default class Pregame {
             // Fit ship to board (shift left).
             fitShip = (ship) => {
                 const staysInRow = (ship) => {
-                    const startRow = Math.floor((ship[0] - 1) / boardSize);
+                    // Get start row of first cell.
+                    const startRow = Math.floor(ship[0] / boardSize);
 
+                    // Check that all cells are in the same row.
                     return ship.every(
-                        (cell) =>
-                            Math.floor((cell - 1) / boardSize) === startRow,
+                        (cell) => Math.floor(cell / boardSize) === startRow,
                     );
                 };
 
