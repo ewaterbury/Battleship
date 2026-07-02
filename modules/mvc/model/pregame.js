@@ -174,19 +174,32 @@ export default class Pregame {
     }
 
     // |----- Placing Ships -----|
-    selectShip(selected) {
-        // Set selected status to false on ships.
-        this.fleet.forEach((ship) => {
-            ship.selected = false;
-        });
-
+    toggleShipSelect(selected) {
         const ship = this.fleet.find(
             (ship) => ship.size === selected.size && ship.id === selected.id,
         );
 
-        if (!ship) throw RangeError("Selected ship not found");
+        if (ship.selected) {
+            this.#deselectShip();
+        } else {
+            this.#selectShip(ship);
+        }
+    }
 
-        ship.selected = true;
+    #selectShip(selectedShip) {
+        // Set selected status to false on all ships.
+        this.fleet.forEach((ship) => {
+            ship.selected = false;
+        });
+
+        selectedShip.selected = true;
+    }
+
+    #deselectShip() {
+        // Set selected status to false on all ships.
+        this.fleet.forEach((ship) => {
+            ship.selected = false;
+        });
     }
 
     toggleOrientation() {
@@ -220,7 +233,12 @@ export default class Pregame {
 
         if (this.selectedShip) {
             if (validPlacement(ship)) {
+                // Assign location.
                 this.selectedShip.location = ship;
+
+                // deselctShip after location assignment.
+                this.#deselectShip();
+
                 return true;
             }
         }
