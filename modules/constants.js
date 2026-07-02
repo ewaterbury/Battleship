@@ -24,6 +24,7 @@ export const EVENT = {
     INPUT: "input",
     KEYDOWN: "keydown",
     MOUSE_ENTER: "mouseenter",
+    MOUSE_LEAVE: "mouseleave",
 };
 
 export const DEFAULT_VALUES = {
