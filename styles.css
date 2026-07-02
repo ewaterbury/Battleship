@@ -480,6 +480,7 @@
     }
 
     #ship-container-area {
+        position: relative;
         /* Display (Self)*/
         grid-row: 2/3;
         grid-column: 1/2;
@@ -541,6 +542,12 @@
                     border-color: var(--selected-ship);
                 }
             }
+        }
+
+        #rotate-ships {
+            position: absolute;
+            top: var(--spacing-4);
+            right: var(--spacing-4);
         }
     }
 }
