@@ -10,21 +10,14 @@ export default class Pregame {
         // Represents board size for next game (e.g., 10 x 10).
         this.#boardSize = DEFAULT_VALUES.BOARD_SIZE.DEFAULT;
 
-        this.#createFleetTemplate();
+        // Represents fleet composition for next game.
+        // Defaults to standard Battleship fleet [2, 3, 3, 4, 5].
+        this.template = this.#createFleetTemplate();
 
-        // Set ship size as read-only field.
-        for (const ship of Object.values(this.template))
-            Object.defineProperties(ship, {
-                type: { value: ship.type, writable: false },
-                size: { value: ship.size, writable: false },
-            });
-
-        // Build placement fleet.
-        // Tracks placement status of individual ships.
         this.#generatePlacementFleet();
 
         // Set default orientation for placing ships.
-        this.orientation = "vertical";
+        this.orientation = DEFAULT_VALUES.ORIENTATION.VERTICAL;
     }
 
     get boardSize() {
@@ -47,9 +40,7 @@ export default class Pregame {
     }
 
     get selectedShip() {
-        const selected = this.fleet.find((ship) => ship.selected === true);
-
-        return selected ? selected : null;
+        return this.fleet.find((ship) => ship.selected === true) ?? null;
     }
 
     get occupiedCells() {
@@ -73,10 +64,7 @@ export default class Pregame {
         this.#boardSize = DEFAULT_VALUES.BOARD_SIZE.DEFAULT;
 
         // Set fleet counts to default sizes.
-        this.template.battleship.count = DEFAULT_VALUES.SHIPS.BATTLESHIP.COUNT;
-        this.template.carrier.count = DEFAULT_VALUES.SHIPS.CARRIER.COUNT;
-        this.template.cruiser.count = DEFAULT_VALUES.SHIPS.CRUISER.COUNT;
-        this.template.destroyer.count = DEFAULT_VALUES.SHIPS.DESTROYER.COUNT;
+        this.template = this.#createFleetTemplate();
 
         // Refresh placement fleet.
         this.#generatePlacementFleet();
@@ -110,10 +98,6 @@ export default class Pregame {
             }
         };
 
-        const clearLocations = () => {
-            this.fleet.forEach((ship) => (ship.location = null));
-        };
-
         // Return null on no update.
         if (boardSize === this.#boardSize) return null;
 
@@ -135,17 +119,12 @@ export default class Pregame {
         return false;
     }
 
-    // |---------- Fleet Managment ----------|
-
-    // |----- Fleet Building / Fleet Template -----|
+    // |----- Fleet -----|
     updateFleetTemplate(update) {
-        // Current count of ship being updated.
         const currentCount = this.template[update.type].count;
 
-        // Change in count of ship being updated.
         const countChange = update.count - currentCount;
 
-        // updated template size
         const updatedFleet = this.fleetSize.current + countChange * update.size;
 
         // If new fleet size is valid, update ship count.
@@ -156,7 +135,7 @@ export default class Pregame {
         ) {
             this.template[update.type].count = update.count;
 
-            // Refresh placement fleet.
+            // Rebuild the placement fleet from the updated template.
             this.#generatePlacementFleet();
 
             // Return true on fleet update.
@@ -168,21 +147,29 @@ export default class Pregame {
     }
 
     #createFleetTemplate() {
-        // Represents fleet composition for next game.
-        // Defaults to standard Battleship fleet [2, 3, 3, 4, 5].
-        this.template = {};
+        const template = {};
+
         for (const ship of ["carrier", "battleship", "cruiser", "destroyer"])
-            this.template[ship] = {
+            template[ship] = {
                 type: DEFAULT_VALUES.SHIPS[ship.toUpperCase()].TYPE,
                 size: DEFAULT_VALUES.SHIPS[ship.toUpperCase()].SIZE,
                 count: DEFAULT_VALUES.SHIPS[ship.toUpperCase()].COUNT,
             };
+
+        // Make ship identity immutable.
+        for (const ship of Object.values(template))
+            Object.defineProperties(ship, {
+                type: { value: ship.type, writable: false },
+                size: { value: ship.size, writable: false },
+            });
+
+        return template;
     }
 
     #generatePlacementFleet() {
         this.fleet = []; // Clear current fleet.
 
-        // Add new ships to fleet.
+        // Rebuild the placement fleet from template.
         for (const ship of Object.values(this.template)) {
             for (let i = 0; i < ship.count; i++)
                 this.fleet.push({
@@ -195,37 +182,31 @@ export default class Pregame {
         }
     }
 
-    // |----- Selecting Ships -----|
+    // |----- Selecting -----|
     toggleShipSelect(selected) {
         const ship = this.fleet.find(
             (ship) => ship.size === selected.size && ship.id === selected.id,
         );
-
+        if (!ship) return;
         if (ship.selected) {
-            this.#deselectShip();
+            this.#deselectShips();
         } else {
             this.#selectShip(ship);
         }
     }
 
     #selectShip(selectedShip) {
-        // Set selected status to false on all ships.
-        this.fleet.forEach((ship) => {
-            ship.selected = false;
-        });
-
+        this.#deselectShips();
         selectedShip.selected = true;
         selectedShip.location = null;
     }
 
-    #deselectShip() {
+    #deselectShips() {
         // Set selected status to false on all ships.
-        this.fleet.forEach((ship) => {
-            ship.selected = false;
-        });
+        for (const ship of this.fleet) ship.selected = false;
     }
 
-    // |----- Placement Managment -----|
+    // |----- Placement -----|
     toggleOrientation() {
         this.orientation =
             this.orientation === DEFAULT_VALUES.ORIENTATION.VERTICAL
@@ -234,19 +215,16 @@ export default class Pregame {
     }
 
     placeShip(ship) {
-        const validPlacement = (ship) => {
-            // Get list of ships that have been placed.
-            const placedShips = this.fleet.filter(
-                (ship) => ship.location !== null,
-            );
+        const selectedShip = this.selectedShip;
 
+        const validPlacement = (ship) => {
             // Aggregate occupied cells in a set.
             const occupiedCells = this.occupiedCells;
 
             // Remove slected ships cells from occupied cells.
             // Allows for smoother ship repositioning.
-            if (this.selectedShip.location) {
-                this.selectedShip.location.forEach((cell) =>
+            if (selectedShip.location) {
+                selectedShip.location.forEach((cell) =>
                     occupiedCells.delete(cell),
                 );
             }
@@ -255,29 +233,24 @@ export default class Pregame {
             return !ship.some((cell) => occupiedCells.has(cell));
         };
 
-        if (this.selectedShip) {
-            if (validPlacement(ship)) {
-                // Assign location.
-                this.selectedShip.location = ship;
+        if (!selectedShip) return false;
 
-                // deselctShip after location assignment.
-                this.#deselectShip();
+        if (!validPlacement(ship)) return false;
 
-                return true;
-            }
-        }
+        // Assign location.
+        selectedShip.location = ship;
 
-        return false;
+        // deselctShip after location assignment.
+        this.#deselectShips();
+
+        return true;
     }
 
     autoPlaceShips() {
         // Prepare input for FleetGenerator.
         const shipLengths = [];
-        Object.entries(this.template).forEach((ship) => {
-            for (let i = 0; i < ship[1].count; i++) {
-                shipLengths.push(ship[1].size);
-            }
-        });
+        for (const ship of Object.values(this.template))
+            for (let i = 0; i < ship.count; i++) shipLengths.push(ship.size);
 
         // Get placement tiles from FleetGenerator.
         const shipLocations = FleetGenerator.generateFleet(
