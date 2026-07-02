@@ -310,10 +310,9 @@ export default class Pregame {
                 for (let i = 0; i < selectedShip.size; i++)
                     ship.push(Number(cell.num) + boardSize * i);
             };
-
             // Fit ship to board (shift upwards).
             fitShip = (ship) => {
-                while (ship[ship.length - 1] > boardSize ** 2)
+                while (ship[ship.length - 1] >= boardSize ** 2)
                     for (let i = 0; i < ship.length; i++) ship[i] -= boardSize;
             };
         }
