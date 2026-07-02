@@ -36,11 +36,21 @@ export default class ShipContainer extends ViewComponent {
             this.#autoPlaceShips,
         ).setText("Place Ships For Me");
 
-        this.append(this.#container);
-        this.append(autoPlaceButton);
+        const rotateButton = new Button(
+            "rotate-ships",
+            this.#rotateOnClick,
+        ).setText("🔄");
+
+        [this.#container, autoPlaceButton, rotateButton].forEach((component) =>
+            this.append(component),
+        );
     }
 
     #autoPlaceShips = () => {
         this.#controller.autoPlaceShips();
+    };
+
+    #rotateOnClick = () => {
+        this.#controller.toggleOrientation();
     };
 }
