@@ -106,7 +106,10 @@ export default class PreGameView {
     // |----- View Update Commands -----|
     updateBoardSize(fleetUpdated) {
         if (fleetUpdated === true) this.#refreshView();
-        else this.#refreshBoard();
+        else {
+            this.#refreshShips();
+            this.#refreshBoard();
+        }
     }
 
     updateFleetTemplate(fleetUpdated) {
