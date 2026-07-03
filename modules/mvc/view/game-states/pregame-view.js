@@ -63,7 +63,7 @@ export default class PreGameView {
         );
     }
 
-    // |----- Refresh Methods -----|
+    // |----- UI Construction Methods -----|
     #refreshView() {
         this.#getComponents().forEach((component) => component.remove());
         this.#buildView();
@@ -92,7 +92,7 @@ export default class PreGameView {
         );
     }
 
-    remove() {
+    #remove() {
         // Remove global event listeners.
         this.#controller.document.removeEventListener(
             EVENT.KEYDOWN,
@@ -104,6 +104,11 @@ export default class PreGameView {
     }
 
     // |----- View Update Commands -----|
+
+    resetToDefaults() {
+        this.#refreshView();
+    }
+
     updateBoardSize(fleetUpdated) {
         if (fleetUpdated === true) this.#refreshView();
         else {
@@ -120,13 +125,26 @@ export default class PreGameView {
         }
     }
 
-    resetToDefaults() {
-        this.#refreshView();
-    }
-
     toggleShipSelect() {
         this.#refreshBoard();
         this.#refreshShips();
+    }
+
+    placeShip() {
+        this.#refreshBoard();
+        this.#refreshShips();
+    }
+
+    failedPlacement() {
+        alert("Ships must be placed on unoccupied tiles");
+    }
+
+    launchGame() {
+        this.#remove();
+    }
+
+    failedLaunch() {
+        alert("Please place all ships.");
     }
 
     // |---------- Event Listener Callbacks ----------|
@@ -145,13 +163,4 @@ export default class PreGameView {
                 hovered.dispatchEvent(new MouseEvent(EVENT.MOUSE_ENTER));
         }
     };
-
-    placeShip() {
-        this.#refreshBoard();
-        this.#refreshShips();
-    }
-
-    failedPlacement() {
-        alert("Ships must be placed on unoccupied tiles");
-    }
 }
