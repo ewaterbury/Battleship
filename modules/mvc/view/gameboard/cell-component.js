@@ -6,7 +6,7 @@ import { CELL, EL, EVENT } from "../../../constants.js";
 
 // Utility Libraries
 import ViewUtils from "../view-utilities.js";
-import ValUtils from "../../../validation-utilities.js";
+import ValidationUtilities from "../../../validation-utilities.js";
 
 export default class CellComponent extends Component {
     #controller;
@@ -14,22 +14,14 @@ export default class CellComponent extends Component {
     constructor(cellNumber, player, controller) {
         // |----- Input Validation -----|
         // Validate cellNumber
-        if (!ValUtils.isPositiveInt(cellNumber))
-            throw new TypeError("cell number must be a positive integer");
+        if (!ValidationUtilities.isPositiveInt(cellNumber) && cellNumber !== 0)
+            throw new TypeError(
+                "cell number must be a integer greater than or equal to zero",
+            );
 
         // Validate player
-        if (!ValUtils.isString(player))
+        if (!ValidationUtilities.isString(player))
             throw new TypeError("player must be a string");
-
-        // Validate controller
-        if (
-            !controller ||
-            typeof controller.sendAttack !== "function" ||
-            typeof controller.boardsize !== "number" ||
-            typeof controller.activePlayer !== "string"
-        ) {
-            throw new TypeError("Invalid controller interface");
-        }
 
         // Initialize cell and assign ID using super constructor.
         super(
@@ -43,12 +35,15 @@ export default class CellComponent extends Component {
         // Save reference to controller.
         this.#controller = controller;
 
+        // |----- UI Construction -----|
+        this.addClass("board-cell");
+
         // Attach data to cell, set cell text, add callback.
         this.addDataset("cell", cellNumber)
             .addDataset("player", player)
             .addDataset("state", CELL.EMPTY)
             .setText(
-                ViewUtils.getCellName(cellNumber, this.#controller.boardsize),
+                ViewUtils.getCellName(cellNumber, this.#controller.boardSize),
             )
             .on(EVENT.CLICK, this.#sendAttack);
     }
