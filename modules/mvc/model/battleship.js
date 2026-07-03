@@ -7,7 +7,7 @@ import Log from "./log.js";
 import { CELL } from "../../constants.js";
 
 export default class Battleship {
-    #boardsize;
+    #boardSize;
     #player;
     #computer;
     #attacker;
@@ -15,15 +15,15 @@ export default class Battleship {
     #turn;
     #log;
 
-    constructor(boardsize, playerFleet) {
-        this.#boardsize = boardsize;
+    constructor(boardSize, playerFleet) {
+        this.#boardSize = boardSize;
 
         // Initialize human player.
         this.#player = {
             id: "player",
 
             controller: new Player(
-                new Gameboard(boardsize),
+                new Gameboard(boardSize),
                 playerFleet.map((ship) => new Ship(ship)),
             ),
         };
@@ -33,10 +33,10 @@ export default class Battleship {
             id: "computer",
 
             controller: new Player(
-                new Gameboard(boardsize),
+                new Gameboard(boardSize),
                 FleetGenerator.generateFleet(
                     playerFleet.map((ship) => ship.length),
-                    boardsize,
+                    boardSize,
                 ).map((ship) => new Ship(ship)),
             ),
 
@@ -64,6 +64,10 @@ export default class Battleship {
         return this.#log.latest;
     }
 
+    get boardSize() {
+        return this.#boardSize;
+    }
+
     // Returns attack for computer player.
     getCompAttack() {
         return this.#computer.logic.getAttack();
@@ -83,7 +87,7 @@ export default class Battleship {
         // Use attack logic to select attack for computer player.
         if (typeof attack !== "number")
             throw new Error("Attack is not a number");
-        if (attack < 0 || attack >= this.#boardsize ** 2)
+        if (attack < 0 || attack >= this.#boardSize ** 2)
             throw new Error("Attack is out of bounds");
 
         // Call strike on defender.
