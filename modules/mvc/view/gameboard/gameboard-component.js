@@ -1,18 +1,18 @@
 import { EL } from "../../../constants.js";
 import Utils from "../view-utilities.js";
 import ValUtils from "../../../validation-utilities.js";
-import Component from "../view-component.js";
+import ViewComponent from "../view-component.js";
 import Cell from "./cell-component.js";
 
-export default class Gameboard extends Component {
-    constructor(player, boardsize, controller) {
+export default class Gameboard extends ViewComponent {
+    constructor(player, controller) {
         // |----- Validation -----|
         // Vaildate player input.
         if (!ValUtils.isString(player))
             throw new TypeError("player must be non-empty string");
 
-        // Validate boardsize input.
-        if (!ValUtils.isPositiveInt(boardsize))
+        // Validate board size input.
+        if (!ValUtils.isPositiveInt(controller.boardSize))
             throw new TypeError("boardzise must be a positive integer");
 
         // |----- Build Board Container-----|
@@ -20,18 +20,27 @@ export default class Gameboard extends Component {
         super(EL.SECTION, `${player.toLowerCase()}_board`);
 
         // Add gameboard class.
-        this.addClass("gameboard");
+        this.addClass("board");
 
         // |----- Stylesheet -----|
-        // Set boardsize on stylesheet (Needed for grid display).
-        document.documentElement.style.setProperty("--board-size", boardsize);
+        // Set board size on stylesheet (Needed for grid display).
+        document.documentElement.style.setProperty(
+            "--board-size",
+            controller.boardSize,
+        );
 
         // |------ Build Board Components -----|
-        const label = new Component(EL.H3).setText(Utils.capitalize(player)); // Build board caption.
-        const corner = new Component(EL.DIV).addClass("corner"); // Build layout spacer (Formatting only).
-        const colLabels = this.#buildColLabels(boardsize); // Build column Labels (Top row of board).
-        const rowLabels = this.#buildRowLabels(boardsize); // Build row labels (Left column of board).
-        const boardGrid = this.#buildBoardGrid(boardsize, player, controller); // Build board grid.
+        const label = new ViewComponent(EL.H3).setText(
+            Utils.capitalize(player),
+        ); // Build board caption.
+        const corner = new ViewComponent(EL.DIV).addClass("corner"); // Build layout spacer (Formatting only).
+        const colLabels = this.#buildColLabels(controller.boardSize); // Build column Labels (Top row of board).
+        const rowLabels = this.#buildRowLabels(controller.boardSize); // Build row labels (Left column of board).
+        const boardGrid = this.#buildBoardGrid(
+            controller.boardSize,
+            player,
+            controller,
+        ); // Build board grid.
 
         // Append components.
         [label, corner, colLabels, rowLabels, boardGrid].forEach((component) =>
@@ -39,24 +48,24 @@ export default class Gameboard extends Component {
         );
     }
 
-    #buildColLabels(boardsize) {
-        const colLabels = new Component(EL.DIV).addClass("col-labels");
+    #buildColLabels(boardSize) {
+        const colLabels = new ViewComponent(EL.DIV).addClass("col-labels");
 
-        for (let col = 1; col <= boardsize; col++)
+        for (let col = 1; col <= boardSize; col++)
             // Build cells for colLabels.
-            colLabels.append(new Component(EL.SPAN).setText(col));
+            colLabels.append(new ViewComponent(EL.SPAN).setText(col));
 
         return colLabels;
     }
 
-    #buildRowLabels(boardsize) {
+    #buildRowLabels(boardSize) {
         // Build row labels (Left column of board).
-        const rowLabels = new Component(EL.DIV).addClass("row-labels");
+        const rowLabels = new ViewComponent(EL.DIV).addClass("row-labels");
 
-        for (let row = 0; row < boardsize; row++) {
+        for (let row = 0; row < boardSize; row++) {
             const A_CHAR = 65;
             rowLabels.append(
-                new Component(EL.SPAN).setText(
+                new ViewComponent(EL.SPAN).setText(
                     String.fromCharCode(A_CHAR + row),
                 ),
             );
@@ -65,13 +74,13 @@ export default class Gameboard extends Component {
         return rowLabels;
     }
 
-    #buildBoardGrid(boardsize, player, controller) {
+    #buildBoardGrid(boardSize, player, controller) {
         // Build board grid.
-        const grid = new Component(EL.DIV).addClass("board-grid");
+        const grid = new ViewComponent(EL.DIV).addClass("board-grid");
 
         // Fill board grid with cell components.
-        const totalCells = boardsize ** 2;
-        for (let cellNum = 1; cellNum <= totalCells; cellNum++) {
+        const totalCells = boardSize ** 2;
+        for (let cellNum = 0; cellNum < totalCells; cellNum++) {
             const cell = new Cell(cellNum, player, controller);
             grid.append(cell);
         }
