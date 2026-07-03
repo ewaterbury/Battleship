@@ -1,4 +1,4 @@
-export const CELL = { HIT: "hit", MISS: "miss", EMPTY: null, SUNK: "sunk" };
+export const CELL = { HIT: "hit", MISS: "miss", EMPTY: "empty", SUNK: "sunk" };
 
 export const EL = {
     AUDIO: "audio",
