@@ -21,6 +21,8 @@ export default class PreGameView {
 
     // Mount Point (Needed to remove view)
     #window;
+
+    // Components
     #options;
     #ships;
     #board;
