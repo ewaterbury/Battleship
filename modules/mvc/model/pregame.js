@@ -273,6 +273,17 @@ export default class Pregame {
         });
     }
 
+    // |----- Launch Game -----|
+    launchGame() {
+        const shipsPlaced = () =>
+            this.fleet.every((ship) => ship.location !== null);
+
+        if (shipsPlaced()) {
+            return true;
+        }
+        return false;
+    }
+
     // |----- Helpers -----|
     getShipFromCell(cell) {
         const boardSize = this.#boardSize;
