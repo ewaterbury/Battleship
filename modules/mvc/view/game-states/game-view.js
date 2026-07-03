@@ -6,7 +6,7 @@ import MountPoint from "./../mount-point.js";
 import { EL } from "../../../constants.js";
 
 // Sub-View Modules
-import GameboardView from "./../gameboard/gameboard-view.js";
+import PlayerBoard from "../gameboard/player-board-component.js";
 import GameOptions from "../game-options/game-options-component.js";
 
 // Top level view that displays game UI.
@@ -15,7 +15,11 @@ export default class GameView {
     #controller;
 
     // Mount Point (Needed to remove view)
-    #gameArea;
+    #window;
+
+    // Components
+    #gameboard;
+    #gameOptions;
 
     // Sub-View References
     #logView;
@@ -25,26 +29,28 @@ export default class GameView {
         this.#controller = controller;
 
         // Build mount targets.
-        this.#gameArea = new MountPoint("game-area");
-
-        // |----- GameArea ------|
-        // Build game area compnents.
-        const gameboardView = new GameboardView(controller);
-        const gameOptionsView = new GameOptions();
-
-        // Mount game area components.
-        [gameboardView, gameOptionsView].forEach((view) =>
-            this.#gameArea.append(view),
-        );
-
-        // Mount sub-views.
-        this.#gameArea.mount(
+        this.#window = new MountPoint("game-area").mount(
             document.querySelector("#battleship header"),
             "after",
         );
+
+        this.#buildView();
     }
 
-    removeView() {
-        this.#gameArea.remove();
+    #getComponents() {
+        return [this.#gameboard, this.#gameOptions];
+    }
+
+    #buildView() {
+        this.#gameboard = new PlayerBoard(this.#controller);
+        this.#gameOptions = new GameOptions(this.#controller);
+
+        this.#getComponents().forEach((component) =>
+            this.#window.append(component),
+        );
+    }
+
+    #remove() {
+        this.#window.remove();
     }
 }
