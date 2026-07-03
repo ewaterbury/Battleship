@@ -1,5 +1,6 @@
 // Top Level Model Modules.
 import Pregame from "./model/pregame.js";
+import Game from "./model/battleship.js";
 
 // Top Level View Modules.
 import SidebarView from "./view/sidebar/sidebar-view.js";
@@ -164,5 +165,22 @@ export default class Controller {
 
     getShipFromCell(cell) {
         return this.#gameStage.getShipFromCell(cell);
+    }
+
+    launchGame() {
+        const gameReady = this.#gameStage.launchGame();
+        if (gameReady) {
+            // Initialize game with current board size and player fleet.
+            this.#gameStage = new Game(
+                this.boardSize.current,
+                this.placementFleet.map((ship) => ship.location),
+            );
+
+            // Remove pregame view and add game view.
+            this.#gameView.launchGame();
+            this.#gameView = new GameView(this);
+        } else {
+            this.#gameView.failedLaunch();
+        }
     }
 }
