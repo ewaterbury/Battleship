@@ -4,7 +4,7 @@ import Ship from "./ship.js";
 import FleetGenerator from "./computer-logic/fleet-generator.js";
 import AttackLogic from "./computer-logic/attack-logic.js";
 import Log from "./log.js";
-import { CELL } from "../../constants.js";
+import { CELL, PLAYERS } from "../../constants.js";
 
 export default class Battleship {
     #boardSize;
@@ -26,6 +26,8 @@ export default class Battleship {
                 new Gameboard(boardSize),
                 playerFleet.map((ship) => new Ship(ship)),
             ),
+
+            playerFleet: playerFleet,
         };
 
         // Initialize computer player.
@@ -68,6 +70,22 @@ export default class Battleship {
         return this.#boardSize;
     }
 
+    get playerBoard() {
+        const board = [...this.#player.controller.queryBoard()];
+        const placements = this.#player.playerFleet.flat();
+        placements.forEach((cell) => {
+            const status = board[cell];
+            if (status !== CELL.HIT || status !== CELL.SUNK)
+                board[cell] = CELL.SHIP;
+        });
+
+        return board;
+    }
+
+    get compBoard() {
+        return [...this.#computer.controller.queryBoard()];
+    }
+
     // Returns attack for computer player.
     getCompAttack() {
         return this.#computer.logic.getAttack();
@@ -89,8 +107,6 @@ export default class Battleship {
             throw new Error("Attack is not a number");
         if (attack < 0 || attack >= this.#boardSize ** 2)
             throw new Error("Attack is out of bounds");
-
-        console.log(player, this.#attacker);
 
         // Return false when called with defender board.
         if (player !== this.#attacker.id) return false;
