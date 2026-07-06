@@ -49,7 +49,7 @@ export default class Battleship {
             this.#attacker === this.#computer ? this.#player : this.#computer;
 
         // Initialize log saving first attacker/defender.
-        this.#log = new Log(this.#attacker, this.#defender);
+        this.#log = new Log(this.#attacker.id, this.#defender.id);
 
         // Initialize turn at one (Turn zero already saved in log).
         this.#turn = 1;
