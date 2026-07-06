@@ -2,13 +2,14 @@ export default class Log {
     #log;
 
     constructor(attacker, defender) {
-        const turnZero = {
-            turn: 0,
-            attacker: attacker,
-            defender: defender,
-        };
-
-        this.#log = [];
+        // Initialize log with turn zero.
+        this.#log = [
+            {
+                turn: 0,
+                attacker: attacker,
+                defender: defender,
+            },
+        ];
     }
 
     get log() {
