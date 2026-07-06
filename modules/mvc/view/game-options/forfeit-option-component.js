@@ -8,11 +8,11 @@ export default class ForfeitOption extends Component {
         super(EL.LI, "surrender");
 
         this.append(
-            new Button("surrender-button", this.#myCallback()).setText(
+            new Button("surrender-button", this.#surrender).setText(
                 "Surrender",
             ),
         );
     }
 
-    #myCallback = () => {};
+    #surrender = () => {};
 }

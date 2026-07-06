@@ -8,8 +8,6 @@ export default class GameOptions extends Component {
         // Initialize root element (section) using super constructor.
         super(EL.SECTION, "game-options-area");
 
-        this.append(new Component(EL.H2).setText("Game Options: "));
-
         const options = new Component(EL.MENU, "game-options-menu");
 
         options.append(new ChooseForMe()).append(new ForfeitOption());
