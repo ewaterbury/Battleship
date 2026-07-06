@@ -5,7 +5,7 @@ class Gameboard {
 
     constructor(boardSize) {
         this.#fleet = []; // Player's fleet.
-        this.#view = Array(boardSize ** 2).fill(null); // Opponent's view of board.
+        this.#view = Array(boardSize ** 2).fill(CELL.EMPTY); // Opponent's view of board.
     }
 
     // Adds new ship to #fleet.
