@@ -51,23 +51,26 @@ export default class Controller {
 
     // |----- Pregame -----|
     get fleetTemplate() {
-        return this.#gameStage.template;
+        if (this.#gameStage instanceof Pregame) return this.#gameStage.template;
     }
 
     get placementFleet() {
-        return this.#gameStage.fleet;
+        if (this.#gameStage instanceof Pregame) return this.#gameStage.fleet;
     }
 
     get selectedShip() {
-        return this.#gameStage.selectedShip;
+        if (this.#gameStage instanceof Pregame)
+            return this.#gameStage.selectedShip;
     }
 
     get orientation() {
-        return this.#gameStage.orientation;
+        if (this.#gameStage instanceof Pregame)
+            return this.#gameStage.orientation;
     }
 
     get occupiedCells() {
-        return this.#gameStage.occupiedCells;
+        if (this.#gameStage instanceof Pregame)
+            return this.#gameStage.occupiedCells;
     }
 
     // |----- Initialization -----|
