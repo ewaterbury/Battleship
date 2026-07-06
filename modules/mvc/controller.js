@@ -73,6 +73,34 @@ export default class Controller {
             return this.#gameStage.occupiedCells;
     }
 
+    // |----- Pregame -----|
+    get gameState() {
+        const latest = this.#gameStage.latestTurn;
+        if (latest.turn === 0) {
+            return {
+                turn: latest.turn,
+                attacker: latest.attacker,
+                defender: latest.defender,
+                cell: null,
+                status: null,
+                shipSunk: null,
+                gameOver: null,
+                winner: null,
+            };
+        } else {
+            return {
+                turn: latest.turn + 1,
+                attacker: latest.defender,
+                defender: latest.attacker,
+                cell: latest.cell,
+                status: latest.status,
+                shipSunk: latest.shipSunk,
+                gameOver: latest.gameOver,
+                winner: latest.winner,
+            };
+        }
+    }
+
     // |----- Initialization -----|
     #initializeTheme() {
         // Get previously saved theme.
