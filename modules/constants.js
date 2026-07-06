@@ -1,5 +1,7 @@
 export const CELL = { HIT: "hit", MISS: "miss", EMPTY: "empty", SUNK: "sunk" };
 
+export const PLAYERS = { ATTACKER: "attacker", PLAYER: "player" };
+
 export const EL = {
     AUDIO: "audio",
     BUTTON: "button",
