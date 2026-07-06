@@ -83,15 +83,21 @@ export default class Battleship {
     }
 
     // Sends attack to defender board.
-    sendAttack(attack) {
+    sendAttack(attack, player) {
         // Use attack logic to select attack for computer player.
         if (typeof attack !== "number")
             throw new Error("Attack is not a number");
         if (attack < 0 || attack >= this.#boardSize ** 2)
             throw new Error("Attack is out of bounds");
 
-        // Call strike on defender.
+        console.log(player, this.#attacker);
+
+        // Return false when called with defender board.
+        if (player !== this.#attacker.id) return false;
+
+        // Call strike on defender and return true.
         this.#defender.controller.receiveAttack(attack);
+        return true;
     }
 
     // Log turn.
