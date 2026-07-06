@@ -1,10 +1,14 @@
-import { EL } from "../../../constants.js";
+import { EL, EVENT, PLAYERS } from "../../../constants.js";
 import Utils from "../view-utilities.js";
 import ValUtils from "../../../validation-utilities.js";
 import ViewComponent from "../view-component.js";
 import Cell from "./cell-component.js";
 
 export default class Gameboard extends ViewComponent {
+    #controller;
+    #player;
+    #grid;
+
     constructor(player, controller) {
         // |----- Validation -----|
         // Vaildate player input.
@@ -13,21 +17,17 @@ export default class Gameboard extends ViewComponent {
 
         // Validate board size input.
         if (!ValUtils.isPositiveInt(controller.boardSize))
-            throw new TypeError("boardzise must be a positive integer");
+            throw new TypeError("boardSize must be a positive integer");
 
-        // |----- Build Board Container-----|
-        // Initialize 'root' using super constructor.
+        // Initialize root (section) and assign id using super constructor.
         super(EL.SECTION, `${player.toLowerCase()}_board`);
 
-        // Add gameboard class.
-        this.addClass("board");
+        this.#controller = controller;
+        this.#player = player;
 
-        // |----- Stylesheet -----|
-        // Set board size on stylesheet (Needed for grid display).
-        document.documentElement.style.setProperty(
-            "--board-size",
-            controller.boardSize,
-        );
+        // Add gameboard classes.
+        this.addClass("board");
+        if (this.#isAttacker()) this.addClass(PLAYERS.ATTACKER);
 
         // |------ Build Board Components -----|
         const label = new ViewComponent(EL.H3).setText(
@@ -86,5 +86,30 @@ export default class Gameboard extends ViewComponent {
         }
 
         return grid;
+    }
+
+    update() {
+        this.#toggleAttackerStatus();
+
+        // Refresh grid if player defended last turn.
+        if (this.#isAttacker()) this.#refreshGrid();
+    }
+
+    #isAttacker() {
+        return this.#controller.gameState.attacker === this.#player;
+    }
+
+    #refreshGrid() {
+        this.#grid.remove();
+        this.#grid = this.#buildBoardGrid;
+        this.append(this.#grid);
+    }
+
+    #toggleAttackerStatus() {
+        if (this.#isAttacker()) {
+            this.addClass(PLAYERS.ATTACKER);
+        } else {
+            this.removeClass(PLAYERS.ATTACKER);
+        }
     }
 }
