@@ -48,22 +48,8 @@ export default class CellComponent extends Component {
             .on(EVENT.CLICK, this.#sendAttack);
     }
 
-    #isValidCell() {
-        // Get cell data.
-        const cellData = this.readProp("dataset");
-
-        // Return if cell belongs to active player and empty.
-        return (
-            cellData["player"] === this.#controller.activePlayer &&
-            cellData["state"] === CELL.EMPTY
-        );
-    }
-
     #sendAttack = () => {
-        // Get cell data.
         const cellData = this.readProp("dataset");
-
-        // Check if this cell belongs to active player.
-        if (this.#isValidCell()) this.#controller.sendAttack(cellData["cell"]);
+        this.#controller.sendAttack(Number(cellData.cell), cellData.player);
     };
 }
