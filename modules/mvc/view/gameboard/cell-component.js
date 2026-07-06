@@ -2,7 +2,7 @@
 import Component from "../view-component.js";
 
 // Cell Library, Elements Library, Events Library
-import { CELL, EL, EVENT } from "../../../constants.js";
+import { CELL, EL, EVENT, PLAYERS } from "../../../constants.js";
 
 // Utility Libraries
 import ViewUtils from "../view-utilities.js";
@@ -11,7 +11,7 @@ import ValidationUtilities from "../../../validation-utilities.js";
 export default class CellComponent extends Component {
     #controller;
 
-    constructor(cellNumber, player, controller) {
+    constructor(controller, cellNumber, player, state) {
         // |----- Input Validation -----|
         // Validate cellNumber
         if (!ValidationUtilities.isPositiveInt(cellNumber) && cellNumber !== 0)
@@ -32,20 +32,21 @@ export default class CellComponent extends Component {
             "dataset",
         );
 
-        // Save reference to controller.
         this.#controller = controller;
 
         // |----- UI Construction -----|
         this.addClass("board-cell");
 
-        // Attach data to cell, set cell text, add callback.
+        // Attach data to cell and set cell text.
         this.addDataset("cell", cellNumber)
             .addDataset("player", player)
-            .addDataset("state", CELL.EMPTY)
+            .addDataset("state", state)
             .setText(
                 ViewUtils.getCellName(cellNumber, this.#controller.boardSize),
-            )
-            .on(EVENT.CLICK, this.#sendAttack);
+            );
+
+        // Attach sendAttack callback to compouter board.
+        if (player === PLAYERS.COMPUTER) this.on(EVENT.CLICK, this.#sendAttack);
     }
 
     #sendAttack = () => {
