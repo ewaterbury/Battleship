@@ -93,7 +93,7 @@
         --hit: #d64545;
         --miss: #4a90e2;
         --empty: #ffffff;
-
+        --sunk: #451010;
         --ship: #6b6b6b;
         --selected-ship: #f4b400;
         --placed-ship: #4a4a4a;
@@ -112,6 +112,7 @@
         --hit: #ff4d4d;
         --miss: #4da3ff;
         --empty: #1a1f33;
+        --sunk: #561515;
 
         --ship: #9aa3b2;
         --selected-ship: #ffd43b;
@@ -214,9 +215,6 @@
 
         /* ----- In-Game Style ----- */
         #game-area {
-            /* Text/Font */
-            color: var(--accent);
-
             @media screen {
                 @media (min-width: 768px) {
                     /* Display (Self)*/
@@ -365,6 +363,11 @@
         &[data-state="empty"] {
             background-color: var(--empty);
             border-color: var(--empty);
+        }
+
+        &[data-state="sunk"] {
+            background-color: var(--sunk);
+            border-color: var(--sunk);
         }
 
         &:hover {
@@ -556,6 +559,18 @@
 }
 
 @layer gameComponents {
+    /* Styling for Attacker */
+    #gameboard-area {
+        .attacker {
+            h3,
+            div.col-labels span,
+            div.row-labels span {
+                font-weight: 1000;
+                color: red;
+            }
+        }
+    }
+
     #game-options-area {
         /* Display (Self) */
         width: 65vw;
