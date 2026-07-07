@@ -1,6 +1,17 @@
-export const CELL = { HIT: "hit", MISS: "miss", EMPTY: "empty", SUNK: "sunk" };
+export const CELL = {
+    HIT: "hit",
+    MISS: "miss",
+    EMPTY: "empty",
+    SUNK: "sunk",
+    SHIP: "ship",
+};
 
-export const PLAYERS = { ATTACKER: "attacker", PLAYER: "player" };
+export const PLAYERS = {
+    ATTACKER: "attacker",
+    DEFENDER: "defender",
+    PLAYER: "player",
+    COMPUTER: "computer",
+};
 
 export const EL = {
     AUDIO: "audio",
