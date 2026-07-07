@@ -20,7 +20,7 @@ export default class Battleship {
 
         // Initialize human player.
         this.#player = {
-            id: "player",
+            id: PLAYERS.PLAYER,
 
             controller: new Player(
                 new Gameboard(boardSize),
@@ -32,7 +32,7 @@ export default class Battleship {
 
         // Initialize computer player.
         this.#computer = {
-            id: "computer",
+            id: PLAYERS.COMPUTER,
 
             controller: new Player(
                 new Gameboard(boardSize),
@@ -70,7 +70,7 @@ export default class Battleship {
     }
 
     get playerBoard() {
-        const board = [...this.#player.controller.queryBoard()];
+        const board = this.#queryBoard(PLAYERS.PLAYER);
         const placements = this.#player.playerFleet.flat();
 
         placements.forEach((cell) => {
@@ -82,7 +82,7 @@ export default class Battleship {
     }
 
     get compBoard() {
-        return [...this.#computer.controller.queryBoard()];
+        return this.#queryBoard(PLAYERS.COMPUTER);
     }
 
     // Returns attack for computer player.
