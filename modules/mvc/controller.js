@@ -39,13 +39,24 @@ export default class Controller {
         this.#initializeBackingAudio();
         this.#initializeEffectsAudio();
 
-        // Initialize pregame view.
+        // Initialize pregame game stage.
         this.#gameStage = new Pregame(this);
+
+        // Initialize pregame view and sidebar view.
         this.#gameView = new PregameView(this);
         this.#sidebarView = new SidebarView(this);
     }
 
     // |---------- Getters ----------|
+    // |----- Game State -----|
+    #getPregame() {
+        return this.#gameStage instanceof Pregame ? this.#gameStage : null;
+    }
+
+    #getGame() {
+        return this.#gameStage instanceof Game ? this.#gameStage : null;
+    }
+
     // |----- General -----|
     get document() {
         return this.#document;
@@ -78,7 +89,9 @@ export default class Controller {
 
     // |----- Game -----|
     get gameState() {
-        const latest = this.#gameStage.previousTurn;
+        const latest = this.this.#getGame()?.previousTurn;
+
+        if (!latest) return;
 
         if (latest.turn === 0) {
             return {
@@ -106,11 +119,11 @@ export default class Controller {
     }
 
     get playerBoard() {
-        return this.#gameStage.playerBoard;
+        return this.#getGame()?.playerBoard;
     }
 
     get compBoard() {
-        return this.#gameStage.compBoard;
+        return this.#getGame()?.compBoard;
     }
 
     // |----- Initialization -----|
@@ -162,11 +175,6 @@ export default class Controller {
     }
 
     // |----- Pregame -----|
-
-    #getPregame() {
-        return this.#gameStage instanceof Pregame ? this.#gameStage : null;
-    }
-
     resetToDefaults() {
         this.#gameStage.resetToDefaults();
         this.#gameView.resetToDefaults();
