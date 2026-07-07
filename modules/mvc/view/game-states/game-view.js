@@ -6,7 +6,7 @@ import MountPoint from "./../mount-point.js";
 import { EL } from "../../../constants.js";
 
 // Sub-View Modules
-import PlayerBoard from "../gameboard/player-board-component.js";
+import PlayerBoards from "../gameboard/player-board-component.js";
 import GameOptions from "../game-options/game-options-component.js";
 
 // Top level view that displays game UI.
@@ -18,11 +18,8 @@ export default class GameView {
     #window;
 
     // Components
-    #gameboard;
+    #gameboards;
     #gameOptions;
-
-    // Sub-View References
-    #logView;
 
     constructor(controller) {
         // Save reference to controller.
@@ -38,11 +35,11 @@ export default class GameView {
     }
 
     #getComponents() {
-        return [this.#gameboard, this.#gameOptions];
+        return [this.#gameboards, this.#gameOptions];
     }
 
     #buildView() {
-        this.#gameboard = new PlayerBoard(this.#controller);
+        this.#gameboards = new PlayerBoards(this.#controller);
         this.#gameOptions = new GameOptions(this.#controller);
 
         this.#getComponents().forEach((component) =>
@@ -52,5 +49,9 @@ export default class GameView {
 
     #remove() {
         this.#window.remove();
+    }
+
+    newTurn() {
+        this.#gameboards.update();
     }
 }
