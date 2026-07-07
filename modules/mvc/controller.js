@@ -1,6 +1,6 @@
 // Top Level Model Modules.
 import Pregame from "./model/pregame.js";
-import Game from "./model/battleship.js";
+import Game from "./model/game.js";
 
 // Top Level View Modules.
 import SidebarView from "./view/sidebar/sidebar-view.js";
@@ -73,9 +73,10 @@ export default class Controller {
             return this.#gameStage.occupiedCells;
     }
 
-    // |----- Pregame -----|
+    // |----- Game -----|
     get gameState() {
-        const latest = this.#gameStage.latestTurn;
+        const latest = this.#gameStage.previousTurn;
+
         if (latest.turn === 0) {
             return {
                 turn: latest.turn,
@@ -99,6 +100,14 @@ export default class Controller {
                 winner: latest.winner,
             };
         }
+    }
+
+    get playerBoard() {
+        return this.#gameStage.playerBoard;
+    }
+
+    get compBoard() {
+        return this.#gameStage.compBoard;
     }
 
     // |----- Initialization -----|
@@ -210,8 +219,17 @@ export default class Controller {
             // Remove pregame view and add game view.
             this.#gameView.launchGame();
             this.#gameView = new GameView(this);
-        } else {
-            this.#gameView.failedLaunch();
-        }
+        } else this.#gameView.failedLaunch();
+    }
+
+    // |----- In Game -----|
+    runTurnCycle(attack) {
+        this.#gameStage.playTurn(attack);
+        this.#gameView.newTurn();
+
+        if (this.#gameStage.previousTurn.gameOver) return;
+
+        this.#gameStage.playTurn(this.#gameStage.getCompAttack());
+        this.#gameView.newTurn();
     }
 }
