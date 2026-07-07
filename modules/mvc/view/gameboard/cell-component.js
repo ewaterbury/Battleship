@@ -51,6 +51,6 @@ export default class CellComponent extends Component {
 
     #sendAttack = () => {
         const cellData = this.readProp("dataset");
-        this.#controller.sendAttack(Number(cellData.cell), cellData.player);
+        this.#controller.runTurnCycle(Number(cellData.cell));
     };
 }
