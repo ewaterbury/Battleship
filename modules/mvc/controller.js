@@ -251,26 +251,31 @@ export default class Controller {
     }
 
     // |----- In Game -----|
+
     runTurnCycle = async (attack) => {
-        this.#gameStage.playTurn(attack);
-        this.#gameView.newTurn();
+        const playerTurn = this.#playTurn(attack);
 
-        const playerSummary = this.#gameStage.previousTurn;
-        this.playEffect(playerSummary.status);
-
-        if (this.#gameStage.previousTurn.gameOver) return;
+        if (playerTurn.gameOver) return;
 
         await new Promise((resolve) =>
             setTimeout(resolve, Utilities.randomInt(1000, 1250)),
         );
 
-        this.#gameStage.playTurn(this.#gameStage.getCompAttack());
-        this.#gameView.newTurn();
+        const compTurn = this.#playTurn(this.#gameStage.getCompAttack());
 
-        const compSummary = this.#gameStage.previousTurn;
-
-        this.playEffect(compSummary.status);
+        if (compTurn.gameOver) return;
 
         this.boardLocked = false;
     };
+
+    #playTurn(attack) {
+        this.#gameStage.playTurn(attack);
+        this.#gameView.newTurn();
+
+        const summary = this.#gameStage.previousTurn;
+
+        this.playEffect(summary.status);
+
+        return summary;
+    }
 }
