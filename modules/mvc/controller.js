@@ -57,26 +57,23 @@ export default class Controller {
 
     // |----- Pregame -----|
     get fleetTemplate() {
-        if (this.#gameStage instanceof Pregame) return this.#gameStage.template;
+        return this.#getPregame()?.template;
     }
 
     get placementFleet() {
-        if (this.#gameStage instanceof Pregame) return this.#gameStage.fleet;
+        return this.this.#getPregame()?.fleet;
     }
 
     get selectedShip() {
-        if (this.#gameStage instanceof Pregame)
-            return this.#gameStage.selectedShip;
+        return this.this.#getPregame()?.selectedShip;
     }
 
     get orientation() {
-        if (this.#gameStage instanceof Pregame)
-            return this.#gameStage.orientation;
+        return this.this.#getPregame()?.orientation;
     }
 
     get occupiedCells() {
-        if (this.#gameStage instanceof Pregame)
-            return this.#gameStage.occupiedCells;
+        return this.this.#getPregame()?.occupiedCells;
     }
 
     // |----- Game -----|
@@ -165,6 +162,10 @@ export default class Controller {
     }
 
     // |----- Pregame -----|
+
+    #getPregame() {
+        return this.#gameStage instanceof Pregame ? this.#gameStage : null;
+    }
 
     resetToDefaults() {
         this.#gameStage.resetToDefaults();
