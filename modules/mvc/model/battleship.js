@@ -57,12 +57,11 @@ export default class Battleship {
         this.#turn = 1;
     }
 
-    // Getter for private log class.
     get log() {
         return this.#log.log;
     }
 
-    get latestTurn() {
+    get previousTurn() {
         return this.#log.latest;
     }
 
@@ -73,10 +72,10 @@ export default class Battleship {
     get playerBoard() {
         const board = [...this.#player.controller.queryBoard()];
         const placements = this.#player.playerFleet.flat();
+
         placements.forEach((cell) => {
             const status = board[cell];
-            if (status !== CELL.HIT || status !== CELL.SUNK)
-                board[cell] = CELL.SHIP;
+            if (status === CELL.EMPTY) board[cell] = CELL.SHIP;
         });
 
         return board;
@@ -101,24 +100,20 @@ export default class Battleship {
     }
 
     // Sends attack to defender board.
-    sendAttack(attack, player) {
-        // Use attack logic to select attack for computer player.
+    sendAttack(attack) {
         if (typeof attack !== "number")
             throw new Error("Attack is not a number");
         if (attack < 0 || attack >= this.#boardSize ** 2)
             throw new Error("Attack is out of bounds");
 
-        // Return false when called with defender board.
-        if (player !== this.#attacker.id) return false;
-
         // Call strike on defender and return true.
         this.#defender.controller.receiveAttack(attack);
-        return true;
     }
 
-    // Log turn.
+    // Log turn (Called before newTurn).
     logTurn(attack) {
         const attackStatus = this.#defender.controller.queryCell(attack);
+
         const winner = this.#getWinner();
 
         this.#log.addEntry(
