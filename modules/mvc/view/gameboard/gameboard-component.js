@@ -3,10 +3,10 @@ import Utils from "../view-utilities.js";
 import ValUtils from "../../../validation-utilities.js";
 import ViewComponent from "../view-component.js";
 import Cell from "./cell-component.js";
+import ThemeSetting from "../sidebar/settings/theme/theme-setting.js";
 
 export default class Gameboard extends ViewComponent {
     #controller;
-    #player;
     #grid;
 
     constructor(player, controller) {
@@ -20,49 +20,75 @@ export default class Gameboard extends ViewComponent {
             throw new TypeError("boardSize must be a positive integer");
 
         // Initialize root (section) and assign id using super constructor.
-        super(EL.SECTION, `${player.toLowerCase()}_board`);
+        super(
+            EL.SECTION,
+            `${player.toLowerCase()}_board`,
+
+            // Whitelisted properties (for setProp/readProp):
+            "dataset",
+        );
 
         this.#controller = controller;
-        this.#player = player;
 
-        // Add gameboard classes.
         this.addClass("board");
+        this.addDataset("owner", player);
+
+        // If first to attack, add attacker class.
         if (this.#isAttacker()) this.addClass(PLAYERS.ATTACKER);
 
-        // |------ Build Board Components -----|
-        const label = new ViewComponent(EL.H3).setText(
-            Utils.capitalize(player),
-        ); // Build board caption.
-        const corner = new ViewComponent(EL.DIV).addClass("corner"); // Build layout spacer (Formatting only).
-        const colLabels = this.#buildColLabels(controller.boardSize); // Build column Labels (Top row of board).
-        const rowLabels = this.#buildRowLabels(controller.boardSize); // Build row labels (Left column of board).
-        const boardGrid = this.#buildBoardGrid(
-            controller.boardSize,
-            player,
-            controller,
-        ); // Build board grid.
+        this.#grid = this.#buildBoardGrid(player);
 
-        // Append components.
-        [label, corner, colLabels, rowLabels, boardGrid].forEach((component) =>
-            this.append(component),
-        );
+        // |------ Construct UI -----|
+        [
+            new ViewComponent(EL.H3).setText(Utils.capitalize(player)), // Build label.
+            new ViewComponent(EL.DIV).addClass("corner"), // Build layout spacer (Formatting only).
+            this.#buildColLabels(), // Build column Labels (Top row of board).
+            this.#buildRowLabels(), // Build row labels (Left column of board).
+            this.#grid, // Build board grid.
+        ].forEach((component) => this.append(component));
     }
 
-    #buildColLabels(boardSize) {
+    update() {
+        const toggleAttackerStatus = () => {
+            if (this.#isAttacker()) {
+                this.addClass(PLAYERS.ATTACKER);
+            } else {
+                this.removeClass(PLAYERS.ATTACKER);
+            }
+        };
+
+        const refreshGrid = () => {
+            this.#grid.remove();
+
+            this.#grid = this.#buildBoardGrid(
+                this.#controller.boardSize,
+                this.readProp("dataset").owner,
+            );
+
+            this.append(this.#grid);
+        };
+
+        toggleAttackerStatus();
+
+        // Refresh grid if player defended last turn.
+        if (this.#isAttacker()) refreshGrid();
+    }
+
+    #buildColLabels() {
         const colLabels = new ViewComponent(EL.DIV).addClass("col-labels");
 
-        for (let col = 1; col <= boardSize; col++)
+        for (let col = 1; col <= this.#controller.boardSize; col++)
             // Build cells for colLabels.
             colLabels.append(new ViewComponent(EL.SPAN).setText(col));
 
         return colLabels;
     }
 
-    #buildRowLabels(boardSize) {
+    #buildRowLabels() {
         // Build row labels (Left column of board).
         const rowLabels = new ViewComponent(EL.DIV).addClass("row-labels");
 
-        for (let row = 0; row < boardSize; row++) {
+        for (let row = 0; row < this.#controller.boardSize; row++) {
             const A_CHAR = 65;
             rowLabels.append(
                 new ViewComponent(EL.SPAN).setText(
@@ -74,42 +100,35 @@ export default class Gameboard extends ViewComponent {
         return rowLabels;
     }
 
-    #buildBoardGrid(boardSize, player, controller) {
-        // Build board grid.
+    #buildBoardGrid() {
+        const player = this.readProp("dataset").owner;
+        const totalCells = this.#controller.boardSize ** 2;
+        const boardData =
+            player === PLAYERS.PLAYER
+                ? this.#controller.playerBoard
+                : this.#controller.compBoard;
+
         const grid = new ViewComponent(EL.DIV).addClass("board-grid");
 
-        // Fill board grid with cell components.
-        const totalCells = boardSize ** 2;
+        // Fill grid with cell components.
         for (let cellNum = 0; cellNum < totalCells; cellNum++) {
-            const cell = new Cell(cellNum, player, controller);
+            const cell = new Cell(
+                this.#controller,
+                cellNum,
+                player,
+                boardData[cellNum],
+            );
+
             grid.append(cell);
         }
 
         return grid;
     }
 
-    update() {
-        this.#toggleAttackerStatus();
-
-        // Refresh grid if player defended last turn.
-        if (this.#isAttacker()) this.#refreshGrid();
-    }
-
     #isAttacker() {
-        return this.#controller.gameState.attacker === this.#player;
-    }
-
-    #refreshGrid() {
-        this.#grid.remove();
-        this.#grid = this.#buildBoardGrid;
-        this.append(this.#grid);
-    }
-
-    #toggleAttackerStatus() {
-        if (this.#isAttacker()) {
-            this.addClass(PLAYERS.ATTACKER);
-        } else {
-            this.removeClass(PLAYERS.ATTACKER);
-        }
+        return (
+            this.#controller.gameState.attacker ===
+            this.readProp("dataset").owner
+        );
     }
 }
