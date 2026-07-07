@@ -15,6 +15,9 @@ import AudioLoop from "./view/audio/audio-loop-component.js";
 // Utilities.
 import Utilities from "../utilities.js";
 
+// Player Library
+import { PLAYERS } from "../constants.js";
+
 export default class Controller {
     // Initialize game model.
     #gameStage;
@@ -222,6 +225,19 @@ export default class Controller {
             // Remove pregame view and add game view.
             this.#gameView.launchGame();
             this.#gameView = new GameView(this);
+
+            const startingPlayer = this.#gameStage.previousTurn.attacker;
+
+            if (startingPlayer === PLAYERS.COMPUTER) {
+                this.#gameStage.playTurn(this.#gameStage.getCompAttack());
+                this.#gameView.newTurn();
+
+                const compSummary = this.#gameStage.previousTurn;
+
+                this.playEffect(compSummary.status);
+            }
+
+            this.boardLocked = false;
         } else this.#gameView.failedLaunch();
     }
 
@@ -245,5 +261,7 @@ export default class Controller {
         const compSummary = this.#gameStage.previousTurn;
 
         this.playEffect(compSummary.status);
+
+        this.boardLocked = false;
     };
 }
