@@ -36,7 +36,7 @@ export default class Log {
             attacker: attacker, // String
             defender: defender,
             cell: cell, // Int
-            status: status, // Str  ing
+            status: status, // String
             shipSunk: sunkShip, // Int
             gameOver: gameOver, // Bool
             winner: gameOver === true ? attacker : null, // String
