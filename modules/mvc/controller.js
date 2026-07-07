@@ -12,6 +12,9 @@ import GameView from "./view/game-states/game-view.js";
 import AudioComponent from "./view/audio/audio-component.js";
 import AudioLoop from "./view/audio/audio-loop-component.js";
 
+// Utilities.
+import Utilities from "../utilities.js";
+
 export default class Controller {
     // Initialize game model.
     #gameStage;
@@ -223,13 +226,24 @@ export default class Controller {
     }
 
     // |----- In Game -----|
-    runTurnCycle(attack) {
+    runTurnCycle = async (attack) => {
         this.#gameStage.playTurn(attack);
         this.#gameView.newTurn();
 
+        const playerSummary = this.#gameStage.previousTurn;
+        this.playEffect(playerSummary.status);
+
         if (this.#gameStage.previousTurn.gameOver) return;
+
+        await new Promise((resolve) =>
+            setTimeout(resolve, Utilities.randomInt(1000, 1250)),
+        );
 
         this.#gameStage.playTurn(this.#gameStage.getCompAttack());
         this.#gameView.newTurn();
-    }
+
+        const compSummary = this.#gameStage.previousTurn;
+
+        this.playEffect(compSummary.status);
+    };
 }
