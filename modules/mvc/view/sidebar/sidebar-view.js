@@ -32,17 +32,15 @@ export default class SidebarView {
 
         // Initialize settings.
         const settingsView = new SettingsView(
-            this.#controller.backingAudio,
-            this.#controller.gameEffects.hit,
-            this.#controller.gameEffects.miss,
-            this.#controller.gameEffects.sunk,
+            this.#controller.audio.backingAudio,
+            this.#controller.audio.gameEffects.hit,
+            this.#controller.audio.gameEffects.miss,
+            this.#controller.audio.gameEffects.sunk,
         );
 
         this.#sidebar.append(this.#logView);
         this.#sidebar.append(settingsView);
 
-        this.#sidebar.mount(
-            this.#controller.document.querySelector("#battleship"),
-        );
+        this.#sidebar.mount(document.querySelector("#battleship"));
     }
 }
