@@ -1,9 +1,8 @@
 // Core Components
-import Component from "./../view-component.js";
 import MountPoint from "./../mount-point.js";
 
-// Element Library, Event Library
-import { EL, EVENT } from "../../../constants.js";
+// Event Library
+import { EVENT } from "../../../constants.js";
 
 // Import Components
 import SetupOptions from "../setup/setup-options/setup-options-component.js";
