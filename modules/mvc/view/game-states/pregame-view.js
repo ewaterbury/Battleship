@@ -35,14 +35,14 @@ export default class PreGameView {
 
         // Initialize mount point and mount on DOM.
         this.#window = new MountPoint("setup-area").mount(
-            controller.document.querySelector("header"),
+            document.querySelector("header"),
             "after",
         );
 
         this.#buildView();
 
         // |----- Behavior -----|
-        controller.document.addEventListener(EVENT.KEYDOWN, this.#rotateOnR);
+        document.addEventListener(EVENT.KEYDOWN, this.#rotateOnR);
     }
 
     #getComponents() {
@@ -59,9 +59,7 @@ export default class PreGameView {
         );
 
         // Adds resizeObserver to first placement-board cell element.
-        cellSizeObserver(
-            this.#controller.document.getElementById("placement-1"),
-        );
+        cellSizeObserver(document.getElementById("placement-1"));
     }
 
     // |----- UI Construction Methods -----|
@@ -88,17 +86,12 @@ export default class PreGameView {
         this.#window.append(this.#board);
 
         // Adds resizeObserver to first placement-board cell element.
-        cellSizeObserver(
-            this.#controller.document.getElementById("placement-1"),
-        );
+        cellSizeObserver(document.getElementById("placement-1"));
     }
 
     #remove() {
         // Remove global event listeners.
-        this.#controller.document.removeEventListener(
-            EVENT.KEYDOWN,
-            this.#rotateOnR,
-        );
+        document.removeEventListener(EVENT.KEYDOWN, this.#rotateOnR);
 
         // Remove mount point.
         this.#window.remove();
@@ -157,8 +150,7 @@ export default class PreGameView {
             this.#controller.toggleOrientation();
 
             // Trigger mouse enter event on currently hovered cell to update ship placement display.
-            const hovered =
-                this.#controller.document.querySelector(".board-cell:hover");
+            const hovered = document.querySelector(".board-cell:hover");
 
             if (hovered)
                 hovered.dispatchEvent(new MouseEvent(EVENT.MOUSE_ENTER));
