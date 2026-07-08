@@ -81,9 +81,9 @@ export default class Controller {
         const firstTurn = latest.turn === 0;
 
         return {
-            turn: firstTurn ? 0 : +1,
+            turn: firstTurn ? 0 : latest.turn + 1,
             attacker: firstTurn ? latest.attacker : latest.defender,
-            defender: firstTurn ? latest.attacker : latest.defender,
+            defender: firstTurn ? latest.defender : latest.attacker,
             cell: latest.cell ?? null,
             status: latest.status ?? null,
             shipSunk: latest.shipSunk ?? null,
