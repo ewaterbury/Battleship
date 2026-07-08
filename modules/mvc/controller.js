@@ -9,8 +9,7 @@ import GameView from "./view/game-states/game-view.js";
 // import PostGameView from "./view/post-game-view.js"
 
 // Audio Components.
-import AudioComponent from "./view/audio/audio-component.js";
-import AudioLoop from "./view/audio/audio-loop-component.js";
+import AudioController from "./controller/audioController.js";
 
 // Utilities.
 import Utilities from "../utilities.js";
@@ -22,9 +21,8 @@ export default class Controller {
     // Initialize game model.
     #gameStage;
 
-    // Holds active view (Pregame, Game, or Postgame).
+    // Holds active views (Pregame, Game, or Postgame + Sidebar).
     #gameView;
-
     #sidebarView;
 
     // Holds reference to document object.
@@ -34,10 +32,9 @@ export default class Controller {
         // Get document.
         this.#document = document;
 
-        // Initialize audio.
         this.#initializeTheme();
-        this.#initializeBackingAudio();
-        this.#initializeEffectsAudio();
+
+        this.audio = new AudioController();
 
         // Initialize pregame game stage.
         this.#gameStage = new Pregame(this);
@@ -72,7 +69,7 @@ export default class Controller {
     }
 
     get placementFleet() {
-        return this.this.#getPregame()?.fleet;
+        return this.#getPregame()?.fleet;
     }
 
     get selectedShip() {
@@ -84,7 +81,7 @@ export default class Controller {
     }
 
     get occupiedCells() {
-        return this.this.#getPregame()?.occupiedCells;
+        return this.#getPregame()?.occupiedCells;
     }
 
     // |----- Game -----|
@@ -145,33 +142,10 @@ export default class Controller {
         localStorage.setItem("theme", initialTheme);
     }
 
-    #initializeBackingAudio() {
-        // Initialize in public field to allow view access.
-        this.backingAudio = new AudioLoop(
-            "sonar",
-            "./audio/ping.wav",
-            2800,
-        ).startLoop();
-    }
-
-    #initializeEffectsAudio() {
-        // Initialize in public field to allow view access.
-        this.gameEffects = {
-            hit: new AudioComponent("hit", "./audio/hit.mp3"),
-            miss: new AudioComponent("miss", "./audio/miss.wav"),
-            sunk: new AudioComponent("sunk", "./audio/sunk.wav"),
-        };
-    }
-
     // |----- Side Bar -----|
     postLogEntry() {
         // Get turn data from model and post it to log.
         this.#sidebarView.postLogEntry(this.#gameStage.latestTurn);
-    }
-
-    // |----- Audio -----|
-    playEffect(status) {
-        this.gameEffects[status].play();
     }
 
     // |----- Pregame -----|
@@ -243,7 +217,7 @@ export default class Controller {
 
                 const compSummary = this.#gameStage.previousTurn;
 
-                this.playEffect(compSummary.status);
+                this.audio.playEffect(compSummary.status);
             }
 
             this.boardLocked = false;
@@ -274,7 +248,7 @@ export default class Controller {
 
         const summary = this.#gameStage.previousTurn;
 
-        this.playEffect(summary.status);
+        this.audio.playEffect(summary.status);
 
         return summary;
     }
