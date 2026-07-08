@@ -73,11 +73,11 @@ export default class Controller {
     }
 
     get selectedShip() {
-        return this.this.#getPregame()?.selectedShip;
+        return this.#getPregame()?.selectedShip;
     }
 
     get orientation() {
-        return this.this.#getPregame()?.orientation;
+        return this.#getPregame()?.orientation;
     }
 
     get occupiedCells() {
@@ -86,7 +86,7 @@ export default class Controller {
 
     // |----- Game -----|
     get gameState() {
-        const latest = this.this.#getGame()?.previousTurn;
+        const latest = this.#getGame()?.previousTurn;
 
         if (!latest) return;
 
@@ -225,7 +225,6 @@ export default class Controller {
     }
 
     // |----- In Game -----|
-
     runTurnCycle = async (attack) => {
         const playerTurn = this.#playTurn(attack);
 
