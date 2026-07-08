@@ -78,29 +78,18 @@ export default class Controller {
 
         if (!latest) return;
 
-        if (latest.turn === 0) {
-            return {
-                turn: latest.turn,
-                attacker: latest.attacker,
-                defender: latest.defender,
-                cell: null,
-                status: null,
-                shipSunk: null,
-                gameOver: null,
-                winner: null,
-            };
-        } else {
-            return {
-                turn: latest.turn + 1,
-                attacker: latest.defender,
-                defender: latest.attacker,
-                cell: latest.cell,
-                status: latest.status,
-                shipSunk: latest.shipSunk,
-                gameOver: latest.gameOver,
-                winner: latest.winner,
-            };
-        }
+        const firstTurn = latest.turn === 0;
+
+        return {
+            turn: firstTurn ? 0 : +1,
+            attacker: firstTurn ? latest.attacker : latest.defender,
+            defender: firstTurn ? latest.attacker : latest.defender,
+            cell: latest.cell ?? null,
+            status: latest.status ?? null,
+            shipSunk: latest.shipSunk ?? null,
+            gameOver: latest.gameOver ?? null,
+            winner: latest.winner ?? null,
+        };
     }
 
     get playerBoard() {
