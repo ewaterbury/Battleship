@@ -20,7 +20,20 @@ export default class Pregame {
         this.orientation = DEFAULT_VALUES.ORIENTATION.VERTICAL;
     }
 
-    get boardSize() {
+    // |----- State Getter -----|
+    get pregameState() {
+        return {
+            boardSize: this.#getBoardSize(),
+            fleetTemplate: this.template,
+            fleetSize: this.#getFleetSize(),
+            occupiedCells: this.#getOccupiedCells(),
+            orientation: this.orientation,
+            placementFleet: this.fleet,
+            selectedShip: this.#getSelectedShip(),
+        };
+    }
+
+    #getBoardSize() {
         return {
             current: this.#boardSize,
             min: DEFAULT_VALUES.BOARD_SIZE.MIN,
@@ -28,7 +41,7 @@ export default class Pregame {
         };
     }
 
-    get fleetSize() {
+    #getFleetSize() {
         return {
             current: Object.values(this.template).reduce(
                 (total, ship) => (total += ship.count * ship.size),
@@ -39,11 +52,11 @@ export default class Pregame {
         };
     }
 
-    get selectedShip() {
+    #getSelectedShip() {
         return this.fleet.find((ship) => ship.selected === true) ?? null;
     }
 
-    get occupiedCells() {
+    #getOccupiedCells() {
         // Aggregate occupied cells in a set.
         const occupied = new Set();
 
