@@ -70,7 +70,7 @@ export default class Battleship {
     }
 
     get playerBoard() {
-        const board = this.#queryBoard(PLAYERS.PLAYER);
+        const board = [...this.#queryBoard(PLAYERS.PLAYER)];
         const placements = this.#player.playerFleet.flat();
 
         placements.forEach((cell) => {
@@ -82,7 +82,7 @@ export default class Battleship {
     }
 
     get compBoard() {
-        return this.#queryBoard(PLAYERS.COMPUTER);
+        return [...this.#queryBoard(PLAYERS.COMPUTER)];
     }
 
     // Returns attack for computer player.
