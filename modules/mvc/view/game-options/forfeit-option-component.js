@@ -1,8 +1,8 @@
-import Component from "../view-component.js";
+import ViewComponent from "../view-component.js";
 import Button from "../button.js";
 import { EL } from "../../../constants.js";
 
-export default class ForfeitOption extends Component {
+export default class ForfeitOption extends ViewComponent {
     constructor() {
         // Initialize root element (section) using super constructor.
         super(EL.LI, "surrender");
