@@ -9,7 +9,7 @@ export default class BoardSizeIncrementer extends ViewComponent {
     #input;
 
     constructor(controller) {
-        const boardSize = controller.boardSize;
+        const boardSize = controller.pregameState.boardSize;
 
         // Initialize root element (li) using super constructor.
         super(EL.LI);

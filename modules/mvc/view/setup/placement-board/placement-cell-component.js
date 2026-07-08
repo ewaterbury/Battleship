@@ -33,7 +33,7 @@ export default class PlacementCell extends ViewComponent {
             .setText(
                 ViewUtilities.getCellName(
                     cellNumber,
-                    this.#controller.boardSize.current,
+                    this.#controller.pregameState.boardSize.current,
                 ),
             );
 
@@ -62,7 +62,7 @@ export default class PlacementCell extends ViewComponent {
     };
 
     #placeShip = () => {
-        const selectedShip = this.#controller.selectedShip;
+        const selectedShip = this.#controller.pregameState.selectedShip;
 
         if (selectedShip) {
             const ship = this.#controller.getShipFromCell(
