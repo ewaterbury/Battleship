@@ -26,12 +26,8 @@ export default class Controller {
     #sidebarView;
 
     // Holds reference to document object.
-    #document;
 
     constructor() {
-        // Get document.
-        this.#document = document;
-
         this.#initializeTheme();
 
         this.audio = new AudioController();
@@ -55,10 +51,6 @@ export default class Controller {
     }
 
     // |----- General -----|
-    get document() {
-        return this.#document;
-    }
-
     get boardSize() {
         return this.#gameStage.boardSize;
     }
@@ -150,7 +142,7 @@ export default class Controller {
 
     // |----- Pregame -----|
     resetToDefaults() {
-        this.#gameStage.resetToDefaults();
+        this.#getPregame()?.resetToDefaults();
         this.#gameView.resetToDefaults();
     }
 
@@ -159,27 +151,27 @@ export default class Controller {
         //  - null on no update
         //  - false on only board update
         //  - true on board and fleet update
-        const updateStatus = this.#gameStage.updateBoardSize(boardSize);
+        const updateStatus = this.#getPregame()?.updateBoardSize(boardSize);
         if (updateStatus !== null) this.#gameView.updateBoardSize(updateStatus);
     }
 
     updateFleetTemplate(templateUpdate) {
         this.#gameView.updateFleetTemplate(
-            this.#gameStage.updateFleetTemplate(templateUpdate),
+            this.#getPregame()?.updateFleetTemplate(templateUpdate),
         );
     }
 
     toggleShipSelect(selectedShip) {
-        this.#gameStage.toggleShipSelect(selectedShip);
+        this.#getPregame()?.toggleShipSelect(selectedShip);
         this.#gameView.toggleShipSelect();
     }
 
     toggleOrientation() {
-        this.#gameStage.toggleOrientation();
+        this.#getPregame()?.toggleOrientation();
     }
 
     placeShip(ship) {
-        const updateStatus = this.#gameStage.placeShip(ship);
+        const updateStatus = this.#getPregame()?.placeShip(ship);
         if (updateStatus) {
             this.#gameView.placeShip();
         } else {
@@ -188,16 +180,16 @@ export default class Controller {
     }
 
     autoPlaceShips() {
-        this.#gameStage.autoPlaceShips();
+        this.#getPregame()?.autoPlaceShips();
         this.#gameView.placeShip();
     }
 
     getShipFromCell(cell) {
-        return this.#gameStage.getShipFromCell(cell);
+        return this.#getPregame()?.getShipFromCell(cell);
     }
 
     launchGame() {
-        const gameReady = this.#gameStage.launchGame();
+        const gameReady = this.#getPregame()?.launchGame();
         if (gameReady) {
             // Initialize game with current board size and player fleet.
             this.#gameStage = new Game(
