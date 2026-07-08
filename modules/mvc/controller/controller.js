@@ -1,21 +1,21 @@
 // Top Level Model Modules.
-import Pregame from "./model/pregame.js";
-import Game from "./model/game.js";
+import Pregame from "../model/pregame.js";
+import Game from "../model/game.js";
 
 // Top Level View Modules.
-import SidebarView from "./view/sidebar/sidebar-view.js";
-import PregameView from "./view/game-states/pregame-view.js";
-import GameView from "./view/game-states/game-view.js";
+import SidebarView from "../view/sidebar/sidebar-view.js";
+import PregameView from "../view/game-states/pregame-view.js";
+import GameView from "../view/game-states/game-view.js";
 // import PostGameView from "./view/post-game-view.js"
 
 // Audio Components.
-import AudioController from "./controller/audioController.js";
+import AudioController from "./audioController.js";
 
 // Utilities.
-import Utilities from "../utilities.js";
+import Utilities from "../../utilities.js";
 
 // Player Library
-import { PLAYERS } from "../constants.js";
+import { PLAYERS } from "../../constants.js";
 
 export default class Controller {
     // Initialize game model.
