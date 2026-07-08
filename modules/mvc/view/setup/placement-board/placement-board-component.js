@@ -110,7 +110,7 @@ export default class PlacementBoard extends ViewComponent {
 
     #stopDisplayingShip = () => {
         // Clear highlighted cells.
-        this.#controller.document
+        document
             .querySelectorAll(".highlight")
             .forEach((el) => el.classList.remove("highlight"));
     };
