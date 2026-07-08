@@ -8,8 +8,9 @@ import PregameView from "../view/game-states/pregame-view.js";
 import GameView from "../view/game-states/game-view.js";
 // import PostGameView from "./view/post-game-view.js"
 
-// Audio Components.
+// Sub Controllers
 import AudioController from "./audio-controller.js";
+import ThemeController from "./theme-controller.js";
 
 // Utilities.
 import Utilities from "../../utilities.js";
@@ -18,19 +19,14 @@ import Utilities from "../../utilities.js";
 import { PLAYERS } from "../../constants.js";
 
 export default class Controller {
-    // Initialize game model.
     #gameStage;
-
-    // Holds active views (Pregame, Game, or Postgame + Sidebar).
     #gameView;
     #sidebarView;
-
-    // Holds reference to document object.
+    #theme;
 
     constructor() {
-        this.#initializeTheme();
-
         this.audio = new AudioController();
+        this.#theme = new ThemeController();
 
         // Initialize pregame game stage.
         this.#gameStage = new Pregame(this);
@@ -116,23 +112,6 @@ export default class Controller {
     }
 
     // |----- Initialization -----|
-    #initializeTheme() {
-        // Get previously saved theme.
-        const savedTheme = localStorage.getItem("theme");
-
-        // Resolve initial theme: saved -> system preference -> light fallback
-        const initialTheme = savedTheme
-            ? savedTheme
-            : window.matchMedia("(prefers-color-scheme: dark)").matches
-              ? "dark"
-              : "light";
-
-        // Apply theme to <html> element.
-        document.documentElement.setAttribute("data-theme", initialTheme);
-
-        // Save prefered theme in local storage.
-        localStorage.setItem("theme", initialTheme);
-    }
 
     // |----- Side Bar -----|
     postLogEntry() {
