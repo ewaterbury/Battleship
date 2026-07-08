@@ -1,10 +1,10 @@
 // Core Components
-import Component from "../../view-component.js";
+import ViewComponent from "../../view-component.js";
 
 // Elements Library, Events Library
 import { EL, EVENT } from "../../../../constants.js";
 
-export default class BoardSizeIncrementer extends Component {
+export default class BoardSizeIncrementer extends ViewComponent {
     #controller;
     #input;
 
@@ -19,9 +19,9 @@ export default class BoardSizeIncrementer extends Component {
 
         // |----- UI Construction -----|
 
-        const form = new Component(EL.FORM, "board-size-incrementer");
+        const form = new ViewComponent(EL.FORM, "board-size-incrementer");
 
-        const label = new Component(
+        const label = new ViewComponent(
             EL.LABEL,
             "", // Blank string to bypass ID.
 
@@ -31,7 +31,7 @@ export default class BoardSizeIncrementer extends Component {
             .setText("Board Size:")
             .setAttr("for", "board-size-count");
 
-        this.#input = new Component(
+        this.#input = new ViewComponent(
             EL.INPUT,
             "board-size-count", // ship count ID.
 
