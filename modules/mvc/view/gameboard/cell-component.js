@@ -1,5 +1,5 @@
 // Core Components
-import Component from "../view-component.js";
+import ViewComponent from "../view-component.js";
 
 // Cell Library, Elements Library, Events Library
 import { CELL, EL, EVENT, PLAYERS } from "../../../constants.js";
@@ -8,7 +8,7 @@ import { CELL, EL, EVENT, PLAYERS } from "../../../constants.js";
 import ViewUtils from "../view-utilities.js";
 import ValidationUtilities from "../../../validation-utilities.js";
 
-export default class CellComponent extends Component {
+export default class CellComponent extends ViewComponent {
     #controller;
 
     constructor(controller, cellNumber, player, state) {
@@ -51,6 +51,9 @@ export default class CellComponent extends Component {
 
     #sendAttack = () => {
         const cellData = this.readProp("dataset");
+        if (cellData.state !== CELL.EMPTY || this.#controller.boardLocked)
+            return;
+        this.#controller.boardLocked = true;
         this.#controller.runTurnCycle(Number(cellData.cell));
     };
 }
