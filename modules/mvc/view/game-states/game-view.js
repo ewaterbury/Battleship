@@ -1,9 +1,5 @@
 // Core Components
-import Component from "./../view-component.js";
 import MountPoint from "./../mount-point.js";
-
-// Element Library
-import { EL } from "../../../constants.js";
 
 // Sub-View Modules
 import PlayerBoards from "../gameboard/player-board-component.js";
