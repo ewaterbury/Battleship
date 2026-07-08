@@ -8,7 +8,7 @@ export default class GameOptions extends ViewComponent {
         // Initialize root element (section) and assign ID using super constructor.
         super(EL.SECTION, "game-options-area");
 
-        const options = new Component(EL.MENU, "game-options-menu");
+        const options = new ViewComponent(EL.MENU, "game-options-menu");
 
         options.append(new ChooseForMe()).append(new ForfeitOption());
 
