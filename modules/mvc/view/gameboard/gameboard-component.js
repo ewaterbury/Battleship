@@ -1,4 +1,4 @@
-import { EL, EVENT, PLAYERS } from "../../../constants.js";
+import { EL, PLAYERS } from "../../../constants.js";
 import Utils from "../view-utilities.js";
 import ValUtils from "../../../validation-utilities.js";
 import ViewComponent from "../view-component.js";
