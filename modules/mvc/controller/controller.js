@@ -46,30 +46,8 @@ export default class Controller {
         return this.#gameStage instanceof Game ? this.#gameStage : null;
     }
 
-    // |----- General -----|
-    get boardSize() {
-        return this.#gameStage.boardSize;
-    }
-
-    // |----- Pregame -----|
-    get fleetTemplate() {
-        return this.#getPregame()?.template;
-    }
-
-    get placementFleet() {
-        return this.#getPregame()?.fleet;
-    }
-
-    get selectedShip() {
-        return this.#getPregame()?.selectedShip;
-    }
-
-    get orientation() {
-        return this.#getPregame()?.orientation;
-    }
-
-    get occupiedCells() {
-        return this.#getPregame()?.occupiedCells;
+    get pregameState() {
+        return this.#getPregame()?.pregameState;
     }
 
     // |----- Game -----|
@@ -81,6 +59,7 @@ export default class Controller {
         const firstTurn = latest.turn === 0;
 
         return {
+            boardSize: this.#getGame().boardSize,
             turn: firstTurn ? 0 : latest.turn + 1,
             attacker: firstTurn ? latest.attacker : latest.defender,
             defender: firstTurn ? latest.defender : latest.attacker,
@@ -161,8 +140,8 @@ export default class Controller {
         if (gameReady) {
             // Initialize game with current board size and player fleet.
             this.#gameStage = new Game(
-                this.boardSize.current,
-                this.placementFleet.map((ship) => ship.location),
+                this.pregameState.boardSize.current,
+                this.pregameState.placementFleet.map((ship) => ship.location),
             );
 
             // Remove pregame view and add game view.
