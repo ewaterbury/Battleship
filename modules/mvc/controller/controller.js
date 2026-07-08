@@ -9,7 +9,7 @@ import GameView from "../view/game-states/game-view.js";
 // import PostGameView from "./view/post-game-view.js"
 
 // Audio Components.
-import AudioController from "./audioController.js";
+import AudioController from "./audio-controller.js";
 
 // Utilities.
 import Utilities from "../../utilities.js";
