@@ -208,10 +208,10 @@ export default class Pregame {
         }
     }
 
-    #selectShip(selectedShip) {
+    #selectShip(ship) {
         this.#deselectShips();
-        selectedShip.selected = true;
-        selectedShip.location = null;
+        ship.selected = true;
+        ship.location = null;
     }
 
     #deselectShips() {
@@ -228,7 +228,7 @@ export default class Pregame {
     }
 
     placeShip(ship) {
-        const selectedShip = this.selectedShip;
+        const selectedShip = this.#getSelectedShip();
 
         const validPlacement = (ship) => {
             // Aggregate occupied cells in a set.
@@ -301,8 +301,7 @@ export default class Pregame {
     getShipFromCell(cell) {
         const boardSize = this.#boardSize;
         const orientation = this.orientation;
-        const selectedShip = this.selectedShip;
-
+        const selectedShip = this.#getSelectedShip();
         const ship = [];
 
         // Callbacks determined by orientation.
