@@ -21,7 +21,7 @@ export default class Pregame {
     }
 
     // |----- State Getter -----|
-    get pregameState() {
+    get state() {
         return {
             boardSize: this.#getBoardSize(),
             fleetTemplate: this.template,
@@ -29,7 +29,7 @@ export default class Pregame {
             occupiedCells: this.#getOccupiedCells(),
             orientation: this.orientation,
             placementFleet: this.fleet,
-            selectedShip: this.#getSelectedShip(),
+            selectedShip: this.#getSelected(),
         };
     }
 
@@ -52,7 +52,7 @@ export default class Pregame {
         };
     }
 
-    #getSelectedShip() {
+    #getSelected() {
         return this.fleet.find((ship) => ship.selected === true) ?? null;
     }
 
@@ -228,30 +228,28 @@ export default class Pregame {
     }
 
     placeShip(ship) {
-        const selectedShip = this.#getSelectedShip();
+        const selected = this.#getSelected();
 
         const validPlacement = (ship) => {
             // Aggregate occupied cells in a set.
-            const occupiedCells = this.occupiedCells;
+            const occupied = this.#getOccupiedCells();
 
             // Remove slected ships cells from occupied cells.
             // Allows for smoother ship repositioning.
-            if (selectedShip.location) {
-                selectedShip.location.forEach((cell) =>
-                    occupiedCells.delete(cell),
-                );
+            if (selected.location) {
+                selected.location.forEach((cell) => occupied.delete(cell));
             }
 
             // Return true on valid placement.
-            return !ship.some((cell) => occupiedCells.has(cell));
+            return !ship.some((cell) => occupied.has(cell));
         };
 
-        if (!selectedShip) return false;
+        if (!selected) return false;
 
         if (!validPlacement(ship)) return false;
 
         // Assign location.
-        selectedShip.location = ship;
+        selected.location = ship;
 
         // deselctShip after location assignment.
         this.#deselectShips();
@@ -259,15 +257,15 @@ export default class Pregame {
         return true;
     }
 
-    autoPlaceShips() {
+    autoPlaceFleet() {
         // Prepare input for FleetGenerator.
-        const shipLengths = [];
+        const lengths = [];
         for (const ship of Object.values(this.template))
-            for (let i = 0; i < ship.count; i++) shipLengths.push(ship.size);
+            for (let i = 0; i < ship.count; i++) lengths.push(ship.size);
 
         // Get placement tiles from FleetGenerator.
-        const shipLocations = FleetGenerator.generateFleet(
-            shipLengths,
+        const locations = FleetGenerator.generateFleet(
+            lengths,
             this.#boardSize,
         );
 
@@ -275,14 +273,13 @@ export default class Pregame {
         this.#generatePlacementFleet();
 
         // Assign ships to this.fleet.
-        shipLocations.forEach((shipPlacement) => {
+        locations.forEach((placement) => {
             const ship = this.fleet.find(
                 (ship) =>
-                    ship.location === null &&
-                    ship.size === shipPlacement.length,
+                    ship.location === null && ship.size === placement.length,
             );
 
-            ship.location = shipPlacement;
+            ship.location = placement;
         });
     }
 
@@ -301,7 +298,7 @@ export default class Pregame {
     getShipFromCell(cell) {
         const boardSize = this.#boardSize;
         const orientation = this.orientation;
-        const selectedShip = this.#getSelectedShip();
+        const selected = this.#getSelected();
         const ship = [];
 
         // Callbacks determined by orientation.
@@ -311,7 +308,7 @@ export default class Pregame {
         // Set callbacks (vertical).
         if (orientation === DEFAULT_VALUES.ORIENTATION.VERTICAL) {
             buildShip = (ship) => {
-                for (let i = 0; i < selectedShip.size; i++)
+                for (let i = 0; i < selected.size; i++)
                     ship.push(Number(cell.num) + boardSize * i);
             };
             // Fit ship to board (shift upwards).
@@ -324,7 +321,7 @@ export default class Pregame {
         // Set callbacks (horizontal).
         else if (orientation === DEFAULT_VALUES.ORIENTATION.HORIZONTAL) {
             buildShip = (ship) => {
-                for (let i = 0; i < selectedShip.size; i++)
+                for (let i = 0; i < selected.size; i++)
                     ship.push(Number(cell.num) + i);
             };
 
