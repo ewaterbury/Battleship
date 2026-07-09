@@ -7,13 +7,14 @@ import Log from "./log.js";
 import { CELL, PLAYERS } from "../../constants.js";
 
 export default class Battleship {
-    #boardSize;
-    #player;
-    #computer;
+    #attack = null; // Initialize attack tracker to null.
     #attacker;
+    #boardSize;
+    #computer;
     #defender;
-    #turn;
     #log;
+    #player;
+    #turn;
 
     constructor(boardSize, playerFleet) {
         this.#boardSize = boardSize;
@@ -57,19 +58,26 @@ export default class Battleship {
         this.#turn = 1;
     }
 
+    get gameState() {
+        return {
+            boardSize: this.#boardSize,
+            turn: this.#turn,
+            attacker: this.#attacker.id,
+            defender: this.#defender.id,
+            playerBoard: this.#getPlayerBoard(),
+            computerBoard: this.#getComputerBoard(),
+            attack: this.#attack,
+            winner: this.#getWinner(),
+            previousTurn: this.#log.latest,
+        };
+    }
+
+    // |----- Getters -----|
     get log() {
         return this.#log.log;
     }
 
-    get previousTurn() {
-        return this.#log.latest;
-    }
-
-    get boardSize() {
-        return this.#boardSize;
-    }
-
-    get playerBoard() {
+    #getPlayerBoard() {
         const board = [...this.#queryBoard(PLAYERS.PLAYER)];
         const placements = this.#player.playerFleet.flat();
 
@@ -81,56 +89,10 @@ export default class Battleship {
         return board;
     }
 
-    get compBoard() {
+    #getComputerBoard() {
         return [...this.#queryBoard(PLAYERS.COMPUTER)];
     }
 
-    // Returns attack for computer player.
-    getCompAttack() {
-        return this.#computer.logic.getAttack();
-    }
-
-    // Update gamestate for new turn.
-    newTurn() {
-        // Swap attacker and defender.
-        [this.#defender, this.#attacker] = [this.#attacker, this.#defender];
-
-        // Increment turn counter.
-        this.#turn++;
-    }
-
-    // Sends attack to defender board.
-    sendAttack(attack) {
-        if (typeof attack !== "number")
-            throw new Error("Attack is not a number");
-        if (attack < 0 || attack >= this.#boardSize ** 2)
-            throw new Error("Attack is out of bounds");
-
-        // Call strike on defender and return true.
-        this.#defender.controller.receiveAttack(attack);
-    }
-
-    // Log turn (Called before newTurn).
-    logTurn(attack) {
-        const attackStatus = this.#defender.controller.queryCell(attack);
-
-        const winner = this.#getWinner();
-
-        this.#log.addEntry(
-            this.#turn,
-            this.#attacker.id,
-            this.#defender.id,
-            attack,
-            attackStatus,
-            attackStatus === CELL.SUNK
-                ? this.#defender.controller.getSunkShip(attack)
-                : 0,
-            winner === null ? false : true,
-            winner,
-        );
-    }
-
-    // Returns winner of game or null on no winner.
     #getWinner() {
         if (
             this.#player.controller.gameOver() &&
@@ -142,11 +104,62 @@ export default class Battleship {
         return null;
     }
 
-    // Query gameboard by player id.
     #queryBoard(id) {
         if (id === this.#player.id) return this.#player.controller.queryBoard();
         if (id === this.#computer.id)
             return this.#computer.controller.queryBoard();
         throw new Error("Invalid player id");
+    }
+
+    getCompAttack() {
+        return this.#computer.logic.getAttack();
+    }
+
+    // |----- Game Methods -----|
+    // Update gamestate for new turn.
+    newTurn() {
+        // Swap attacker and defender.
+        [this.#defender, this.#attacker] = [this.#attacker, this.#defender];
+
+        // Increment turn counter.
+        this.#turn++;
+
+        // Clear saved attack.
+        this.#attack = null;
+    }
+
+    // Sends attack to defender board.
+    sendAttack(attack) {
+        if (typeof attack !== "number")
+            throw new Error("Attack is not a number");
+        if (attack < 0 || attack >= this.#boardSize ** 2)
+            throw new Error("Attack is out of bounds");
+
+        // Call strike on defender and return true.
+        this.#defender.controller.receiveAttack(attack);
+
+        const results = this.#attacker.controller.queryCell(attack);
+
+        // Save attack data.
+        this.#attack = {
+            cell: attack,
+            status: results !== CELL.MISS ? CELL.HIT : CELL.MISS,
+            sunk: results === CELL.SUNK ? true : false,
+        };
+    }
+
+    // Log turn (Called before newTurn).
+    logTurn() {
+        const gameState = this.gameState;
+
+        this.#log.addEntry(
+            gameState.turn,
+            gameState.attacker,
+            gameState.defender,
+            gameState.attack.cell,
+            gameState.attack.status,
+            gameState.attack.sunk,
+            gameState.winner,
+        );
     }
 }
