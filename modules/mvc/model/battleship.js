@@ -19,37 +19,10 @@ export default class Battleship {
     constructor(boardSize, playerFleet) {
         this.#boardSize = boardSize;
 
-        // Initialize human player.
-        this.#player = {
-            id: PLAYERS.PLAYER,
+        this.#initializePlayer(playerFleet);
+        this.#initializeComputer(playerFleet);
 
-            controller: new Player(
-                new Gameboard(boardSize),
-                playerFleet.map((ship) => new Ship(ship)),
-            ),
-
-            playerFleet: playerFleet,
-        };
-
-        // Initialize computer player.
-        this.#computer = {
-            id: PLAYERS.COMPUTER,
-
-            controller: new Player(
-                new Gameboard(boardSize),
-                FleetGenerator.generateFleet(
-                    playerFleet.map((ship) => ship.length),
-                    boardSize,
-                ).map((ship) => new Ship(ship)),
-            ),
-
-            logic: new AttackLogic(this.#player.controller.queryBoard()),
-        };
-
-        // Set turn order.
-        this.#attacker = Math.random() < 0.5 ? this.#computer : this.#player;
-        this.#defender =
-            this.#attacker === this.#computer ? this.#player : this.#computer;
+        this.#setTurnOrder();
 
         // Initialize log saving first attacker/defender.
         this.#log = new Log(this.#attacker.id, this.#defender.id);
@@ -57,6 +30,44 @@ export default class Battleship {
         // Initialize turn at one (Turn zero already saved in log).
         this.#turn = 1;
     }
+
+    // |----- Initialization -----|
+    #initializePlayer(playerFleet) {
+        this.#player = {
+            id: PLAYERS.PLAYER,
+
+            controller: new Player(
+                new Gameboard(this.#boardSize),
+                playerFleet.map((ship) => new Ship(ship)),
+            ),
+
+            playerFleet: playerFleet,
+        };
+    }
+
+    #initializeComputer(playerFleet) {
+        this.#computer = {
+            id: PLAYERS.COMPUTER,
+
+            controller: new Player(
+                new Gameboard(this.#boardSize),
+                FleetGenerator.generateFleet(
+                    playerFleet.map((ship) => ship.length),
+                    this.#boardSize,
+                ).map((ship) => new Ship(ship)),
+            ),
+
+            logic: new AttackLogic(this.#player.controller.queryBoard()),
+        };
+    }
+
+    #setTurnOrder() {
+        this.#attacker = Math.random() < 0.5 ? this.#computer : this.#player;
+        this.#defender =
+            this.#attacker === this.#computer ? this.#player : this.#computer;
+    }
+
+    // |----- Getters -----|
 
     get gameState() {
         return {
@@ -72,7 +83,6 @@ export default class Battleship {
         };
     }
 
-    // |----- Getters -----|
     get log() {
         return this.#log.log;
     }
