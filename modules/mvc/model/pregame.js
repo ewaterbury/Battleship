@@ -5,6 +5,8 @@ import FleetGenerator from "./computer-logic/fleet-generator.js";
 
 export default class Pregame {
     #boardSize;
+    #fleet;
+    #orientation;
     #template;
 
     constructor() {
@@ -15,10 +17,10 @@ export default class Pregame {
         // Defaults to standard Battleship fleet [2, 3, 3, 4, 5].
         this.#template = this.#buildStandardTemplate();
 
-        this.fleet = this.#generatePlacementFleet();
+        this.#fleet = this.#generatePlacementFleet();
 
         // Set default orientation for placing ships.
-        this.orientation = DEFAULT_VALUES.ORIENTATION.VERTICAL;
+        this.#orientation = DEFAULT_VALUES.ORIENTATION.VERTICAL;
     }
 
     // |----- Getters -----|
@@ -28,8 +30,8 @@ export default class Pregame {
             fleetTemplate: this.#template,
             fleetSize: this.#getFleetSize(),
             occupiedCells: this.#getOccupiedCells(),
-            orientation: this.orientation,
-            placementFleet: this.fleet,
+            orientation: this.#orientation,
+            placementFleet: this.#fleet,
             selectedShip: this.#getSelected(),
         };
     }
@@ -54,14 +56,14 @@ export default class Pregame {
     }
 
     #getSelected() {
-        return this.fleet.find((ship) => ship.selected === true) ?? null;
+        return this.#fleet.find((ship) => ship.selected === true) ?? null;
     }
 
     #getOccupiedCells() {
         // Aggregate occupied cells in a set.
         const occupied = new Set();
 
-        for (const ship of this.fleet) {
+        for (const ship of this.#fleet) {
             if (!ship.location) continue;
 
             for (const cell of ship.location) occupied.add(cell);
@@ -81,7 +83,7 @@ export default class Pregame {
         this.#template = this.#buildStandardTemplate();
 
         // Refresh placement fleet.
-        this.fleet = this.#generatePlacementFleet();
+        this.#fleet = this.#generatePlacementFleet();
     }
 
     // |----- Board Size -----|
@@ -93,7 +95,9 @@ export default class Pregame {
                 .filter((ship) => ship.count > 0)
                 .sort((a, b) => b.size - a.size);
 
-            while (this.fleetSize.current > this.fleetSize.max) {
+            let size = this.#getFleetSize();
+
+            while (size.current > size.max) {
                 // Get largest ship.
                 const ship = fleet[0];
 
@@ -109,6 +113,8 @@ export default class Pregame {
 
                 // Remove ship if count is zero.
                 if (!fleet[0].count) fleet.splice(0, 1);
+
+                size = this.#getFleetSize();
             }
         };
 
@@ -118,10 +124,11 @@ export default class Pregame {
         this.#boardSize = boardSize;
 
         // Refresh fleet (clear placements and selected status).
-        this.fleet = this.#generatePlacementFleet();
+        this.#fleet = this.#generatePlacementFleet();
 
         // Shrink fleet to be below max fleet size.
-        if (this.fleetSize.current > this.fleetSize.max) {
+        const size = this.#getFleetSize();
+        if (size.current > size.max) {
             minifyTemplate();
 
             // Return true if fleet was updated.
@@ -135,22 +142,21 @@ export default class Pregame {
 
     // |----- Fleet -----|
     updateTemplate(update) {
+        const size = this.#getFleetSize();
+
         const currentCount = this.#template[update.type].count;
 
         const countChange = update.count - currentCount;
 
-        const updatedFleet = this.fleetSize.current + countChange * update.size;
+        const updatedFleet = size.current + countChange * update.size;
 
         // If new fleet size is valid, update ship count.
         // Allow fleets larger than max size when count is descending.
-        if (
-            (updatedFleet <= this.fleetSize.max || countChange < 0) &&
-            updatedFleet > 0
-        ) {
+        if ((updatedFleet <= size.max || countChange < 0) && updatedFleet > 0) {
             this.#template[update.type].count = update.count;
 
             // Rebuild the placement fleet from the updated template.
-            this.fleet = this.#generatePlacementFleet();
+            this.#fleet = this.#generatePlacementFleet();
 
             // Return true on fleet update.
             return true;
@@ -200,7 +206,7 @@ export default class Pregame {
 
     // |----- Selecting -----|
     toggleShipSelect(selected) {
-        const ship = this.fleet.find(
+        const ship = this.#fleet.find(
             (ship) => ship.size === selected.size && ship.id === selected.id,
         );
         if (!ship) return;
@@ -219,7 +225,7 @@ export default class Pregame {
 
     #deselectShips() {
         // Set selected status to false on all ships.
-        for (const ship of this.fleet) ship.selected = false;
+        for (const ship of this.#fleet) ship.selected = false;
     }
 
     // |----- Placement -----|
@@ -247,7 +253,7 @@ export default class Pregame {
         // Assign location.
         selected.location = ship;
 
-        // deselctShip after location assignment.
+        // DeselctShip after location assignment.
         this.#deselectShips();
 
         return true;
@@ -266,11 +272,11 @@ export default class Pregame {
         );
 
         // Clear current placements.
-        this.fleet = this.#generatePlacementFleet();
+        this.#fleet = this.#generatePlacementFleet();
 
-        // Assign ships to this.fleet.
+        // Assign ships to fleet.
         locations.forEach((placement) => {
-            const ship = this.fleet.find(
+            const ship = this.#fleet.find(
                 (ship) =>
                     ship.location === null && ship.size === placement.length,
             );
@@ -281,7 +287,7 @@ export default class Pregame {
 
     getPlacement(cell) {
         const boardSize = this.#boardSize;
-        const orientation = this.orientation;
+        const orientation = this.#orientation;
         const selected = this.#getSelected();
         const ship = [];
 
@@ -340,14 +346,14 @@ export default class Pregame {
     }
 
     toggleOrientation() {
-        this.orientation =
-            this.orientation === DEFAULT_VALUES.ORIENTATION.VERTICAL
+        this.#orientation =
+            this.#orientation === DEFAULT_VALUES.ORIENTATION.VERTICAL
                 ? DEFAULT_VALUES.ORIENTATION.HORIZONTAL
                 : DEFAULT_VALUES.ORIENTATION.VERTICAL;
     }
 
     // |----- Launch Game -----|
     launchGame() {
-        return this.fleet.every((ship) => ship.location !== null);
+        return this.#fleet.every((ship) => ship.location !== null);
     }
 }
