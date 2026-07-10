@@ -43,4 +43,11 @@ export default class SidebarView {
 
         this.#sidebar.mount(document.querySelector("#battleship"));
     }
+
+    postLogEntry() {
+        this.#logView.postLogEntry(
+            this.#controller.state.previous,
+            this.#controller.state.boardSize,
+        );
+    }
 }

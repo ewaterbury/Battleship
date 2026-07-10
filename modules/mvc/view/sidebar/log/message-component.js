@@ -14,6 +14,7 @@ export default class MessageComponent extends Component {
     constructor(turn, boardsize) {
         // |----- Validation -----|
         // Validate turn input.
+        console.log(turn);
         if (
             !(
                 typeof turn === "object" &&
@@ -21,8 +22,8 @@ export default class MessageComponent extends Component {
                 typeof turn.attacker === "string" &&
                 Number.isInteger(turn.cell) &&
                 [CELL.HIT, CELL.MISS, CELL.SUNK].includes(turn.status) &&
-                Number.isInteger(turn.shipSunk) &&
-                turn.shipSunk >= 0
+                Number.isInteger(turn.sunk) &&
+                turn.sunk >= 0
             )
         )
             throw new TypeError(`Invalid input. Input should be:
@@ -31,7 +32,7 @@ export default class MessageComponent extends Component {
                 attacker: attacker name (string),
                 cell: cell attacked (int),
                 status: status of attack (string),
-                shipSunk: size of sunken ship (int, 0 if no ship sunk),
+                sunk: size of sunken ship (int, 0 if no ship sunk),
             }`);
 
         // Validate boardsize.
@@ -71,12 +72,12 @@ export default class MessageComponent extends Component {
         );
 
         // Add sunk-ship notification if a ship was destroyed.
-        if (turn.shipSunk > 0) {
-            const shipSunk = new Component(EL.SPAN).setText(
-                ` [ Size ${turn.shipSunk} ship sunk ]`,
+        if (turn.sunk > 0) {
+            const sunk = new Component(EL.SPAN).setText(
+                ` [ Size ${turn.sunk} ship sunk ]`,
             );
 
-            this.append(shipSunk);
+            this.append(sunk);
         }
 
         return this;

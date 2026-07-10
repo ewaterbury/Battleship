@@ -20,7 +20,7 @@ export default class LoggerView extends Component {
         [header, this.#logList].forEach((component) => this.append(component));
     }
 
-    logTurn(turn, boardsize) {
+    postLogEntry(turn, boardsize) {
         this.#logList.logTurn(turn, boardsize);
 
         return this;
