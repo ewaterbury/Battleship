@@ -1,12 +1,12 @@
 // Core Components
-import ViewComponent from "../../view-component.js";
+import ViewComponent from "../../../view-component.js";
 
 // Elements Library
-import { EL } from "../../../../constants.js";
+import { EL } from "../../../../../constants.js";
 
 // Imported Components
 import Ship from "./ship-component.js";
-import Button from "../../button.js";
+import Button from "../../../button.js";
 
 export default class ShipContainer extends ViewComponent {
     #container;

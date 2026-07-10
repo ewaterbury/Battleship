@@ -1,17 +1,17 @@
 // Core Components
-import MountPoint from "./../mount-point.js";
+import MountPoint from "./../../mount-point.js";
 
 // Event Library
-import { EVENT } from "../../../constants.js";
+import { EVENT } from "../../../../constants.js";
 
 // Import Components
-import SetupOptions from "../setup/setup-options/setup-options-component.js";
-import PlacementBoard from "../setup/placement-board/placement-board-component.js";
-import ShipContainer from "../setup/ship-container/ship-container-component.js";
+import SetupOptions from "./setup-options/setup-options-component.js";
+import PlacementBoard from "./placement-board/placement-board-component.js";
+import ShipContainer from "./ship-container/ship-container-component.js";
 
 // UI Layout Modules
-import { cellSizeObserver } from "../UI-layout/cell-size-observer.js";
-import Ship from "../setup/ship-container/ship-component.js";
+import { cellSizeObserver } from "../../UI-layout/cell-size-observer.js";
+import Ship from "./ship-container/ship-component.js";
 
 // Top level view that displays game UI.
 export default class PreGameView {

@@ -1,8 +1,8 @@
 // Core Components
-import ViewComponent from "../../../view-component.js";
+import ViewComponent from "../../../../view-component.js";
 
 // Elements Library
-import { EL } from "../../../../../constants.js";
+import { EL } from "../../../../../../constants.js";
 
 // Imported Components
 import ShipIncrementer from "./ship-incrementer-component.js"; // Menu item to specify ship count for a ship type.

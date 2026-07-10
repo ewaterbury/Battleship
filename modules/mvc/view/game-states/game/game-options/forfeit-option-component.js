@@ -1,6 +1,6 @@
-import ViewComponent from "../view-component.js";
-import Button from "../button.js";
-import { EL } from "../../../constants.js";
+import ViewComponent from "../../../view-component.js";
+import Button from "../../../button.js";
+import { EL } from "../../../../../constants.js";
 
 export default class ForfeitOption extends ViewComponent {
     constructor() {

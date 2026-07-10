@@ -1,12 +1,12 @@
 // Core Components
-import ViewComponent from "../../view-component.js";
+import ViewComponent from "../../../view-component.js";
 
 // Elements Library, Events Library
-import { EL, EVENT, DEFAULT_VALUES } from "../../../../constants.js";
+import { EL, EVENT, DEFAULT_VALUES } from "../../../../../constants.js";
 
 // Utility Libraries
-import ViewUtilities from "../../view-utilities.js";
-import ValidationUtilities from "../../../../validation-utilities.js";
+import ViewUtilities from "../../../view-utilities.js";
+import ValidationUtilities from "../../../../../validation-utilities.js";
 
 export default class PlacementCell extends ViewComponent {
     #controller;

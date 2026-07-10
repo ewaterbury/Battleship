@@ -1,11 +1,11 @@
 // Core Components
-import ViewComponent from "../../../view-component.js";
+import ViewComponent from "../../../../view-component.js";
 
 // Elements Library, Events Library
-import { EL, EVENT } from "../../../../../constants.js";
+import { EL, EVENT } from "../../../../../../constants.js";
 
 // View Utitilities Library
-import ViewUtilities from "../../../view-utilities.js";
+import ViewUtilities from "../../../../view-utilities.js";
 
 export default class ShipIncrementer extends ViewComponent {
     #controller;

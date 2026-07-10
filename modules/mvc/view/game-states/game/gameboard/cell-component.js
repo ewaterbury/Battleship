@@ -1,12 +1,12 @@
 // Core Components
-import ViewComponent from "../view-component.js";
+import ViewComponent from "../../../view-component.js";
 
 // Cell Library, Elements Library, Events Library
-import { CELL, EL, EVENT, PLAYERS } from "../../../constants.js";
+import { CELL, EL, EVENT, PLAYERS } from "../../../../../constants.js";
 
 // Utility Libraries
-import ViewUtils from "../view-utilities.js";
-import ValidationUtilities from "../../../validation-utilities.js";
+import ViewUtils from "../../../view-utilities.js";
+import ValidationUtilities from "../../../../../validation-utilities.js";
 
 export default class CellComponent extends ViewComponent {
     #controller;

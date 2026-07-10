@@ -1,11 +1,11 @@
 // Core Components
-import ViewComponent from "../../view-component.js";
+import ViewComponent from "../../../view-component.js";
 
 // Elements Library
-import { EL } from "../../../../constants.js";
+import { EL } from "../../../../../constants.js";
 
 // Imported Componenets
-import Button from "../../button.js";
+import Button from "../../../button.js";
 
 export default class DefaultSettings extends ViewComponent {
     #controller;

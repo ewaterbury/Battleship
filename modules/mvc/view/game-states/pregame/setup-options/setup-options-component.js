@@ -1,8 +1,8 @@
 // Core Components
-import ViewComponent from "../../view-component.js";
+import ViewComponent from "../../../view-component.js";
 
 // Elements Library
-import { EL } from "../../../../constants.js";
+import { EL } from "../../../../../constants.js";
 
 // Import Components.
 import BoardSizeIncrementer from "./board-size-incrementer-component.js"; // Menu item to specify board size.

@@ -1,9 +1,9 @@
 // Core Components
-import MountPoint from "./../mount-point.js";
+import MountPoint from "./../../mount-point.js";
 
 // Sub-View Modules
-import PlayerBoards from "../gameboard/player-board-component.js";
-import GameOptions from "../game-options/game-options-component.js";
+import PlayerBoards from "./gameboard/player-board-component.js";
+import GameOptions from "./game-options/game-options-component.js";
 
 // Top level view that displays game UI.
 export default class GameView {

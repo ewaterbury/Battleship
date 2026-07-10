@@ -1,8 +1,8 @@
 // Core Components
-import ViewComponent from "../../view-component.js";
+import ViewComponent from "../../../view-component.js";
 
 // Elements Library, Events Library
-import { EL, EVENT } from "../../../../constants.js";
+import { EL, EVENT } from "../../../../../constants.js";
 
 export default class BoardSizeIncrementer extends ViewComponent {
     #controller;

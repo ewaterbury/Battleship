@@ -1,15 +1,15 @@
 // Core Components
-import ViewComponent from "../../view-component.js";
+import ViewComponent from "../../../view-component.js";
 
 // Elements Library
-import { EL, EVENT } from "../../../../constants.js";
+import { EL, EVENT } from "../../../../../constants.js";
 
 // VAlidation Library
-import ValidationUtilities from "../../../../validation-utilities.js";
+import ValidationUtilities from "../../../../../validation-utilities.js";
 
 // Imported Components
 import PlacementCell from "./placement-cell-component.js"; // Used to build board grid.
-import Button from "../../button.js";
+import Button from "../../../button.js";
 
 export default class PlacementBoard extends ViewComponent {
     #controller;
