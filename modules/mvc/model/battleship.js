@@ -75,15 +75,12 @@ export default class Battleship {
             computerBoard: this.#getComputerBoard(),
             attack: this.#attack,
             winner: this.#getWinner(),
+            previous: this.#log.latest,
         };
     }
 
     get log() {
         return this.#log.log;
-    }
-
-    get previousTurn() {
-        return this.#log.latest;
     }
 
     #getPlayerBoard() {
@@ -142,7 +139,7 @@ export default class Battleship {
         // Call strike on defender and return true.
         this.#defender.controller.receiveAttack(attack);
 
-        const results = this.#attacker.controller.queryCell(attack);
+        const results = this.#defender.controller.queryCell(attack);
 
         // Save attack data.
         this.#attack = {
@@ -150,7 +147,7 @@ export default class Battleship {
             status: results !== CELL.MISS ? CELL.HIT : CELL.MISS,
             sunk:
                 results === CELL.SUNK
-                    ? this.#defender.controller.getSunkShip(attack)
+                    ? this.#defender.controller.getSunkShip(attack).length
                     : 0,
         };
     }
