@@ -21,25 +21,15 @@ export default class Log {
         return this.#log[this.#log.length - 1];
     }
 
-    addEntry(
-        turn,
-        attacker,
-        defender,
-        cell,
-        status,
-        sunkShip,
-        gameOver,
-        winner,
-    ) {
+    addEntry(turn, attacker, defender, attack, winner) {
         this.#log.push({
             turn: turn, // Int
             attacker: attacker, // String
-            defender: defender,
-            cell: cell, // Int
-            status: status, // String
-            shipSunk: sunkShip, // Int
-            gameOver: gameOver, // Bool
-            winner: gameOver === true ? attacker : null, // String
+            defender: defender, // String
+            cell: attack.cell, // Int
+            status: attack.status, // String
+            sunk: attack.sunk, // Int
+            winner: winner ? winner : null, // String
         });
     }
 }
