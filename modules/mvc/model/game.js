@@ -6,33 +6,22 @@ export default class Game {
     constructor(boardSize, playerFleet) {
         this.#battleship = new Battleship(boardSize, playerFleet);
     }
+
+    get state() {
+        return this.#battleship.state;
+    }
+
     get log() {
         return this.#battleship.log;
     }
 
-    get previousTurn() {
-        return this.#battleship.previousTurn;
-    }
-
-    get boardSize() {
-        return this.#battleship.boardSize;
-    }
-
-    get playerBoard() {
-        return this.#battleship.playerBoard;
-    }
-
-    get compBoard() {
-        return this.#battleship.compBoard;
+    getCompAttack() {
+        return this.#battleship.getCompAttack();
     }
 
     playTurn(attack) {
         this.#battleship.sendAttack(attack);
-        this.#battleship.logTurn(attack);
+        this.#battleship.logTurn();
         this.#battleship.newTurn();
-    }
-
-    getCompAttack() {
-        return this.#battleship.getCompAttack();
     }
 }
