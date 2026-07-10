@@ -33,7 +33,7 @@ export default class ShipContainer extends ViewComponent {
 
         const autoPlaceButton = new Button(
             "auto-place-ships",
-            this.#autoPlaceShips,
+            this.#autoPlaceFleet,
         ).setText("Place Ships For Me");
 
         const rotateButton = new Button(
@@ -46,8 +46,8 @@ export default class ShipContainer extends ViewComponent {
         );
     }
 
-    #autoPlaceShips = () => {
-        this.#controller.autoPlaceShips();
+    #autoPlaceFleet = () => {
+        this.#controller.autoPlaceFleet();
     };
 
     #rotateOnClick = () => {
