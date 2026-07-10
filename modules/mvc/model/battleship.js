@@ -7,14 +7,14 @@ import Log from "./log.js";
 import { CELL, PLAYERS } from "../../constants.js";
 
 export default class Battleship {
-    #attack = null; // Initialize attack tracker to null.
     #attacker;
     #boardSize;
     #computer;
     #defender;
     #log;
     #player;
-    #turn;
+    #attack = null; // Initialize attack tracker to null.
+    #turn = 1; // Initialize turn counter to one (Turn zero already saved in log).
 
     constructor(boardSize, playerFleet) {
         this.#boardSize = boardSize;
@@ -24,11 +24,8 @@ export default class Battleship {
 
         this.#setTurnOrder();
 
-        // Initialize log saving first attacker/defender.
+        // Initialize log, saving first attacker/defender.
         this.#log = new Log(this.#attacker.id, this.#defender.id);
-
-        // Initialize turn at one (Turn zero already saved in log).
-        this.#turn = 1;
     }
 
     // |----- Initialization -----|
@@ -68,8 +65,7 @@ export default class Battleship {
     }
 
     // |----- Getters -----|
-
-    get gameState() {
+    get state() {
         return {
             boardSize: this.#boardSize,
             turn: this.#turn,
@@ -79,7 +75,6 @@ export default class Battleship {
             computerBoard: this.#getComputerBoard(),
             attack: this.#attack,
             winner: this.#getWinner(),
-            previousTurn: this.#log.latest,
         };
     }
 
@@ -87,8 +82,12 @@ export default class Battleship {
         return this.#log.log;
     }
 
+    get previousTurn() {
+        return this.#log.latest;
+    }
+
     #getPlayerBoard() {
-        const board = [...this.#queryBoard(PLAYERS.PLAYER)];
+        const board = [...this.#player.controller.queryBoard()];
         const placements = this.#player.playerFleet.flat();
 
         placements.forEach((cell) => {
@@ -100,7 +99,7 @@ export default class Battleship {
     }
 
     #getComputerBoard() {
-        return [...this.#queryBoard(PLAYERS.COMPUTER)];
+        return [...this.#computer.controller.queryBoard()];
     }
 
     #getWinner() {
@@ -112,13 +111,6 @@ export default class Battleship {
         if (this.#player.controller.gameOver()) return this.#computer.id;
         if (this.#computer.controller.gameOver()) return this.#player.id;
         return null;
-    }
-
-    #queryBoard(id) {
-        if (id === this.#player.id) return this.#player.controller.queryBoard();
-        if (id === this.#computer.id)
-            return this.#computer.controller.queryBoard();
-        throw new Error("Invalid player id");
     }
 
     getCompAttack() {
@@ -144,6 +136,8 @@ export default class Battleship {
             throw new Error("Attack is not a number");
         if (attack < 0 || attack >= this.#boardSize ** 2)
             throw new Error("Attack is out of bounds");
+        if (this.#attack) throw new Error("Attack was already made this turn");
+        if (this.#getWinner()) throw new Error("Game is already over");
 
         // Call strike on defender and return true.
         this.#defender.controller.receiveAttack(attack);
@@ -154,22 +148,23 @@ export default class Battleship {
         this.#attack = {
             cell: attack,
             status: results !== CELL.MISS ? CELL.HIT : CELL.MISS,
-            sunk: results === CELL.SUNK ? true : false,
+            sunk:
+                results === CELL.SUNK
+                    ? this.#defender.controller.getSunkShip(attack)
+                    : 0,
         };
     }
 
     // Log turn (Called before newTurn).
     logTurn() {
-        const gameState = this.gameState;
+        const state = this.state;
 
         this.#log.addEntry(
-            gameState.turn,
-            gameState.attacker,
-            gameState.defender,
-            gameState.attack.cell,
-            gameState.attack.status,
-            gameState.attack.sunk,
-            gameState.winner,
+            state.turn,
+            state.attacker,
+            state.defender,
+            state.attack,
+            state.winner,
         );
     }
 }
