@@ -4,8 +4,8 @@ import Game from "../model/game.js";
 
 // Top Level View Modules.
 import SidebarView from "../view/sidebar/sidebar-view.js";
-import PregameView from "../view/game-states/pregame-view.js";
-import GameView from "../view/game-states/game-view.js";
+import PregameView from "../view/game-states/pregame/pregame-view.js";
+import GameView from "../view/game-states/game/game-view.js";
 // import PostGameView from "./view/post-game-view.js"
 
 // Sub Controllers
@@ -49,10 +49,6 @@ export default class Controller {
         if (this.#getPregame()) return this.#getPregame().state;
         else if (this.#getGame()) return this.#getGame().state;
     }
-
-    // |----- Initialization -----|
-
-    // |----- Side Bar -----|
 
     // |----- Pregame -----|
     resetToDefaults() {
