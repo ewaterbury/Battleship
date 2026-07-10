@@ -1,0 +1,121 @@
+// Core Components
+import ViewComponent from "../../view-component.js";
+
+// Elements Library
+import { EL, EVENT } from "../../../../constants.js";
+
+// VAlidation Library
+import ValidationUtilities from "../../../../validation-utilities.js";
+
+// Imported Components
+import PlacementCell from "./placement-cell-component.js"; // Used to build board grid.
+import Button from "../../button.js";
+
+export default class PlacementBoard extends ViewComponent {
+    #controller;
+
+    constructor(controller) {
+        const boardSize = controller.state.boardSize.current; // Save for repeated use.
+
+        // |----- Validation -----|
+
+        // Validate boardsize input.
+        if (!ValidationUtilities.isPositiveInt(boardSize))
+            throw new TypeError("BoardSize must be a positive integer");
+        if (boardSize < 5 || boardSize > 12)
+            throw new TypeError("BoardSize must be between 5 and 12");
+
+        // Initialize root element (section) and assign ID using super constructor.
+        super(EL.SECTION, "ship-placement-board");
+
+        this.#controller = controller;
+
+        // |----- Stylesheet -----|
+        // Set boardsize on stylesheet (Needed for grid display).
+        document.documentElement.style.setProperty("--board-size", boardSize);
+
+        // |----- UI Construction -----|
+
+        this.addClass("board");
+
+        const label = new ViewComponent(EL.H3).setText("Place your ships..."); // Build board caption.
+        const corner = new ViewComponent(EL.DIV).addClass("corner"); // Build layout spacer (Formatting only).
+        const colLabels = this.#buildColLabels(boardSize); // Build column Labels (Top row of board).
+        const rowLabels = this.#buildRowLabels(boardSize); // Build row labels (Left column of board).
+        const boardGrid = this.#buildBoardGrid(controller, boardSize); // Build board grid.
+        const launchGame = this.#buildLaunchGame(controller);
+
+        [label, corner, colLabels, rowLabels, boardGrid, launchGame].forEach(
+            (component) => this.append(component),
+        );
+    }
+
+    // |----- UI Construction Helpers -----|
+
+    #buildColLabels(boardSize) {
+        // Build col labels (Top row of board).
+        const colLabels = new ViewComponent(EL.DIV).addClass("col-labels");
+
+        for (let col = 1; col <= boardSize; col++)
+            // Build cells for colLabels.
+            colLabels.append(new ViewComponent(EL.SPAN).setText(col));
+
+        return colLabels;
+    }
+
+    #buildRowLabels(boardsize) {
+        // Build row labels (Left column of board).
+        const rowLabels = new ViewComponent(EL.DIV).addClass("row-labels");
+
+        for (let row = 0; row < boardsize; row++) {
+            const A_CHAR = 65; // ASCII index for 'A'.
+
+            rowLabels.append(
+                new ViewComponent(EL.SPAN).setText(
+                    String.fromCharCode(A_CHAR + row),
+                ),
+            );
+        }
+
+        return rowLabels;
+    }
+
+    #buildBoardGrid(controller, boardSize) {
+        // Build board grid.
+        const grid = new ViewComponent(EL.DIV).addClass("board-grid");
+
+        const occupiedCells = controller.state.occupiedCells;
+
+        // Fill board grid with cell components.
+        const totalCells = boardSize ** 2;
+        for (let cellNum = 0; cellNum < totalCells; cellNum++) {
+            const cell = new PlacementCell(
+                cellNum,
+                occupiedCells.has(cellNum),
+                controller,
+            );
+            grid.append(cell);
+        }
+
+        grid.on(EVENT.MOUSE_LEAVE, this.#stopDisplayingShip);
+
+        return grid;
+    }
+
+    #buildLaunchGame(controller) {
+        return new Button("launch-game", this.#launchGame).setText(
+            "Launch Game",
+        );
+    }
+
+    #stopDisplayingShip = () => {
+        // Clear highlighted cells.
+        document
+            .querySelectorAll(".highlight")
+            .forEach((el) => el.classList.remove("highlight"));
+    };
+
+    #launchGame = () => {
+        this.#controller.launchGame();
+    };
+}
