@@ -37,7 +37,6 @@ export default class Controller {
     }
 
     // |---------- Getters ----------|
-    // |----- Game State -----|
     #getPregame() {
         return this.#gameStage instanceof Pregame ? this.#gameStage : null;
     }
@@ -46,45 +45,17 @@ export default class Controller {
         return this.#gameStage instanceof Game ? this.#gameStage : null;
     }
 
-    get pregameState() {
-        return this.#getPregame()?.pregameState;
-    }
-
-    // |----- Game -----|
-    get gameState() {
-        const latest = this.#getGame()?.previousTurn;
-
-        if (!latest) return;
-
-        const firstTurn = latest.turn === 0;
-
-        return {
-            boardSize: this.#getGame().boardSize,
-            turn: firstTurn ? 0 : latest.turn + 1,
-            attacker: firstTurn ? latest.attacker : latest.defender,
-            defender: firstTurn ? latest.defender : latest.attacker,
-            cell: latest.cell ?? null,
-            status: latest.status ?? null,
-            shipSunk: latest.shipSunk ?? null,
-            gameOver: latest.gameOver ?? null,
-            winner: latest.winner ?? null,
-        };
-    }
-
-    get playerBoard() {
-        return this.#getGame()?.playerBoard;
-    }
-
-    get compBoard() {
-        return this.#getGame()?.compBoard;
+    get state() {
+        if (this.#getPregame()) return this.#getPregame().state;
+        else if (this.#getGame()) return this.#getGame().state;
     }
 
     // |----- Initialization -----|
 
     // |----- Side Bar -----|
-    postLogEntry() {
+    #postLogEntry() {
         // Get turn data from model and post it to log.
-        this.#sidebarView.postLogEntry(this.#gameStage.latestTurn);
+        this.#sidebarView.postLogEntry(this.#getGame().previousTurn);
     }
 
     // |----- Pregame -----|
@@ -102,14 +73,14 @@ export default class Controller {
         if (updateStatus !== null) this.#gameView.updateBoardSize(updateStatus);
     }
 
-    updateFleetTemplate(templateUpdate) {
-        this.#gameView.updateFleetTemplate(
-            this.#getPregame()?.updateFleetTemplate(templateUpdate),
+    updateTemplate(update) {
+        this.#gameView.updateTemplate(
+            this.#getPregame()?.updateTemplate(update),
         );
     }
 
-    toggleShipSelect(selectedShip) {
-        this.#getPregame()?.toggleShipSelect(selectedShip);
+    toggleShipSelect(selected) {
+        this.#getPregame()?.toggleShipSelect(selected);
         this.#gameView.toggleShipSelect();
     }
 
@@ -126,13 +97,13 @@ export default class Controller {
         }
     }
 
-    autoPlaceShips() {
-        this.#getPregame()?.autoPlaceShips();
+    autoPlaceFleet() {
+        this.#getPregame()?.autoPlaceFleet();
         this.#gameView.placeShip();
     }
 
-    getShipFromCell(cell) {
-        return this.#getPregame()?.getShipFromCell(cell);
+    getPlacement(cell) {
+        return this.#getPregame()?.getPlacement(cell);
     }
 
     launchGame() {
@@ -167,6 +138,8 @@ export default class Controller {
     runTurnCycle = async (attack) => {
         const playerTurn = this.#playTurn(attack);
 
+        this.#postLogEntry();
+
         if (playerTurn.gameOver) return;
 
         await new Promise((resolve) =>
@@ -182,6 +155,7 @@ export default class Controller {
 
     #playTurn(attack) {
         this.#gameStage.playTurn(attack);
+        this.#postLogEntry();
         this.#gameView.newTurn();
 
         const summary = this.#gameStage.previousTurn;
