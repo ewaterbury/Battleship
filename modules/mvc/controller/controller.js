@@ -53,10 +53,6 @@ export default class Controller {
     // |----- Initialization -----|
 
     // |----- Side Bar -----|
-    #postLogEntry() {
-        // Get turn data from model and post it to log.
-        this.#sidebarView.postLogEntry(this.#getGame().previousTurn);
-    }
 
     // |----- Pregame -----|
     resetToDefaults() {
@@ -108,27 +104,22 @@ export default class Controller {
 
     launchGame() {
         const gameReady = this.#getPregame()?.launchGame();
+
         if (gameReady) {
             // Initialize game with current board size and player fleet.
             this.#gameStage = new Game(
-                this.pregameState.boardSize.current,
-                this.pregameState.placementFleet.map((ship) => ship.location),
+                this.state.boardSize.current,
+                this.state.placementFleet.map((ship) => ship.location),
             );
 
             // Remove pregame view and add game view.
             this.#gameView.launchGame();
             this.#gameView = new GameView(this);
 
-            const startingPlayer = this.#gameStage.previousTurn.attacker;
+            const startingPlayer = this.#getGame().state.attacker;
 
-            if (startingPlayer === PLAYERS.COMPUTER) {
-                this.#gameStage.playTurn(this.#gameStage.getCompAttack());
-                this.#gameView.newTurn();
-
-                const compSummary = this.#gameStage.previousTurn;
-
-                this.audio.playEffect(compSummary.status);
-            }
+            if (startingPlayer === PLAYERS.COMPUTER)
+                this.#playTurn(this.#getGame().getCompAttack());
 
             this.boardLocked = false;
         } else this.#gameView.failedLaunch();
@@ -137,8 +128,6 @@ export default class Controller {
     // |----- In Game -----|
     runTurnCycle = async (attack) => {
         const playerTurn = this.#playTurn(attack);
-
-        this.#postLogEntry();
 
         if (playerTurn.gameOver) return;
 
@@ -154,11 +143,11 @@ export default class Controller {
     };
 
     #playTurn(attack) {
-        this.#gameStage.playTurn(attack);
-        this.#postLogEntry();
+        this.#getGame().playTurn(attack);
         this.#gameView.newTurn();
+        const summary = this.state.previous;
 
-        const summary = this.#gameStage.previousTurn;
+        this.#sidebarView.postLogEntry();
 
         this.audio.playEffect(summary.status);
 
