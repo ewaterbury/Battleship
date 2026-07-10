@@ -33,7 +33,7 @@ export default class PlacementCell extends ViewComponent {
             .setText(
                 ViewUtilities.getCellName(
                     cellNumber,
-                    this.#controller.pregameState.boardSize.current,
+                    this.#controller.state.boardSize.current,
                 ),
             );
 
@@ -44,7 +44,7 @@ export default class PlacementCell extends ViewComponent {
     }
 
     #displayShip = () => {
-        const selectedShip = this.#controller.selectedShip;
+        const selectedShip = this.#controller.state.selectedShip;
         const cell = this.readProp("dataset");
 
         // Clear highlighted cells.
@@ -55,17 +55,17 @@ export default class PlacementCell extends ViewComponent {
         // Terminate on invalid cell.
         if (!selectedShip) return;
 
-        this.#controller.getShipFromCell(cell).forEach((cell) => {
+        this.#controller.getPlacement(cell).forEach((cell) => {
             const el = document.getElementById(`placement-${cell}`);
             el.classList.add("highlight");
         });
     };
 
     #placeShip = () => {
-        const selectedShip = this.#controller.pregameState.selectedShip;
+        const selectedShip = this.#controller.state.selectedShip;
 
         if (selectedShip) {
-            const ship = this.#controller.getShipFromCell(
+            const ship = this.#controller.getPlacement(
                 this.readProp("dataset"),
             );
 

@@ -24,9 +24,7 @@ export default class ShipContainer extends ViewComponent {
 
         this.#container = new ViewComponent(EL.DIV).addClass("ship-container");
 
-        for (const ship of Object.values(
-            controller.pregameState.placementFleet,
-        ))
+        for (const ship of Object.values(controller.state.placementFleet))
             this.#ships.push(new Ship(controller, ship));
 
         this.#ships.forEach((ship) => {

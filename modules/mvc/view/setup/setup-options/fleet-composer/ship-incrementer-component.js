@@ -50,10 +50,10 @@ export default class ShipIncrementer extends ViewComponent {
         [label, this.#input].forEach((component) => this.append(component));
 
         // |----- Behavior -----|
-        this.#input.on(EVENT.INPUT, this.#updateFleetTemplate);
+        this.#input.on(EVENT.INPUT, this.#updateTemplate);
     }
 
-    #updateFleetTemplate = (e) => {
+    #updateTemplate = (e) => {
         // Get custom data attributes from input element.
         const data = this.#input.readProp("dataset");
 
@@ -65,6 +65,6 @@ export default class ShipIncrementer extends ViewComponent {
         };
 
         // Send fleet template update to controller.
-        this.#controller.updateFleetTemplate(templateUpdate);
+        this.#controller.updateTemplate(templateUpdate);
     };
 }

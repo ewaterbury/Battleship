@@ -20,7 +20,7 @@ export default class FleetComposer extends ViewComponent {
         const shipList = new ViewComponent(EL.UL);
 
         // Add instance of ShipIncrementer for each ship.
-        Object.values(controller.pregameState.fleetTemplate).forEach((ship) =>
+        Object.values(controller.state.fleetTemplate).forEach((ship) =>
             shipList.append(new ShipIncrementer(controller, ship)),
         );
 

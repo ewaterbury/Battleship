@@ -15,7 +15,7 @@ export default class PlacementBoard extends ViewComponent {
     #controller;
 
     constructor(controller) {
-        const boardSize = controller.pregameState.boardSize.current; // Save for repeated use.
+        const boardSize = controller.state.boardSize.current; // Save for repeated use.
 
         // |----- Validation -----|
 
@@ -84,7 +84,7 @@ export default class PlacementBoard extends ViewComponent {
         // Build board grid.
         const grid = new ViewComponent(EL.DIV).addClass("board-grid");
 
-        const occupiedCells = controller.pregameState.occupiedCells;
+        const occupiedCells = controller.state.occupiedCells;
 
         // Fill board grid with cell components.
         const totalCells = boardSize ** 2;

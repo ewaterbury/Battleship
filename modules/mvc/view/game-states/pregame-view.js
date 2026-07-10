@@ -111,7 +111,7 @@ export default class PreGameView {
         }
     }
 
-    updateFleetTemplate(fleetUpdated) {
+    updateTemplate(fleetUpdated) {
         this.#refreshOptions();
         if (fleetUpdated) {
             this.#refreshShips();
