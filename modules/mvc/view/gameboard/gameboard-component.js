@@ -16,7 +16,7 @@ export default class Gameboard extends ViewComponent {
             throw new TypeError("player must be non-empty string");
 
         // Validate board size input.
-        if (!ValUtils.isPositiveInt(controller.gameState.boardSize))
+        if (!ValUtils.isPositiveInt(controller.state.boardSize))
             throw new TypeError("boardSize must be a positive integer");
 
         // Initialize root (section) and assign id using super constructor.
@@ -61,7 +61,7 @@ export default class Gameboard extends ViewComponent {
             this.#grid.remove();
 
             this.#grid = this.#buildBoardGrid(
-                this.#controller.gameState.boardSize,
+                this.#controller.state.boardSize,
                 this.readProp("dataset").owner,
             );
 
@@ -77,7 +77,7 @@ export default class Gameboard extends ViewComponent {
     #buildColLabels() {
         const colLabels = new ViewComponent(EL.DIV).addClass("col-labels");
 
-        for (let col = 1; col <= this.#controller.gameState.boardSize; col++)
+        for (let col = 1; col <= this.#controller.state.boardSize; col++)
             // Build cells for colLabels.
             colLabels.append(new ViewComponent(EL.SPAN).setText(col));
 
@@ -88,7 +88,7 @@ export default class Gameboard extends ViewComponent {
         // Build row labels (Left column of board).
         const rowLabels = new ViewComponent(EL.DIV).addClass("row-labels");
 
-        for (let row = 0; row < this.#controller.gameState.boardSize; row++) {
+        for (let row = 0; row < this.#controller.state.boardSize; row++) {
             const A_CHAR = 65;
             rowLabels.append(
                 new ViewComponent(EL.SPAN).setText(
@@ -102,11 +102,11 @@ export default class Gameboard extends ViewComponent {
 
     #buildBoardGrid() {
         const player = this.readProp("dataset").owner;
-        const totalCells = this.#controller.gameState.boardSize ** 2;
+        const totalCells = this.#controller.state.boardSize ** 2;
         const boardData =
             player === PLAYERS.PLAYER
-                ? this.#controller.playerBoard
-                : this.#controller.compBoard;
+                ? this.#controller.state.playerBoard
+                : this.#controller.state.computerBoard;
 
         const grid = new ViewComponent(EL.DIV).addClass("board-grid");
 
@@ -127,8 +127,7 @@ export default class Gameboard extends ViewComponent {
 
     #isAttacker() {
         return (
-            this.#controller.gameState.attacker ===
-            this.readProp("dataset").owner
+            this.#controller.state.attacker === this.readProp("dataset").owner
         );
     }
 }
