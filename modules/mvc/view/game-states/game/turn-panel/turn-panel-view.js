@@ -1,17 +1,43 @@
 import ViewComponent from "../../../view-component.js";
-import ChooseForMe from "./choose-for-me-option-component.js";
 import ForfeitOption from "./forfeit-option-component.js";
 import { EL } from "../../../../../constants.js";
 
-export default class GameOptions extends ViewComponent {
-    constructor() {
+import ViewUtilities from "../../../view-utilities.js";
+
+export default class TurnPanel extends ViewComponent {
+    #controller;
+    #menu;
+
+    constructor(controller) {
         // Initialize root element (section) and assign ID using super constructor.
-        super(EL.SECTION, "game-options-area");
+        super(EL.SECTION, "turn-panel-area");
+        this.#controller = controller;
 
-        const options = new ViewComponent(EL.MENU, "game-options-menu");
+        this.append(this.#buildMenu());
+    }
 
-        options.append(new ChooseForMe()).append(new ForfeitOption());
+    #buildMenu() {
+        // Remove existing menu.
+        if (this.#menu) this.#menu.remove();
 
-        this.append(options);
+        const state = this.#controller.state;
+
+        this.#menu = new ViewComponent(EL.MENU);
+
+        const attacker = new ViewComponent(EL.LI).setText(
+            `Attacker: ${ViewUtilities.capitalize(state.attacker)}`,
+        );
+        const turn = new ViewComponent(EL.LI).setText(`Turn: ${state.turn}`);
+        const surrender = new ViewComponent(EL.LI).append(new ForfeitOption());
+
+        [attacker, turn, surrender].forEach((component) =>
+            this.#menu.append(component),
+        );
+
+        return this.#menu;
+    }
+
+    update() {
+        this.append(this.#buildMenu());
     }
 }
