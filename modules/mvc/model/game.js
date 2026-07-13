@@ -24,4 +24,8 @@ export default class Game {
         this.#battleship.logTurn();
         this.#battleship.newTurn();
     }
+
+    surrender() {
+        return this.#battleship.surrender();
+    }
 }

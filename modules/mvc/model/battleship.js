@@ -164,4 +164,12 @@ export default class Battleship {
             state.winner,
         );
     }
+
+    surrender() {
+        const state = this.state;
+
+        state.winner = PLAYERS.COMPUTER;
+
+        return state;
+    }
 }
