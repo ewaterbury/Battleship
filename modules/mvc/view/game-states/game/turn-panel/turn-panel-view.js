@@ -28,7 +28,9 @@ export default class TurnPanel extends ViewComponent {
             `Attacker: ${ViewUtilities.capitalize(state.attacker)}`,
         );
         const turn = new ViewComponent(EL.LI).setText(`Turn: ${state.turn}`);
-        const surrender = new ViewComponent(EL.LI).append(new ForfeitOption());
+        const surrender = new ViewComponent(EL.LI).append(
+            new ForfeitOption(this.#controller),
+        );
 
         [attacker, turn, surrender].forEach((component) =>
             this.#menu.append(component),

@@ -3,9 +3,13 @@ import Button from "../../../button.js";
 import { EL } from "../../../../../constants.js";
 
 export default class ForfeitOption extends ViewComponent {
-    constructor() {
+    #controller;
+
+    constructor(controller) {
         // Initialize root element (section) using super constructor.
         super(EL.LI, "surrender");
+
+        this.#controller = controller;
 
         this.append(
             new Button("surrender-button", this.#surrender).setText(
@@ -14,5 +18,7 @@ export default class ForfeitOption extends ViewComponent {
         );
     }
 
-    #surrender = () => {};
+    #surrender = () => {
+        this.#controller.surrender();
+    };
 }
