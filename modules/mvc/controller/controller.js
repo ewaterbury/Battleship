@@ -149,4 +149,9 @@ export default class Controller {
 
         return summary;
     }
+
+    surrender() {
+        const state = this.#getGame().surrender();
+        console.log(state);
+    }
 }
